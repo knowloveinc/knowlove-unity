@@ -314,7 +314,7 @@ namespace GameBrewStudios
         public static event System.Action<int, string> OnDiceFinishedRolling;
 
         [PunRPC]
-        public void RollDice(int amount = 1, string location)
+        public void RollDice(int amount = 1, string location = "board")
         {
             if (PhotonNetwork.IsMasterClient)
             {
