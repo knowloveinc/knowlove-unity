@@ -168,7 +168,7 @@ public class TurnManager : MonoBehaviour
         {
 
 
-            GameManager.Instance.RollDice(1);
+            GameManager.Instance.RollDice(1, "board");
             didRoll = true;
 
             bottomButton.interactable = false;
@@ -346,7 +346,7 @@ public class TurnManager : MonoBehaviour
                     text = "Roll",
                     onClick = () =>
                     {
-                        GameManager.Instance.RollDice(1, fromScenario);
+                        GameManager.Instance.RollDice(1, "scenario");
                     }
                 };
 

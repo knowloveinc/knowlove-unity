@@ -311,17 +311,19 @@ namespace GameBrewStudios
         public Transform[] diceStartPositions;
 
 
-        public static event System.Action<int> OnDiceFinishedRolling;
-        public void RollDice(int amount = 1)
+        public static event System.Action<int, string> OnDiceFinishedRolling;
+
+        [PunRPC]
+        public void RollDice(int amount = 1, string location)
         {
             if (PhotonNetwork.IsMasterClient)
             {
                 StopCoroutine("DoRollDice");
-                StartCoroutine(DoRollDice(amount));
+                StartCoroutine(DoRollDice(amount, location));
             }
         }
 
-        IEnumerator DoRollDice(int amount)
+        IEnumerator DoRollDice(int amount, string location)
         {
             int i = 0;
 
@@ -386,7 +388,7 @@ namespace GameBrewStudios
                 die.photonView.RPC("ToggleActive", RpcTarget.All, false);
             }
 
-            OnDiceFinishedRolling?.Invoke(score);
+            OnDiceFinishedRolling?.Invoke(score, location);
         }
 
         public CardData GetRandomCardData(string deckName)
