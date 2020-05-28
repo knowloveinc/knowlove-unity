@@ -49,17 +49,24 @@ public class TurnManager : MonoBehaviour
         NextTurn();
     }
 
-    private void GameManager_OnDiceFinishedRolling(int diceScore)
+    private void GameManager_OnDiceFinishedRolling(int diceScore, string location)
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            turnState = TurnState.RollFinished;
-
-            currentPlayernameLabel.text = "You rolled a " + diceScore;
-            DOVirtual.DelayedCall(1f, () =>
+            if (location == "board")
             {
-                AdvanceGamePieceFoward(diceScore);
-            });
+                turnState = TurnState.RollFinished;
+
+                currentPlayernameLabel.text = "You rolled a " + diceScore;
+                DOVirtual.DelayedCall(1f, () =>
+                {
+                    AdvanceGamePieceFoward(diceScore);
+                });
+            }
+            else if( location == "scenario")
+            {
+                //HandleProceedAction(diceScore, rollCheck, onPassed, onFailed);
+            }
         }
     }
 
@@ -180,13 +187,21 @@ public class TurnManager : MonoBehaviour
 
     void AdvanceGamePieceFoward(int spaces)
     {
-        turnState = TurnState.MovingBoardPiece;
-
-        GameManager.Instance.MoveBoardPiece(turnIndex, spaces, () =>
+        if (PhotonNetwork.IsMasterClient)
         {
-            turnState = TurnState.PieceMoved;
-            ExecutePathNode((int)GameManager.Instance.pieces[turnIndex].pathRing, GameManager.Instance.pieces[turnIndex].pathIndex);
-        });
+            turnState = TurnState.MovingBoardPiece;
+            GameManager.OnGamePieceFinishedMoving += this.GameManager_OnGamePieceFinishedMoving;
+            GameManager.Instance.photonView.RPC("RPCMoveBoardPiece", RpcTarget.All, turnIndex, spaces);
+        }
+    }
+
+    private void GameManager_OnGamePieceFinishedMoving()
+    {
+        GameManager.OnGamePieceFinishedMoving -= GameManager_OnGamePieceFinishedMoving;
+        
+        turnState = TurnState.PieceMoved;
+        ExecutePathNode((int)GameManager.Instance.pieces[turnIndex].pathRing, GameManager.Instance.pieces[turnIndex].pathIndex);
+        
     }
 
     public GameObject scenarioWindow;
@@ -331,10 +346,7 @@ public class TurnManager : MonoBehaviour
                     text = "Roll",
                     onClick = () =>
                     {
-                        GameManager.Instance.RollDice(1, (diceScore) =>
-                        {
-                            HandleProceedAction(diceScore, rollCheck, onPassed, onFailed);
-                        });
+                        GameManager.Instance.RollDice(1, fromScenario);
                     }
                 };
 

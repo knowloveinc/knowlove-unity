@@ -242,7 +242,7 @@ namespace GameBrewStudios
         }
 
         [PunRPC]
-        public void RPCMoveBOardPiece(int playerIndex, int spaces)
+        public void RPCMoveBoardPiece(int playerIndex, int spaces)
         {
             if (PhotonNetwork.IsMasterClient)
             {
