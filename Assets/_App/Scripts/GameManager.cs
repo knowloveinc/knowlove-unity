@@ -433,20 +433,20 @@ namespace GameBrewStudios
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-            if(stream.IsWriting)
-            {
-                //if (lastAllCards != JsonConvert.SerializeObject(allCards))
-                //{
-                Debug.Log("SENDING ALL CARDS BECAUSE OF CHANGE??");
-                    lastAllCards = JsonConvert.SerializeObject(allCards);
-                    stream.SendNext(lastAllCards);
-                //}
-            }
-            else
-            {
-                Debug.Log("ALL CARDS RECEIVED");
-                allCards = JsonConvert.DeserializeObject<CardLibrary>((string)stream.ReceiveNext());
-            }
+            //if(stream.IsWriting)
+            //{
+            //    //if (lastAllCards != JsonConvert.SerializeObject(allCards))
+            //    //{
+            //    Debug.Log("SENDING ALL CARDS BECAUSE OF CHANGE??");
+            //        lastAllCards = JsonConvert.SerializeObject(allCards);
+            //        stream.SendNext(lastAllCards);
+            //    //}
+            //}
+            //else
+            //{
+            //    Debug.Log("ALL CARDS RECEIVED");
+            //    allCards = JsonConvert.DeserializeObject<CardLibrary>((string)stream.ReceiveNext());
+            //}
         }
     }
 }
