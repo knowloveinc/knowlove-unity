@@ -8,6 +8,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using Photon.Realtime;
 using Photon.Pun;
+using Photon;
 
 namespace GameBrewStudios
 {
@@ -86,7 +87,7 @@ namespace GameBrewStudios
         }
     }
 
-    public class GameManager : MonoBehaviourPun
+    public class GameManager : MonoBehaviourPun, IPunObservable
     {
         
         public static GameManager Instance;
@@ -428,6 +429,24 @@ namespace GameBrewStudios
             Debug.LogError("DECK NOT FOUND FOR CARD ANIMATION");
         }
 
+        string lastAllCards = "";
 
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if(stream.IsWriting)
+            {
+                //if (lastAllCards != JsonConvert.SerializeObject(allCards))
+                //{
+                Debug.Log("SENDING ALL CARDS BECAUSE OF CHANGE??");
+                    lastAllCards = JsonConvert.SerializeObject(allCards);
+                    stream.SendNext(lastAllCards);
+                //}
+            }
+            else
+            {
+                Debug.Log("ALL CARDS RECEIVED");
+                allCards = JsonConvert.DeserializeObject<CardLibrary>((string)stream.ReceiveNext());
+            }
+        }
     }
 }
