@@ -97,7 +97,12 @@ public class PopupDialog : MonoBehaviour
         Show(title, body, null);
     }
 
-    public void Show(string title, string body, PopupButton[] buttons)
+    public void Show(string title, string body, int bgColor)
+    {
+        Show(title, body, null, bgColor);
+    }
+
+    public void Show(string title, string body, PopupButton[] buttons, int bgColor = 0, bool showButtons = true)
     {
         if (buttons == null)
         {
@@ -107,16 +112,16 @@ public class PopupDialog : MonoBehaviour
             };
         }
 
-        PopupDialogMessage pdm = new PopupDialogMessage() { title = title, body = body, buttons = buttons };
+        PopupDialogMessage pdm = new PopupDialogMessage() { title = title, body = body, buttons = showButtons ? buttons : null };
 
-        if(isShowing)
-        {
-            Debug.Log("Queing message because one is already showing.");
-            QueueMessage(pdm);
-            return;
-        }
+        //if(isShowing)
+        //{
+        //    Debug.Log("Queing message because one is already showing.");
+        //    QueueMessage(pdm);
+        //    return;
+        //}
 
-        ShowMessage(pdm);
+        ShowMessage(pdm, bgColor);
     }
 
 
@@ -125,12 +130,12 @@ public class PopupDialog : MonoBehaviour
         messages.Add(message);
     }
 
-    void ShowMessage(PopupDialogMessage message)
+    void ShowMessage(PopupDialogMessage message, int bgColor = 0)
     {
         this.canvasGroup.alpha = 1f;
         this.canvasGroup.interactable = true;
         this.canvasGroup.blocksRaycasts = true;
-        dialogWindow.SetMessage(message);
+        dialogWindow.SetMessage(message, bgColor);
         dialogWindow.Show();
     }
 

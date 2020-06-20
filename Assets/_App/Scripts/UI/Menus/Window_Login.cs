@@ -17,24 +17,30 @@ public class Window_Login : Window
     Window_MatchList matchListWindow;
 
     [SerializeField]
+    Window_PickMode pickModeWindow;
+
+    [SerializeField]
     RectTransform loginBox, registerBox;
+
+    private const string USERNAME_KEY = "SavedUsername", PASSWORD_KEY = "SavedPassw";
 
     private void Awake()
     {
         registerBox.anchoredPosition = new Vector2(registerBox.anchoredPosition.x, 2000f);
         loginBox.anchoredPosition = new Vector2(loginBox.anchoredPosition.x, 0f);
-        CheckForConnection();
     }
 
     public void CheckForConnection()
     {
+        
         CanvasLoading.Instance.Show();
         APIManager.Connect((success) => 
         {
             CanvasLoading.Instance.Hide();
             if(success)
             {
-                Show();
+                loginEmailField.SetTextWithoutNotify(PlayerPrefs.GetString(USERNAME_KEY, ""));
+                loginPasswordField.SetTextWithoutNotify(PlayerPrefs.GetString(PASSWORD_KEY, ""));
             }
             else
             {
@@ -65,6 +71,9 @@ public class Window_Login : Window
         registerPasswordField1.text = "";
         registerPasswordField2.text = "";
         registerNicknameField.text = "";
+
+        Debug.Log("Showing login window...");
+        CheckForConnection();
     }
 
     bool isAuthenticating = false;
@@ -98,12 +107,13 @@ public class Window_Login : Window
                 //On successful login, show the Match Finder
                 if (success)
                 {
+                    PlayerPrefs.SetString(USERNAME_KEY, loginEmailField.text);
+                    PlayerPrefs.SetString(PASSWORD_KEY, loginPasswordField.text);
+
                     //User logged in, what next?
                     //PopupDialog.Instance.Show("Logged in successfully.");
-                    NetworkManager.Instance.Connect();
-                    Debug.Log("<color=Magenta>User nickname set to: " + PhotonNetwork.NickName + "</color>");
                     this.Hide();
-                    matchListWindow.Show();
+                    pickModeWindow.Show();
                 }
                 else
                 {
@@ -162,7 +172,7 @@ public class Window_Login : Window
                     PhotonNetwork.NickName = User.current.displayName;
                     Debug.Log("<color=Magenta>User nickname set to: " + PhotonNetwork.NickName + "</color>");
                     this.Hide();
-                    matchListWindow.Show();
+                    pickModeWindow.Show();
                 }
                 else
                 {

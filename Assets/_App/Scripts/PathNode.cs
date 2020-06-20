@@ -20,7 +20,9 @@ namespace GameBrewStudios
         RollWith2Dice,
         Lose3Turns,
         GoToKNOWLOVE,
-        AdvanceToNextPath
+        AdvanceToNextPath,
+        CollectAvoidSingleCard,
+        AdvanceToRelationshipWithProtectionFromSingle
     }
 
     public enum ProceedAction
@@ -32,7 +34,8 @@ namespace GameBrewStudios
         LoseATurn,
         LoseTwoTurns,
         LoseThreeTurns,
-        GoToKNOWLOVE
+        GoToKNOWLOVE,
+        BackToSingleAndLoseATurn
     }
 
     public class PathNode : MonoBehaviour

@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/_App/Scenes/_StartupScene.unity
     guid: bd2919db28919c5468fbce012d575a01
   - enabled: 1
-    path: Assets/_App/Scenes/Testing.unity
-    guid: c7fc6dd61a96a0e4da9034a684628427
+    path: Assets/_App/Scenes/GameBoard.unity
+    guid: 91ab38010c74f2d439155c2765c4e90c
   m_configObjects: {}

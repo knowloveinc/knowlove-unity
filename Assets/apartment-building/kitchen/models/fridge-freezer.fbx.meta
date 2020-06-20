@@ -1,28 +1,62 @@
 fileFormatVersion: 2
 guid: 024cb778f2f2a8e47a9f73f94de34dc9
-timeCreated: 1525182956
-licenseType: Store
 ModelImporter:
-  serializedVersion: 22
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: fridge-freezer
-    100004: fridge-freezer-main-door
-    100006: fridge-freezer-top-door
-    400000: //RootNode
-    400002: fridge-freezer
-    400004: fridge-freezer-main-door
-    400006: fridge-freezer-top-door
-    2100000: fridge-freezer
-    2300000: fridge-freezer
-    2300002: fridge-freezer-main-door
-    2300004: fridge-freezer-top-door
-    3300000: fridge-freezer
-    3300002: fridge-freezer-main-door
-    3300004: fridge-freezer-top-door
-    4300000: fridge-freezer-main-door
-    4300002: fridge-freezer-top-door
-    4300004: fridge-freezer
+  serializedVersion: 19300
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: fridge-freezer
+  - first:
+      1: 100004
+    second: fridge-freezer-main-door
+  - first:
+      1: 100006
+    second: fridge-freezer-top-door
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: fridge-freezer
+  - first:
+      4: 400004
+    second: fridge-freezer-main-door
+  - first:
+      4: 400006
+    second: fridge-freezer-top-door
+  - first:
+      21: 2100000
+    second: fridge-freezer
+  - first:
+      23: 2300000
+    second: fridge-freezer
+  - first:
+      23: 2300002
+    second: fridge-freezer-main-door
+  - first:
+      23: 2300004
+    second: fridge-freezer-top-door
+  - first:
+      33: 3300000
+    second: fridge-freezer
+  - first:
+      33: 3300002
+    second: fridge-freezer-main-door
+  - first:
+      33: 3300004
+    second: fridge-freezer-top-door
+  - first:
+      43: 4300000
+    second: fridge-freezer-main-door
+  - first:
+      43: 4300002
+    second: fridge-freezer-top-door
+  - first:
+      43: 4300004
+    second: fridge-freezer
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -30,7 +64,7 @@ ModelImporter:
       name: fridge-freezer
     second: {fileID: 2100000, guid: c1d495fdb54487d47a307b97a881ec56, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -47,6 +81,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -61,17 +96,22 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
@@ -83,10 +123,13 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -96,14 +139,16 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 0
   humanoidOversampling: 1
+  avatarSetup: 0
   additionalBone: 0
   userData: 
   assetBundleName: 

@@ -6,11 +6,13 @@ public abstract class Window : MonoBehaviour
 {
     public virtual void Show()
     {
-        gameObject.SetActive(true);
+        if (!this.gameObject.activeSelf)
+            gameObject.SetActive(true);
     }
 
     public virtual void Hide()
     {
-        gameObject.SetActive(false);
+        if(this.gameObject.activeSelf)
+            gameObject.SetActive(false);
     }
 }

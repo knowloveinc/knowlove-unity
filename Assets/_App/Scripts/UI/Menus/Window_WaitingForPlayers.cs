@@ -26,30 +26,63 @@ public class Window_WaitingForPlayers : Window
         cancelButton.gameObject.SetActive(false);
     }
 
+
+    int ellipsesCount = 0;
+    float lastEllipsesChange = 0f;
+
     private void Update()
     {
 
-        string status = "Connecting to room..";
+        string status = "Please Wait..\n";
 
         if (PhotonNetwork.CurrentRoom != null)
         {
-            status += PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers + " Players in room.";
-            status += "\nOnline Game: " + (!PhotonNetwork.CurrentRoom.IsOffline).ToString();
-            status += "\n" + PhotonNetwork.CurrentRoom.CustomProperties.ToStringFull();
-            cancelButton.gameObject.SetActive(true);
+            if (PhotonNetwork.CurrentRoom.MaxPlayers > 1)
+            {
+                status = "Waiting for Players";
+                for(int i = 0; i < ellipsesCount; i++)
+                {
+                    status += ".";
+                }
+
+                if (Time.time - lastEllipsesChange >= 1f)
+                {
+                    lastEllipsesChange = Time.time;
+                    ellipsesCount++;
+                    if (ellipsesCount > 3)
+                        ellipsesCount = 0;
+                }
+
+                status += "\n" + PhotonNetwork.CurrentRoom.PlayerCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers;
+                
+                if(PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
+                    cancelButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                status = "Loading, Please Wait...";
+            }
+            //status += "\nOnline Game: " + (!PhotonNetwork.CurrentRoom.IsOffline).ToString();
+            //status += "\n" + PhotonNetwork.CurrentRoom.CustomProperties.ToStringFull();
         }
 
-        statusLabel.text = "Game created.\n" + status;
+        statusLabel.text = status;
     }
 
     public override void Hide()
     {
         base.Hide();
 
-        if(PhotonNetwork.LeaveRoom(false))
+        
+
+    }
+
+    public void CancelMatchmaking()
+    {
+        Hide();
+        if (PhotonNetwork.LeaveRoom(false))
         {
             matchListWindow.Show();
         }
-
     }
 }

@@ -35,28 +35,25 @@ public class Window_CreateMatch : Window
         bool hasPassword = !string.IsNullOrEmpty(passwordField.text);
 
         RoomOptions options = new RoomOptions();
+        options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() {};
+
         if(hasPassword)
         {
             options.CustomRoomProperties.Add("password", passwordField.text);
+            options.CustomRoomPropertiesForLobby = new string[] { "password" };
         }
-
+        
         options.MaxPlayers = Convert.ToByte(PlayerCountFromDropdown());
 
         options.IsVisible = true;
         options.IsOpen = options.MaxPlayers > 1;
-
+        options.PlayerTtl = 33;
         options.PublishUserId = true;
 
-        if(options.MaxPlayers == 1)
-        { 
-            PhotonNetwork.OfflineMode = true; 
-        }
-        else
-        {
-            PhotonNetwork.OfflineMode = false;
-        }
+        TypedLobby sqlLobby = new TypedLobby("sqlLobby", LobbyType.Default);
 
-        if (PhotonNetwork.CreateRoom(roomNameField.text, options, null))
+
+        if (PhotonNetwork.CreateRoom(roomNameField.text, options, sqlLobby))
         {
             
             matchListWindow.Hide();
@@ -73,13 +70,12 @@ public class Window_CreateMatch : Window
     {
         /*
             Options are:
-                Single Player = 1,
-                Two Players = 2,
-                Three Players = 3,
-                Four Players = 4
+                Two Players = 0,
+                Three Players = 1,
+                Four Players = 2
              
         */
 
-        return Mathf.Clamp(playerCountDropdown.value + 1, 1, 4);
+        return Mathf.Clamp(playerCountDropdown.value + 2, 2, 4);
     }
 }

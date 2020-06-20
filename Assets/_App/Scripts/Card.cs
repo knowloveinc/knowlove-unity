@@ -2,38 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using Photon.Pun;
+using DG.Tweening;
 
 namespace GameBrewStudios
 {
 
     
-    public class Card : MonoBehaviour
+    public class Card : MonoBehaviourPun
     {
-        public static event System.Action<Card> OnCardDestroyed;
+        Vector3 startPosition;
 
-        [SerializeField]
-        TextMeshPro cardLabel;
-
-        [SerializeField]
-        CardDeck deck; //storing this incase we need to animate a card going back into a deck at some point.
-
-        public void Init(string cardText, CardDeck deck)
+        private void Awake()
         {
-            if(string.IsNullOrEmpty(cardText))
-            {
-                cardText = "This is where the text on the card will go. This card was spawned randomly and is not using card data. Heres a random number to prove that it is unique though: " + Random.Range(0, 999999).ToString("n0");
-            }
-
-            this.deck = deck;
-
-            if(cardLabel != null)
-                cardLabel.text = cardText;
+            startPosition = transform.position;
         }
 
-        private void OnDestroy()
+        [ContextMenu("RPC DrawCard")]
+        public void DrawToCamera()
         {
-            OnCardDestroyed?.Invoke(this);
+            photonView.RPC("RPC_DrawToCamera", RpcTarget.All);
+        }
+
+        [PunRPC]
+        public void RPC_DrawToCamera()
+        {
+            transform.position = startPosition;
+            Vector3 targetPosition = new Vector3(Camera.main.transform.position.x, startPosition.y, Camera.main.transform.position.z);
+            transform.DOMove(targetPosition, 1f).OnComplete(() => 
+            {
+                transform.position = startPosition;
+            });
         }
     }
 }

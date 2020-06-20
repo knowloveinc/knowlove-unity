@@ -1,62 +1,141 @@
 fileFormatVersion: 2
 guid: 95a8ea86e613a2347b875ddc4cb3917e
-timeCreated: 1487429090
-licenseType: Store
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: door1-frame
-    100004: door1-frame-wall
-    100006: door1.001
-    100008: door1-frame.001
-    100010: door1----
-    100012: door1
-    400000: //RootNode
-    400002: door1-frame
-    400004: door1-frame-wall
-    400006: door1.001
-    400008: door1-frame.001
-    400010: door1----
-    400012: door1
-    2300000: door1-frame
-    2300002: door1-frame-wall
-    2300004: door1.001
-    2300006: door1-frame.001
-    2300008: door1----
-    2300010: door1
-    3300000: door1-frame
-    3300002: door1-frame-wall
-    3300004: door1.001
-    3300006: door1-frame.001
-    3300008: door1----
-    3300010: door1
-    4300000: door1.001
-    4300002: door1-frame-wall
-    4300004: door1-frame
-    4300006: door1-frame.001
-    4300008: door1----
-    4300010: door1
+  serializedVersion: 19300
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: door1-frame
+  - first:
+      1: 100004
+    second: door1-frame-wall
+  - first:
+      1: 100006
+    second: door1.001
+  - first:
+      1: 100008
+    second: door1-frame.001
+  - first:
+      1: 100010
+    second: door1----
+  - first:
+      1: 100012
+    second: door1
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: door1-frame
+  - first:
+      4: 400004
+    second: door1-frame-wall
+  - first:
+      4: 400006
+    second: door1.001
+  - first:
+      4: 400008
+    second: door1-frame.001
+  - first:
+      4: 400010
+    second: door1----
+  - first:
+      4: 400012
+    second: door1
+  - first:
+      23: 2300000
+    second: door1-frame
+  - first:
+      23: 2300002
+    second: door1-frame-wall
+  - first:
+      23: 2300004
+    second: door1.001
+  - first:
+      23: 2300006
+    second: door1-frame.001
+  - first:
+      23: 2300008
+    second: door1----
+  - first:
+      23: 2300010
+    second: door1
+  - first:
+      33: 3300000
+    second: door1-frame
+  - first:
+      33: 3300002
+    second: door1-frame-wall
+  - first:
+      33: 3300004
+    second: door1.001
+  - first:
+      33: 3300006
+    second: door1-frame.001
+  - first:
+      33: 3300008
+    second: door1----
+  - first:
+      33: 3300010
+    second: door1
+  - first:
+      43: 4300000
+    second: door1.001
+  - first:
+      43: 4300002
+    second: door1-frame-wall
+  - first:
+      43: 4300004
+    second: door1-frame
+  - first:
+      43: 4300006
+    second: door1-frame.001
+  - first:
+      43: 4300008
+    second: door1----
+  - first:
+      43: 4300010
+    second: door1
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: door1
+    second: {fileID: 2100000, guid: 15b75d6300d7c2344917a66299ed5510, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wall
+    second: {fileID: 2100000, guid: 116458a0db02c7747affda75e76b4c84, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -64,13 +143,23 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
@@ -80,10 +169,14 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -93,14 +186,16 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 0
   humanoidOversampling: 1
+  avatarSetup: 0
   additionalBone: 0
   userData: 
   assetBundleName: 

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Photon.Pun;
+using Photon.Realtime;
 
 namespace GameBrewStudios
 {
 
-    public class BoardPiece : MonoBehaviour
+    public class BoardPiece : MonoBehaviourPun
     {
         public Transform startingPoint;
 
@@ -20,30 +22,80 @@ namespace GameBrewStudios
 
         public bool isMoving = false;
 
-        public GameManager.PathRing pathRing;
+        public PathRing pathRing;
         public int pathIndex = -1;
 
         
         [ContextMenu("Go Home")]
-        public void GoHome(System.Action OnFinished = null)
+        public void GoHome( Player player = null, System.Action OnFinished = null)
         {
-            JumpTo(startingPoint.position, () => { OnFinished?.Invoke(); pathIndex = -1; pathRing = GameManager.PathRing.Home; });
+            JumpTo(startingPoint.position, () => 
+            { 
+                pathIndex = -1; 
+                pathRing = PathRing.Home;
+
+                if (player != null)
+                {
+                    Debug.Log("<color=Cyan>Resetting progress for player: </color>" + player.NickName);
+                    ExitGames.Client.Photon.Hashtable playerProperties = player.CustomProperties;
+                    float progress = (float)playerProperties["progress"];
+
+                    playerProperties["diceCount"] = 1;
+                    progress = 0.1f;
+                    playerProperties["progress"] = progress;
+
+                    player.SetCustomProperties(playerProperties);
+                }
+
+
+                OnFinished?.Invoke(); 
+            });
         }
 
-        [ContextMenu("Go to KNOWLOVE")]
-        public void GoToKnowLove(System.Action OnFinished = null)
+        public void GoToKnowLove(Player player = null, System.Action OnFinished = null)
         {
+
+            Debug.Log("Player = " + player);
+            if (player != null)
+            {
+                Debug.LogError("DID I MAKE IT HERE???");
+                ExitGames.Client.Photon.Hashtable playerProperties = player.CustomProperties;
+                playerProperties["progress"] = 1f;
+                player.SetCustomProperties(playerProperties);
+
+
+                TurnManager.Instance.GameOver(player.NickName);
+            }
+
+            
+
             JumpTo(knowLovePoint.position, OnFinished);
         }
 
-        public void GoToRelationship(System.Action OnFinished = null)
+        public void GoToRelationship(Player player, System.Action OnFinished = null)
         {
-            JumpTo(GameManager.Instance.paths[1].NodesAsVector3()[0], () => { OnFinished?.Invoke(); pathIndex = 0; pathRing = GameManager.PathRing.Relationship; });
+            if (player != null)
+            {
+                Debug.Log("UPDATING PLAYER PROGRESS TO RELATIONSHIP");
+                ExitGames.Client.Photon.Hashtable playerProperties = player.CustomProperties;
+                playerProperties["progress"] = 0.666f;
+                playerProperties["relationshipCount"] = (int)playerProperties["relationshipCount"] + 1;
+                player.SetCustomProperties(playerProperties); ;
+            }
+            JumpTo(BoardManager.Instance.paths[1].NodesAsVector3()[0], () => { OnFinished?.Invoke(); pathIndex = 0; pathRing = PathRing.Relationship; });
         }
 
-        public void GoToMarriage(System.Action OnFinished = null)
+        public void GoToMarriage(Player player, System.Action OnFinished = null)
         {
-            JumpTo(GameManager.Instance.paths[2].NodesAsVector3()[0], () => { OnFinished?.Invoke(); pathIndex = 0; pathRing = GameManager.PathRing.Marriage; });
+            if (player != null)
+            {
+                Debug.Log("UPDATING PLAYER PROGRESS TO RELATIONSHIP");
+                ExitGames.Client.Photon.Hashtable playerProperties = player.CustomProperties;
+                playerProperties["progress"] = 0.90f;
+                playerProperties["marriageCount"] = (int)playerProperties["marriageCount"] + 1;
+                player.SetCustomProperties(playerProperties);
+            }
+            JumpTo(BoardManager.Instance.paths[2].NodesAsVector3()[0], () => { OnFinished?.Invoke(); pathIndex = 0; pathRing = PathRing.Marriage; });
         }
 
         public void JumpPath(List<Vector3> positions, System.Action OnFinished)
@@ -61,8 +113,7 @@ namespace GameBrewStudios
         int jumpPathIndex = 0;
         IEnumerator DoJumpPath(List<Vector3> positions, System.Action OnFinished)
         {
-            
-            
+
             isMoving = true;
             jumpPathIndex = 0;
             foreach (Vector3 pos in positions)
@@ -72,9 +123,15 @@ namespace GameBrewStudios
                 {
                     jumpPathIndex++;
                     pathIndex++;
+                    if (pathIndex >= BoardManager.Instance.paths[(int)pathRing].nodes.Count)
+                    {
+                        pathIndex = 0;
+                        TurnManager.Instance.PlayerDidElapseOneYear();
+                    }
+
                     if (tapSound != null)
                     {
-                        source.PlayOneShot(tapSound);
+                        SoundManager.Instance.PlaySound(tapSound.name);
                     }
                 });
 
@@ -102,5 +159,6 @@ namespace GameBrewStudios
                 OnFinished?.Invoke();
             });
         }
+
     }
 }

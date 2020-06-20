@@ -24,8 +24,8 @@ MonoBehaviour:
     Protocol: 0
     AuthMode: 0
     EnableLobbyStatistics: 0
-    NetworkLogging: 1
-  DevRegion: us
+    NetworkLogging: 2
+  DevRegion: 
   PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
@@ -36,11 +36,32 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
-  - LoadCardData
-  - MoveBoardPiece
-  - RollDice
-  - RPCMoveBoardPiece
+  - RPC_AvoidSingleCardAnimation
+  - RPC_BuildProgressBarList
+  - RPC_DrawToCamera
+  - RPC_ForceShowListPanel
+  - RPC_HideCard
+  - RPC_MoveBoardPiece
+  - RPC_OnCardClicked
+  - RPC_OnDiceFinished
+  - RPC_PlaySound
+  - RPC_PromptResponse
+  - RPC_ReadyUp
+  - RPC_RollDice
+  - RPC_SetCamera
+  - RPC_SetTopText
+  - RPC_ShowBottomForPlayer
+  - RPC_ShowCard
+  - RPC_ShowPickCard
+  - RPC_ShowPrompt
+  - RPC_ToggleDice
+  - RPC_ToggleGamePiece
   - ToggleActive
+  - RPC_HideBottomForPlayer
+  - RPC_ShowPlayerSelection
+  - RPC_Show
+  - RPC_GameOver
+  - RPC_StartSpinning
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
