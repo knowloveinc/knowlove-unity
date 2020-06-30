@@ -531,7 +531,7 @@ public class GameUI : MonoBehaviourPun
     [PunRPC]
     public void RPC_ShowCard(string cardText, Player targetPlayer, int pathIndex, bool isFancyCard)
     {
-        Image cardImage = cardUIObj.GetComponent<Image>();
+        Image cardImage = cardUIObj.transform.Find("Mask").GetComponent<Image>();
         cardImage.color = isFancyCard ? new Color(104 / 255f, 54 / 255f, 149 / 255f) : Color.white;
 
         cardUIObj.transform.Find("Mask/silhouette").gameObject.SetActive(isFancyCard);

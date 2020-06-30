@@ -408,7 +408,7 @@ public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void RPC_GameOver(string playerName)
     {
-        
+
         gameUI.ShowGameOver(playerName);
 
     }
@@ -596,7 +596,8 @@ public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     PopupDialog.PopupButton btn;
                     string dialogText = "You settled for someone who didnt meet your non-negotiable list requirements. (Back to single.)";
-                    if (!protectedFromSingleInRelationship)
+
+                    if (!protectedFromSingleInRelationship && avoidSingleCards < 1)
                     {
                         btn = new PopupDialog.PopupButton()
                         {
@@ -606,8 +607,10 @@ public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
                                 piece.GoHome(currentPlayer);
                             }
                         };
+                        diceCount = 1;
+                        gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[turnIndex].pathRing);
                     }
-                    else
+                    else if (protectedFromSingleInRelationship)
                     {
                         dialogText = "Your mate matches your non-negotiable list.";
                         btn = new PopupDialog.PopupButton()
@@ -618,12 +621,29 @@ public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
                                 Debug.Log("Disregarding issues and doing nothing.");
                             }
                         };
+
+                        gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[turnIndex].pathRing);
+                    }
+                    else if (avoidSingleCards > 0)
+                    {
+
+                        avoidSingleCards--;
+                        Debug.Log("Used avoid card, not sending user back.");
+                        dialogText += "\n\n[Activated Avoid Going to Single Card]";
+                        btn = new PopupDialog.PopupButton()
+                        {
+                            text = "Okay",
+                            onClicked = () =>
+                            {
+                                //Do nothing.
+                            }
+                        };
+                        gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[turnIndex].pathRing);
                     }
 
-                    diceCount = 1;
 
 
-                    gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[turnIndex].pathRing);
+                    
                 }
                 else
                 {
@@ -694,10 +714,9 @@ public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
                 break;
             case PathNodeAction.LoseTurn:
 
-                if (turnBank > 0)
-                    turnBank = 0;
-                else
-                    turnBank -= 1;
+                if (turnBank > 0) turnBank = 0;
+
+                turnBank -= 1;
 
                 playerProperties["turnBank"] = turnBank;
 
@@ -715,8 +734,8 @@ public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
 
                 if (turnBank > 0)
                     turnBank = 0;
-                else
-                    turnBank -= 2;
+                
+                turnBank -= 2;
 
                 playerProperties["turnBank"] = turnBank;
 
@@ -730,10 +749,9 @@ public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
                 }
                 break;
             case PathNodeAction.Lose3Turns:
-                if (turnBank > 0)
-                    turnBank = 0;
-                else
-                    turnBank -= 3;
+                if (turnBank > 0) turnBank = 0;
+
+                turnBank -= 3;
 
                 playerProperties["turnBank"] = turnBank;
 
@@ -933,9 +951,21 @@ public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
         int diceCount = (int)playerProperties["diceCount"];
 
         int avoidSingleCards = (int)playerProperties["avoidSingleCards"];
+        bool protectedFromSingleInRelationship = (bool)playerProperties["protectedFromSingleInRelationship"];
 
         switch (action)
         {
+            case ProceedAction.AdvanceToRelationshipWithProtectionFromSingle:
+                protectedFromSingleInRelationship = true;
+                
+                playerBoardPiece.GoToRelationship(currentPlayer, () =>
+                {
+                    Debug.Log("Finished moving to relationship path.");
+                    OnFinished?.Invoke();
+                });
+
+                break;
+
             case ProceedAction.BackToSingle:
 
                 if (avoidSingleCards > 0)
@@ -963,6 +993,9 @@ public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
                     diceCount = 1;
                     playerBoardPiece.GoHome(currentPlayer);
                 }
+
+                if (turnBank > 0) turnBank = 0;
+
                 turnBank -= 1;
 
                 OnFinished?.Invoke();
@@ -997,14 +1030,18 @@ public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
                 });
                 break;
             case ProceedAction.LoseATurn:
+                if (turnBank > 0) turnBank = 0;
                 turnBank -= 1;
                 OnFinished?.Invoke();
                 break;
             case ProceedAction.LoseTwoTurns:
+                if (turnBank > 0) turnBank = 0;
+
                 turnBank -= 2;
                 OnFinished?.Invoke();
                 break;
             case ProceedAction.LoseThreeTurns:
+                if (turnBank > 0) turnBank = 0;
                 turnBank -= 3;
                 OnFinished?.Invoke();
                 break;
@@ -1017,6 +1054,7 @@ public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
         playerProperties["turnBank"] = turnBank;
         playerProperties["diceCount"] = diceCount;
         playerProperties["avoidSingleCards"] = avoidSingleCards;
+        playerProperties["protectedFromSingleInRelationship"] = protectedFromSingleInRelationship;
         currentPlayer.SetCustomProperties(playerProperties);
     }
 

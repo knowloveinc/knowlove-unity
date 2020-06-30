@@ -50,13 +50,14 @@ public class Window_MatchList : Window, IMatchmakingCallbacks, ILobbyCallbacks
 
     public void GoBack()
     {
-        if(PhotonNetwork.IsConnectedAndReady)
+        if (PhotonNetwork.IsConnectedAndReady)
         {
             PhotonNetwork.Disconnect();
-            
-            Hide();
-            pickModeWindow.Show();
         }
+
+        Hide();
+        pickModeWindow.Show();
+        
     }
 
     private void OnDestroy()

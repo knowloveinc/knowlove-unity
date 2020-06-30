@@ -1,7 +1,7 @@
 ﻿using DG.Tweening;
 using GameBrewStudios;
 using GameBrewStudios.Networking;
-
+using Newtonsoft.Json;
 using Photon.Pun;
 
 using TMPro;
@@ -226,6 +226,61 @@ public class Window_Login : Window
     {
         lastError = obj;
     }
+
+    [SerializeField]
+    Window_ResetPassword resetPasswordWindow;
+
+    public void ForgotPassword()
+    {
+        bool emailIsValid = Validation.ValidateEmail(loginEmailField.text, out string emailError);
+
+        if (emailIsValid)
+        {
+            ServerAPI.OnError += this.ServerAPI_OnError;
+            PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+            {
+                new PopupDialog.PopupButton()
+                {
+                    text = "Yes",
+                    onClicked = () =>
+                    {
+                        CanvasLoading.Instance.Show();
+
+                        APIManager.ForgotPassword(loginEmailField.text.Trim(), (result) =>
+                        {
+                            ServerAPI.OnError -= this.ServerAPI_OnError;
+                            CanvasLoading.Instance.Hide();
+
+                            Debug.Log(JsonConvert.SerializeObject(result));
+
+                            if(result != null && result.ContainsKey("success") && (bool)result["success"] == true)
+                            {
+                                Debug.Log("Showing reset password screen...");
+                                resetPasswordWindow.Show(loginEmailField.text.Trim());
+                                this.Hide();
+                            }
+                            else
+                            {
+                                PopupDialog.Instance.Show("Something went wrong while processing your request. Please try again.\n" + (!string.IsNullOrEmpty(lastError.text) ? lastError.text : "") );
+                            }
+                        });
+                    }
+                },
+                new PopupDialog.PopupButton()
+                {
+                    text = "No",
+                    buttonColor = PopupDialog.PopupButtonColor.Plain
+                }
+            };
+
+            PopupDialog.Instance.Show("Forgot Password", "Are you sure you want to reset your password? Click YES to receive an email with a 6-digit code that you can enter on the next screen to reset your password.", buttons);
+        }
+        else
+        {
+            PopupDialog.Instance.Show("Invalid Email", emailError + "\n\n Please try again.");
+        }
+    }
+
 
     void ShowErrorMessage()
     {

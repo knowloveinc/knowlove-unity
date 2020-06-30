@@ -35,7 +35,8 @@ namespace GameBrewStudios
         LoseTwoTurns,
         LoseThreeTurns,
         GoToKNOWLOVE,
-        BackToSingleAndLoseATurn
+        BackToSingleAndLoseATurn,
+        AdvanceToRelationshipWithProtectionFromSingle
     }
 
     public class PathNode : MonoBehaviour

@@ -185,15 +185,22 @@ namespace GameBrewStudios.Networking
                 {
                     try
                     {
-                        Dictionary<string, string> err = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Error);
+                        Dictionary<string, object> err = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Error);
                         ServerAPI.ServerError sError = new ServerAPI.ServerError();
-                        sError.text = err["error"];
+                        sError.text = (string)err["error"];
                         sError.status = (HttpStatusCode)response.statusCode;
                         ServerAPI.BroadcastError(sError);
                     }
-                    catch
+                    catch(System.Exception e)
                     {
                         Debug.LogError("Failed to invoke ServerError event.");
+                        Debug.LogError(e.Message);
+
+
+                        ServerAPI.ServerError sError = new ServerAPI.ServerError();
+                        sError.text = response.Error;
+                        sError.status = (HttpStatusCode)response.statusCode;
+                        ServerAPI.BroadcastError(sError);
                     }
                 }
 
@@ -354,13 +361,18 @@ namespace GameBrewStudios.Networking
         /// <summary>
         /// This would be something like "www.mydomain.com" or "api.mydomain.com". But you could also directly supply the IPv4 address of the server to speed the calls up a little bit by bypassing DNS Lookup
         /// </summary>
-        //public static string SERVER_URL = "http://localhost:5051/api";
+        //public static string SERVER_URL = "http://localhost:5052/api";
         public static string SERVER_URL = "http://3.12.251.242/api";
 
 
         private void Start()
         {
             //StartCoroutine(LoadConfig());
+
+            if(SERVER_URL == "http://localhost:5052/api")
+            {
+                Debug.LogError("USING LOCALHOST FOR TESTING, REMEMBER TO CHANGE SERVER_URL BACK BEFORE PUBLISHING");
+            }
             initialized = true;
         }
 
@@ -566,7 +578,7 @@ namespace GameBrewStudios.Networking
                 try
                 {
 
-                    Debug.Log("Server Response: " + request.httpMethod + " " + request.endpoint + " completed in " + (Time.time - startTime).ToString("n4") + " secs.\nResponse: " + webRequest.downloadHandler.text);
+                    Debug.Log("Server Response: " + request.httpMethod + " " + request.endpoint + " completed in " + (Time.time - startTime).ToString("n4") + " secs.\nResponse Text: <color=Yellow>" + webRequest.downloadHandler.text + "</color>");
                 }
                 catch
                 {
