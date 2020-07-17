@@ -6,7 +6,7 @@ namespace GameBrewStudios
 {
     public class Window_Settings : Window
     {
-        const string url = "http://knowloveapp.com/help-us-grow";
+        const string url = "https://knowloveinc.com/our-app/";
 
         public void OnClickedDonate()
         {
