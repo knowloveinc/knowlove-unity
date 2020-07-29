@@ -362,7 +362,7 @@ namespace GameBrewStudios.Networking
         /// This would be something like "www.mydomain.com" or "api.mydomain.com". But you could also directly supply the IPv4 address of the server to speed the calls up a little bit by bypassing DNS Lookup
         /// </summary>
         //public static string SERVER_URL = "http://localhost:5052/api";
-        public static string SERVER_URL = "http://3.12.251.242/api";
+        public static string SERVER_URL = "https://api.knowloveapp.com";//"http://3.12.251.242/api";
 
 
         private void Start()
