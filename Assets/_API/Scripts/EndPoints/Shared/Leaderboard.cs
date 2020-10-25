@@ -51,5 +51,10 @@ namespace GameBrewStudios.Networking
         {
             throw new NotImplementedException();
         }
+
+        internal static void AddItem(string id, object amountToGive)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -45,6 +45,13 @@ namespace GameBrewStudios
     }
 
     [System.Serializable]
+    public class InventoryItem
+    {
+        public string itemId;
+        public int amount;
+    }
+
+    [System.Serializable]
     public class User
     {
         public static event System.Action OnUserNotLoggedIn;
@@ -65,6 +72,9 @@ namespace GameBrewStudios
         /// </summary>
         public string displayName;
 
+
+        public int wallet;
+        public InventoryItem[] inventory;
         
         /*===================================================================
                     Begin Helper Functions/Getters/Setters
@@ -72,6 +82,10 @@ namespace GameBrewStudios
 
 
         private static User _current;
+
+        public List<string> nonNegotiableList = new List<string>();
+
+
         /// <summary>
         /// After successful login, you should create an Instance of the user class, and then store it into this static variable for easily accessing the local users data throughout the app code.
         /// </summary>
@@ -89,9 +103,36 @@ namespace GameBrewStudios
             set
             {
                 _current = value;
+                Debug.LogError("CURRENT USER UPDATED");
             }
         }
 
+        public static event System.Action<int> OnWalletChanged;
+        public static event System.Action<InventoryItem[]> OnInventoryChanged;
+
+        internal void AddCurrency(int amount, System.Action<int> callback)
+        {
+            CanvasLoading.Instance.Show();
+            APIManager.AddCurrency(amount, (verifiedAmount) => 
+            {
+                CanvasLoading.Instance.Hide();
+                User.current.wallet = verifiedAmount;
+                Debug.Log("User new wallet = " + User.current.wallet);
+                OnWalletChanged?.Invoke(User.current.wallet);
+                callback?.Invoke(User.current.wallet);
+            });
+        }
+
+        internal void AddItemToInventory(string itemId, int amount)
+        {
+            CanvasLoading.Instance.Show();
+            APIManager.AddItem(itemId, amount, (inventory) =>
+            {
+                CanvasLoading.Instance.Hide();
+                User.current.inventory = inventory;
+                OnInventoryChanged?.Invoke(User.current.inventory);
+            });
+        }
     }
 
     [System.Serializable]

@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using GameBrewStudios;
+using Lean.Touch;
 using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Realtime;
@@ -189,6 +190,8 @@ public class GameUI : MonoBehaviourPun
         {
             listCardUIObjs[i].GetComponent<CanvasGroup>().alpha = 1f;
         }
+
+
     }
 
     [SerializeField]
@@ -445,6 +448,10 @@ public class GameUI : MonoBehaviourPun
     [PunRPC]
     public void RPC_ShowBottomForPlayer()
     {
+
+        mapWindow.SetActive(false);
+        mapButton.SetActive(true);
+        
         Debug.Log("SHOWING BOTTOM");
         bottomPanel.anchoredPosition = new Vector2(0, -bottomPanel.sizeDelta.y);
         bottomButton.interactable = false;
@@ -457,6 +464,8 @@ public class GameUI : MonoBehaviourPun
 
         bottomButton.onClick.AddListener(() =>
         {
+            mapWindow.SetActive(false);
+            mapButton.SetActive(false);
             TurnManager.RollDice(diceCount, "board");
 
             bottomButton.interactable = false;
@@ -477,6 +486,8 @@ public class GameUI : MonoBehaviourPun
     public void RPC_HideBottomForPlayer()
     {
         Debug.Log("HIDING BOTTOM");
+        mapWindow.SetActive(false);
+        mapButton.SetActive(true);
         bottomPanel.DOAnchorPosY(-bottomPanel.sizeDelta.y, 0.5f);
     }
 
@@ -528,9 +539,16 @@ public class GameUI : MonoBehaviourPun
         photonView.RPC("RPC_ShowCard", RpcTarget.All, card.text + "(" + card.parentheses + ")", NetworkManager.Instance.players[TurnManager.turnIndex], (int)BoardManager.Instance.pieces[TurnManager.turnIndex].pathRing, isFancyCard);
     }
 
+
+    public GameObject mapWindow;
+    public GameObject mapButton;
+
     [PunRPC]
     public void RPC_ShowCard(string cardText, Player targetPlayer, int pathIndex, bool isFancyCard)
     {
+        mapWindow.SetActive(false);
+        mapButton.SetActive(false);
+
         Image cardImage = cardUIObj.transform.Find("Mask").GetComponent<Image>();
         cardImage.color = isFancyCard ? new Color(104 / 255f, 54 / 255f, 149 / 255f) : Color.white;
 
@@ -542,15 +560,33 @@ public class GameUI : MonoBehaviourPun
 
         cardUIText.color = isFancyCard ? Color.white : Color.black;
 
-        cardUIButton.onClick.RemoveAllListeners();
+        //cardUIButton.onClick.RemoveAllListeners();
+        cardUIButton.enabled = false;
+        
+        LeanFingerTap lft = cardUIObj.transform.Find("Mask").GetComponent<LeanFingerTap>();
+        lft.OnFinger.RemoveAllListeners();
+
+        LeanPinchScale lps = cardUIObj.transform.Find("Mask").GetComponent<LeanPinchScale>();
+        lps.transform.localScale = Vector3.one;
+
+        LeanSelectable ls = cardUIObj.transform.Find("Mask").GetComponent<LeanSelectable>();
+        ls.Select();
 
         //Only make the card clickable for the user who is taking their turn right now.
         if (PhotonNetwork.LocalPlayer.NickName == targetPlayer.NickName)
         {
-            cardUIButton.onClick.AddListener(() =>
+
+            lft.OnFinger.AddListener((finger) => 
             {
+                Debug.Log("Attempted tap: " + finger.Index + " - " + LeanTouch.Fingers.Count);
+                ls.Deselect();
                 OnCardClicked();
             });
+
+            //cardUIButton.onClick.AddListener(() =>
+            //{
+            //    OnCardClicked();
+            //});
         }
 
 

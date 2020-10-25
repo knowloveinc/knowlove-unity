@@ -32,12 +32,26 @@ namespace GameBrewStudios
         protected List<CardData> available;
         protected List<CardData> drawn;
 
-
+        private int index = 0;
+        private bool shuffled = false;
         public CardData DrawCard()
         {
-            //Shuffle();
-            //return available[0];
-            return cards[Random.Range(0, cards.Count)];
+            if (!shuffled)
+            {
+                Shuffle();
+                shuffled = true;
+            }
+
+            CardData returnCard = cards[index];
+            index++;
+            if (index >= cards.Count)
+            {
+                Shuffle();
+                index = 0;
+            }
+
+            return returnCard;
+            //return cards[Random.Range(0, cards.Count)];
         }
 
 
@@ -63,6 +77,7 @@ namespace GameBrewStudios
                 }
             }
 
+            
         }
     }
 }

@@ -141,10 +141,47 @@ namespace GameBrewStudios.Networking
             ServerRequest.CallAPI("/reset", HTTPMethod.POST, body, (r) => { ServerRequest.ResponseHandler(r, null, onComplete); }, false);
         }
 
-        public static void GetUserDetails(Action<Dictionary<string,object>> onComplete)
+        public static void GetUserDetails(Action<User> onComplete)
         {
-            ServerRequest.CallAPI("/me", HTTPMethod.GET, null, (r) => { ServerRequest.ResponseHandler(r, null, onComplete); }, true);
+            ServerRequest.CallAPI("/me", HTTPMethod.GET, null, (r) => { ServerRequest.ResponseHandler(r, "user", onComplete); }, true);
         }
 
+        public static void AddCurrency(int amount, Action<int> onComplete)
+        {
+            Dictionary<string, object> body = new Dictionary<string, object>()
+            {
+                {"amount", amount}
+            };
+
+            ServerRequest.CallAPI("/wallet", HTTPMethod.POST, body, (r) => { ServerRequest.ResponseHandler(r, "wallet", onComplete); }, true);
+        }
+
+        public static void AddItem(string itemId, int amount, Action<InventoryItem[]> onComplete)
+        {
+            Dictionary<string, object> body = new Dictionary<string, object>()
+            {
+                {"itemId", itemId },
+                {"amount", amount}
+            };
+
+            ServerRequest.CallAPI("/inventory", HTTPMethod.POST, body, (r) => { ServerRequest.ResponseHandler(r, "inventory", onComplete); }, true);
+        }
+
+        public class NonNegotiableListResponse
+        {
+            public bool success;
+            public List<string> list;
+            public string error;
+        }
+
+        public static void UpdateNonNegotiableList(List<string> list, Action<NonNegotiableListResponse> onComplete)
+        {
+            Debug.Log("Sending call to server to update non negotiable list");
+            Dictionary<string, object> body = new Dictionary<string, object>()
+            {
+                {"nonNegotiableList", list }
+            };
+            ServerRequest.CallAPI("/nonNegotiableList", HTTPMethod.POST, body, (r) => { ServerRequest.ResponseHandler(r, null, onComplete); }, true);
+        }
     }
 }

@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -54,7 +55,7 @@ public class BoardManager : MonoBehaviourPun
     #region Board Pieces
 
     public BoardPiece[] pieces;
-    public Path[] paths;
+    public GameBrewStudios.Path[] paths;
     internal bool movingBoardPiece;
     public void InitializeBoardPieces(int playerCount)
     {
@@ -192,7 +193,9 @@ public class BoardManager : MonoBehaviourPun
     [ContextMenu("Save Card Data")]
     public void SaveCardData()
     {
-
+        StreamWriter sw = new StreamWriter(Application.dataPath + "/_App/Resources/CardData.json");
+        sw.Write(JsonConvert.SerializeObject(decks));
+        sw.Close();
     }
 #endif
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Photon.Pun;
 using DG.Tweening;
+using Lean.Touch;
 
 namespace GameBrewStudios
 {
@@ -33,6 +34,9 @@ namespace GameBrewStudios
             {
                 transform.position = startPosition;
             });
+
+            
         }
+        
     }
 }

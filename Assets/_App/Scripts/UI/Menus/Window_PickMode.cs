@@ -10,13 +10,14 @@ using UnityEngine.SceneManagement;
 public class Window_PickMode : Window
 {
     [SerializeField]
-    Window_MatchList matchListWindow;
+    Window_Multiplayer multiplayerWindow;
 
     [SerializeField]
-    Window settingsWindow;
+    Window settingsWindow, myStuffWindow;
 
     [SerializeField]
     Window_WaitingForPlayers waitingWindow;
+
 
     public override void Show()
     {
@@ -86,7 +87,7 @@ public class Window_PickMode : Window
         {
             CanvasLoading.Instance.Hide();
             Hide();
-            matchListWindow.Show();
+            multiplayerWindow.Show();
         }
         else
         {
@@ -104,7 +105,7 @@ public class Window_PickMode : Window
         {
             CanvasLoading.Instance.Hide();
             Hide();
-            matchListWindow.Show();
+            multiplayerWindow.Show();
         }
         else
         {
@@ -124,7 +125,7 @@ public class Window_PickMode : Window
         NetworkManager.OnPhotonConnected -= this.NetworkManager_OnPhotonConnected;
         CanvasLoading.Instance.Hide();
         Hide();
-        matchListWindow.Show();
+        multiplayerWindow.Show();
     }
 
     private void NetworkManager_OnPhotonConnectedSinglePlayer()
@@ -144,5 +145,15 @@ public class Window_PickMode : Window
         
         PhotonNetwork.CreateRoom("OfflineMode" + UnityEngine.Random.Range(9, 999999), options);
         waitingWindow.Show();
+    }
+
+    public void OpenStore()
+    {
+        StoreController.Show();
+    }
+
+    public void OpenMyStuff()
+    {
+        myStuffWindow.Show();
     }
 }
