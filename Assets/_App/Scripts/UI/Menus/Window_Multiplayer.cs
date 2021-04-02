@@ -1,40 +1,41 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Window_Multiplayer : Window
+namespace Knowlove.UI.Menus
 {
-    [SerializeField]
-    Window_MatchList matchListWindow;
-
-
-    [SerializeField]
-    Window_CreateMatchWizard createMatchWindow;
-
-    public override void Show()
+    public class Window_Multiplayer : Window
     {
-        base.Show();
-    }
+        [SerializeField]
+        Window_MatchList matchListWindow;
 
-    public override void Hide()
-    {
-        base.Hide();
-    }
 
-    public void OnFindMatch()
-    {
-        this.Hide();
-        matchListWindow.Show();
-    }
+        [SerializeField]
+        Window_CreateMatchWizard createMatchWindow;
 
-    public void OnCreateMatch()
-    {
-        this.Hide();
-        StartWizard();
-    }
+        public override void Show()
+        {
+            base.Show();
+        }
 
-    public void StartWizard()
-    {
-        createMatchWindow.Show();
+        public override void Hide()
+        {
+            base.Hide();
+        }
+
+        public void OnFindMatch()
+        {
+            this.Hide();
+            matchListWindow.Show();
+        }
+
+        public void OnCreateMatch()
+        {
+            this.Hide();
+            StartWizard();
+        }
+
+        public void StartWizard()
+        {
+            createMatchWindow.Show();
+        }
     }
 }

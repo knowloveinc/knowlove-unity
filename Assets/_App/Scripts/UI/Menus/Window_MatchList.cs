@@ -3,99 +3,100 @@ using GameBrewStudios;
 using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Window_MatchList : Window, IMatchmakingCallbacks, ILobbyCallbacks
+namespace Knowlove.UI.Menus
 {
-
-    [SerializeField]
-    RefreshableScrollRect scrollRect;
-
-    [SerializeField]
-    GameObject listPrefab;
-
-    [SerializeField]
-    Window_CreateMatch createMatchWindow;
-
-    [SerializeField]
-    Window_PickMode pickModeWindow;
-
-    [SerializeField]
-    Window_WaitingForPlayers waitingWindow;
-
-    [SerializeField]
-    Window_EnterMatchPassword enterPasswordWindow;
-
-    public override void Show()
+    public class Window_MatchList : Window, IMatchmakingCallbacks, ILobbyCallbacks
     {
-        NetworkManager.OnPhotonConnected += this.GetRoomList;
-        NetworkManager.OnRoomListUpdated += this.NetworkManager_OnRoomListUpdated;
 
-        base.Show();
-        
+        [SerializeField]
+        RefreshableScrollRect scrollRect;
 
-    }
+        [SerializeField]
+        GameObject listPrefab;
 
+        [SerializeField]
+        Window_CreateMatch createMatchWindow;
 
-    public override void Hide()
-    {
-        base.Hide();
-        NetworkManager.OnRoomListUpdated -= this.NetworkManager_OnRoomListUpdated;
-        NetworkManager.OnPhotonConnected -= this.GetRoomList;
-    }
+        [SerializeField]
+        Window_PickMode pickModeWindow;
 
-    public void GoBack()
-    {
-        if (PhotonNetwork.IsConnectedAndReady)
+        [SerializeField]
+        Window_WaitingForPlayers waitingWindow;
+
+        [SerializeField]
+        Window_EnterMatchPassword enterPasswordWindow;
+
+        public override void Show()
         {
-            PhotonNetwork.Disconnect();
+            NetworkManager.OnPhotonConnected += this.GetRoomList;
+            NetworkManager.OnRoomListUpdated += this.NetworkManager_OnRoomListUpdated;
+
+            base.Show();
+
+
         }
 
-        Hide();
-        pickModeWindow.Show();
-        
-    }
 
-    private void OnDestroy()
-    {
-        Hide();
-    }
-
-    private void NetworkManager_OnRoomListUpdated()
-    {
-        PopulateList();
-        scrollRect.EndRefreshing();
-    }
-    public void GetRoomList()
-    {
-
-        TypedLobby sqlLobby = new TypedLobby("sqlLobby", LobbyType.Default);
-        if(PhotonNetwork.GetCustomRoomList(sqlLobby, "live = 86"))
+        public override void Hide()
         {
-            Debug.LogWarning("GETTING ROOM LIST");
+            base.Hide();
+            NetworkManager.OnRoomListUpdated -= this.NetworkManager_OnRoomListUpdated;
+            NetworkManager.OnPhotonConnected -= this.GetRoomList;
         }
-        else
+
+        public void GoBack()
         {
-            Debug.Log("Failed to call get room list");
+            if (PhotonNetwork.IsConnectedAndReady)
+            {
+                PhotonNetwork.Disconnect();
+            }
+
+            Hide();
+            pickModeWindow.Show();
+
+        }
+
+        private void OnDestroy()
+        {
+            Hide();
+        }
+
+        private void NetworkManager_OnRoomListUpdated()
+        {
+            PopulateList();
             scrollRect.EndRefreshing();
         }
-    }
-
-    public void OnRoomSelected(RoomInfo roomInfo)
-    {
-        Debug.Log("ROOM CLICKED: " + JsonConvert.SerializeObject(roomInfo));
-        Debug.Log("Room has password? = " + roomInfo.CustomProperties.ContainsKey("password"));
-
-        PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+        public void GetRoomList()
         {
+
+            TypedLobby sqlLobby = new TypedLobby("sqlLobby", LobbyType.Default);
+            if (PhotonNetwork.GetCustomRoomList(sqlLobby, "live = 86"))
+            {
+                Debug.LogWarning("GETTING ROOM LIST");
+            }
+            else
+            {
+                Debug.Log("Failed to call get room list");
+                scrollRect.EndRefreshing();
+            }
+        }
+
+        public void OnRoomSelected(RoomInfo roomInfo)
+        {
+            Debug.Log("ROOM CLICKED: " + JsonConvert.SerializeObject(roomInfo));
+            Debug.Log("Room has password? = " + roomInfo.CustomProperties.ContainsKey("password"));
+
+            PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+            {
             new PopupDialog.PopupButton()
             {
                 text = "Join",
-                onClicked = () => 
+                onClicked = () =>
                 {
                     if(roomInfo.CustomProperties.ContainsKey("password"))
                     {
@@ -121,139 +122,140 @@ public class Window_MatchList : Window, IMatchmakingCallbacks, ILobbyCallbacks
                     //Leave this empty, and the popup will simply close when this button is clicked.
                 }
             }
-        };
-        PopupDialog.Instance.Show("Join room?", $"Are you sure you want to join \"{roomInfo.Name}\"?", buttons);
-    }
-
-    private void NetworkManager_OnJoinedRoomFinished()
-    {
-        NetworkManager.OnJoinedRoomFinished -= this.NetworkManager_OnJoinedRoomFinished;
-        CanvasLoading.Instance.Hide();
-        waitingWindow.Show();
-    }
-
-    [SerializeField] GameObject noRoomsMessage;
-
-    public void PopulateList()
-    {
-        Debug.Log("Populating room list...");
-        CanvasLoading.Instance.Show();
-        foreach (Transform child in scrollRect.content)
-        {
-            
-            if(child.gameObject != scrollRect.loadingAnimatorParent && child.gameObject != noRoomsMessage)
-                Destroy(child.gameObject);
+            };
+            PopupDialog.Instance.Show("Join room?", $"Are you sure you want to join \"{roomInfo.Name}\"?", buttons);
         }
 
-        if (NetworkManager.Instance.roomList != null && NetworkManager.Instance.roomList.Count > 0)
+        private void NetworkManager_OnJoinedRoomFinished()
         {
-            noRoomsMessage.SetActive(false);
-            foreach (RoomInfo ri in NetworkManager.Instance.roomList)
+            NetworkManager.OnJoinedRoomFinished -= this.NetworkManager_OnJoinedRoomFinished;
+            CanvasLoading.Instance.Hide();
+            waitingWindow.Show();
+        }
+
+        [SerializeField] GameObject noRoomsMessage;
+
+        public void PopulateList()
+        {
+            Debug.Log("Populating room list...");
+            CanvasLoading.Instance.Show();
+            foreach (Transform child in scrollRect.content)
             {
-                Debug.Log($"Room found: {ri.Name}");
-                Debug.Log($"Room Data: {JsonConvert.SerializeObject(ri)}");
 
-                GameObject obj = Instantiate(listPrefab, scrollRect.content);
-                TextMeshProUGUI roomTitle = obj.transform.Find("Label - Name").GetComponent<TextMeshProUGUI>();
-                string pass = ri.CustomProperties.ContainsKey("password") ? "(" + ri.CustomProperties["password"] + ")" : "";
-                roomTitle.text = $"{ri.Name}";
-
-                TextMeshProUGUI playerCountLabel = obj.transform.Find("Label - PlayerCount").GetComponent<TextMeshProUGUI>();
-                playerCountLabel.text = ri.PlayerCount + " / " + ri.MaxPlayers;// + " (password: " + (ri.CustomProperties.ContainsKey("password") ? ri.CustomProperties["password"] : "n/a") + ")";
-
-                //Show the lock icon if the room is password protected
-                Transform lockIcon = obj.transform.Find("Lock");
-                lockIcon.gameObject.SetActive(!string.IsNullOrEmpty(pass));
-
-                Button btn = obj.GetComponent<Button>();
-                btn.onClick.RemoveAllListeners();
-
-                if (!ri.IsOpen)
-                {
-                    btn.interactable = false;
-                    btn.colors = new ColorBlock() { disabledColor = new Color(0.3f, 0.1f, 0.1f) };
-                }
-
-                RoomInfo roomInfo = ri;
-                btn.onClick.AddListener(() =>
-                {
-                    OnRoomSelected(roomInfo);
-                });
-
-
+                if (child.gameObject != scrollRect.loadingAnimatorParent && child.gameObject != noRoomsMessage)
+                    Destroy(child.gameObject);
             }
+
+            if (NetworkManager.Instance.roomList != null && NetworkManager.Instance.roomList.Count > 0)
+            {
+                noRoomsMessage.SetActive(false);
+                foreach (RoomInfo ri in NetworkManager.Instance.roomList)
+                {
+                    Debug.Log($"Room found: {ri.Name}");
+                    Debug.Log($"Room Data: {JsonConvert.SerializeObject(ri)}");
+
+                    GameObject obj = Instantiate(listPrefab, scrollRect.content);
+                    TextMeshProUGUI roomTitle = obj.transform.Find("Label - Name").GetComponent<TextMeshProUGUI>();
+                    string pass = ri.CustomProperties.ContainsKey("password") ? "(" + ri.CustomProperties["password"] + ")" : "";
+                    roomTitle.text = $"{ri.Name}";
+
+                    TextMeshProUGUI playerCountLabel = obj.transform.Find("Label - PlayerCount").GetComponent<TextMeshProUGUI>();
+                    playerCountLabel.text = ri.PlayerCount + " / " + ri.MaxPlayers;// + " (password: " + (ri.CustomProperties.ContainsKey("password") ? ri.CustomProperties["password"] : "n/a") + ")";
+
+                    //Show the lock icon if the room is password protected
+                    Transform lockIcon = obj.transform.Find("Lock");
+                    lockIcon.gameObject.SetActive(!string.IsNullOrEmpty(pass));
+
+                    Button btn = obj.GetComponent<Button>();
+                    btn.onClick.RemoveAllListeners();
+
+                    if (!ri.IsOpen)
+                    {
+                        btn.interactable = false;
+                        btn.colors = new ColorBlock() { disabledColor = new Color(0.3f, 0.1f, 0.1f) };
+                    }
+
+                    RoomInfo roomInfo = ri;
+                    btn.onClick.AddListener(() =>
+                    {
+                        OnRoomSelected(roomInfo);
+                    });
+
+
+                }
+            }
+            else
+            {
+                noRoomsMessage.SetActive(true);
+                Debug.LogWarning("There don't seem to be any rooms to join. Try creating one.");
+            }
+
+
+
+            CanvasLoading.Instance.Hide();
         }
-        else
+
+
+        public void CreateRoom()
         {
-            noRoomsMessage.SetActive(true);
-            Debug.LogWarning("There don't seem to be any rooms to join. Try creating one.");
+            createMatchWindow.Show();
+            //PhotonNetwork.CreateRoom(User.current.displayName, new RoomOptions() { MaxPlayers = 2 });
         }
 
-        
+        public void OnFriendListUpdate(List<FriendInfo> friendList)
+        {
 
-        CanvasLoading.Instance.Hide();
-    }
+        }
 
+        public void OnCreatedRoom()
+        {
 
-    public void CreateRoom()
-    {
-        createMatchWindow.Show();   
-        //PhotonNetwork.CreateRoom(User.current.displayName, new RoomOptions() { MaxPlayers = 2 });
-    }
+        }
 
-    public void OnFriendListUpdate(List<FriendInfo> friendList)
-    {
-        
-    }
+        public void OnCreateRoomFailed(short returnCode, string message)
+        {
+            PopupDialog.Instance.Show("Create Game Failed", message);
+        }
 
-    public void OnCreatedRoom()
-    {
-        
-    }
+        public void OnJoinedRoom()
+        {
 
-    public void OnCreateRoomFailed(short returnCode, string message)
-    {
-        PopupDialog.Instance.Show("Create Game Failed", message);
-    }
+        }
 
-    public void OnJoinedRoom()
-    {
-        
-    }
+        public void OnJoinRoomFailed(short returnCode, string message)
+        {
+            PopupDialog.Instance.Show("Join Game Failed", message);
+        }
 
-    public void OnJoinRoomFailed(short returnCode, string message)
-    {
-        PopupDialog.Instance.Show("Join Game Failed", message);
-    }
+        public void OnJoinRandomFailed(short returnCode, string message)
+        {
 
-    public void OnJoinRandomFailed(short returnCode, string message)
-    {
-        
-    }
+        }
 
-    public void OnLeftRoom()
-    {
-        
-    }
+        public void OnLeftRoom()
+        {
 
-    public void OnJoinedLobby()
-    {
-        throw new System.NotImplementedException();
-    }
+        }
 
-    public void OnLeftLobby()
-    {
-        throw new System.NotImplementedException();
-    }
+        public void OnJoinedLobby()
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public void OnRoomListUpdate(List<RoomInfo> roomList)
-    {
-        Debug.LogWarning("RoomListUpdated");
-        scrollRect.EndRefreshing();
-    }
+        public void OnLeftLobby()
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
-    {
-        throw new System.NotImplementedException();
+        public void OnRoomListUpdate(List<RoomInfo> roomList)
+        {
+            Debug.LogWarning("RoomListUpdated");
+            scrollRect.EndRefreshing();
+        }
+
+        public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

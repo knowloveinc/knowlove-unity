@@ -1,136 +1,135 @@
 ﻿using GameBrewStudios;
 using GameBrewStudios.Networking;
 using Newtonsoft.Json;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Window_ListEditor : Window
+namespace Knowlove.UI.Menus
 {
-    
-
-    [SerializeField]
-    GameObject prefab, leftLoading, rightLoading;
-
-    [SerializeField]
-    Transform leftContainer, rightContainer;
-
-    public override void Show()
+    public class Window_ListEditor : Window
     {
-        base.Show();
-        PopulateLeftSide();
-        PopulateRightSide();
-    }
+        [SerializeField]
+        GameObject prefab, leftLoading, rightLoading;
 
-    public override void Hide()
-    {
-        base.Hide();
-    }
+        [SerializeField]
+        Transform leftContainer, rightContainer;
 
-
-    public void AddToList(string text)
-    {
-        if (User.current.nonNegotiableList.Contains(text)) return;
-
-        if (User.current.nonNegotiableList.Count < 10)
+        public override void Show()
         {
-            User.current.nonNegotiableList.Add(text);
+            base.Show();
+            PopulateLeftSide();
+            PopulateRightSide();
+        }
 
-            CanvasLoading.Instance.Show();
-            APIManager.UpdateNonNegotiableList(User.current.nonNegotiableList, (response) =>
+        public override void Hide()
+        {
+            base.Hide();
+        }
+
+
+        public void AddToList(string text)
+        {
+            if (User.current.nonNegotiableList.Contains(text)) return;
+
+            if (User.current.nonNegotiableList.Count < 10)
             {
-                Debug.Log("UpdateNonNegotiableListResponse success = " + response.success);
-                CanvasLoading.Instance.Hide();
-                if (response != null && response.success)
+                User.current.nonNegotiableList.Add(text);
+
+                CanvasLoading.Instance.Show();
+                APIManager.UpdateNonNegotiableList(User.current.nonNegotiableList, (response) =>
                 {
-                    User.current.nonNegotiableList = response.list;
-                    PopulateLeftSide();
-                    PopulateRightSide();
-                }
-                else
-                {
-                    PopupDialog.Instance.Show("Something went wrong.");
-                }
-            });
-        }
-        else
-        {
-            PopupDialog.Instance.Show("Sorry! You already have 10 items on your list. You can remove items from your list by tapping on them.");
-        }
-    }
-
-    public List<string> listItems;
-
-    public void PopulateLeftSide()
-    {
-        leftLoading.SetActive(true);
-        if(listItems == null || listItems.Count == 0)
-        {
-            TextAsset ta = Resources.Load<TextAsset>("NonNegotiableListItems");
-            listItems = JsonConvert.DeserializeObject<List<string>>(ta.text);
-        }
-
-        foreach(Transform child in leftContainer)
-        {
-            if (child.gameObject.activeSelf)
-                Destroy(child.gameObject);
-        }
-
-        foreach (string item in listItems)
-        {
-            GameObject obj = Instantiate(prefab, leftContainer, false);
-            TextMeshProUGUI label = obj.transform.Find("Label").GetComponent<TextMeshProUGUI>();
-            label.text = item;
-            
-            Button btn = obj.GetComponent<Button>();
-            btn.onClick.RemoveAllListeners();
-
-            if (User.current.nonNegotiableList != null && User.current.nonNegotiableList.Count > 0 && User.current.nonNegotiableList.Contains(item))
-            {
-                btn.interactable = false;
+                    Debug.Log("UpdateNonNegotiableListResponse success = " + response.success);
+                    CanvasLoading.Instance.Hide();
+                    if (response != null && response.success)
+                    {
+                        User.current.nonNegotiableList = response.list;
+                        PopulateLeftSide();
+                        PopulateRightSide();
+                    }
+                    else
+                    {
+                        PopupDialog.Instance.Show("Something went wrong.");
+                    }
+                });
             }
             else
             {
-                btn.interactable = true;
-                btn.onClick.AddListener(() =>
-                {
-                    Debug.Log("Clicked on: " + item);
-                    AddToList(item);
-                });
+                PopupDialog.Instance.Show("Sorry! You already have 10 items on your list. You can remove items from your list by tapping on them.");
             }
         }
 
-        leftLoading.SetActive(false);
-    }
+        public List<string> listItems;
 
-    public void PopulateRightSide()
-    {
-        rightLoading.SetActive(true);
-        foreach(Transform child in rightContainer)
+        public void PopulateLeftSide()
         {
-            if (child.gameObject.activeSelf)
-                Destroy(child.gameObject);
+            leftLoading.SetActive(true);
+            if (listItems == null || listItems.Count == 0)
+            {
+                TextAsset ta = Resources.Load<TextAsset>("NonNegotiableListItems");
+                listItems = JsonConvert.DeserializeObject<List<string>>(ta.text);
+            }
+
+            foreach (Transform child in leftContainer)
+            {
+                if (child.gameObject.activeSelf)
+                    Destroy(child.gameObject);
+            }
+
+            foreach (string item in listItems)
+            {
+                GameObject obj = Instantiate(prefab, leftContainer, false);
+                TextMeshProUGUI label = obj.transform.Find("Label").GetComponent<TextMeshProUGUI>();
+                label.text = item;
+
+                Button btn = obj.GetComponent<Button>();
+                btn.onClick.RemoveAllListeners();
+
+                if (User.current.nonNegotiableList != null && User.current.nonNegotiableList.Count > 0 && User.current.nonNegotiableList.Contains(item))
+                {
+                    btn.interactable = false;
+                }
+                else
+                {
+                    btn.interactable = true;
+                    btn.onClick.AddListener(() =>
+                    {
+                        Debug.Log("Clicked on: " + item);
+                        AddToList(item);
+                    });
+                }
+            }
+
+            leftLoading.SetActive(false);
         }
 
-        foreach(string item in User.current.nonNegotiableList)
+        public void PopulateRightSide()
         {
-            GameObject obj = Instantiate(prefab, rightContainer, false);
-            TextMeshProUGUI label = obj.transform.Find("Label").GetComponent<TextMeshProUGUI>();
-            label.text = item;
-
-            Button btn = obj.GetComponent<Button>();
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() => 
+            rightLoading.SetActive(true);
+            foreach (Transform child in rightContainer)
             {
-                PopupDialog.PopupButton[] btns = new PopupDialog.PopupButton[]
+                if (child.gameObject.activeSelf)
+                    Destroy(child.gameObject);
+            }
+
+            foreach (string item in User.current.nonNegotiableList)
+            {
+                GameObject obj = Instantiate(prefab, rightContainer, false);
+                TextMeshProUGUI label = obj.transform.Find("Label").GetComponent<TextMeshProUGUI>();
+                label.text = item;
+
+                Button btn = obj.GetComponent<Button>();
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() =>
                 {
+                    PopupDialog.PopupButton[] btns = new PopupDialog.PopupButton[]
+                    {
                     new PopupDialog.PopupButton()
                     {
                         text = "Yes, Remove it",
                         buttonColor = PopupDialog.PopupButtonColor.Red,
-                        onClicked = () => 
+                        onClicked = () =>
                         {
                             User.current.nonNegotiableList.Remove(item);
 
@@ -161,12 +160,14 @@ public class Window_ListEditor : Window
 
                         }
                     }
-                };
-                PopupDialog.Instance.Show("", "Remove this item from your Non-Negotiable List?\n\"" + item + "\"", btns);
-            });
+                    };
+                    PopupDialog.Instance.Show("", "Remove this item from your Non-Negotiable List?\n\"" + item + "\"", btns);
+                });
+            }
+
+            rightLoading.SetActive(false);
         }
 
-        rightLoading.SetActive(false);
     }
-
 }
+

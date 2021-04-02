@@ -2,41 +2,45 @@
 using Photon.Realtime;
 using UnityEngine;
 
-[RequireComponent(typeof(PhotonView))]
-public class SoundManager : MonoBehaviourPun
+namespace Knowlove
 {
-    public static SoundManager Instance;
-
-    public AudioSource source;
-
-    public AudioClip[] clips;
-
-    private void Start()
+    [RequireComponent(typeof(PhotonView))]
+    public class SoundManager : MonoBehaviourPun
     {
-        Instance = this;
-    }
+        public static SoundManager Instance;
 
-    public void PlaySound(string audioClipName, Player player = null)
-    {
-        if (player == null)
+        public AudioSource source;
+
+        public AudioClip[] clips;
+
+        private void Start()
         {
-            photonView.RPC("RPC_PlaySound", RpcTarget.All, audioClipName);
+            Instance = this;
         }
-        else
-        {
-            photonView.RPC("RPC_PlaySound", player, audioClipName);
-        }
-    }
 
-    [PunRPC]
-    void RPC_PlaySound(string audioClipName)
-    {
-        for(int i = 0; i < clips.Length; i++)
+        public void PlaySound(string audioClipName, Player player = null)
         {
-            if(clips[i].name.ToLower() == audioClipName.ToLower())
+            if (player == null)
             {
-                source.PlayOneShot(clips[i]);
+                photonView.RPC("RPC_PlaySound", RpcTarget.All, audioClipName);
+            }
+            else
+            {
+                photonView.RPC("RPC_PlaySound", player, audioClipName);
+            }
+        }
+
+        [PunRPC]
+        void RPC_PlaySound(string audioClipName)
+        {
+            for (int i = 0; i < clips.Length; i++)
+            {
+                if (clips[i].name.ToLower() == audioClipName.ToLower())
+                {
+                    source.PlayOneShot(clips[i]);
+                }
             }
         }
     }
 }
+

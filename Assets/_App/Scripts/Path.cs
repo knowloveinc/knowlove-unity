@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameBrewStudios
+namespace Knowlove
 {
     public class Path : MonoBehaviour
     {

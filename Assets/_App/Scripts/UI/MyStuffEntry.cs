@@ -1,65 +1,60 @@
 ﻿using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
+using Knowlove.UI.Menus;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MyStuffEntry : MonoBehaviour
+namespace Knowlove.UI
 {
-
-    Window_MyStuff myStuffWindow;
-
-    [SerializeField]
-    TextMeshProUGUI nameLabel, countLabel;
-
-    [SerializeField]
-    Image icon;
-
-    [SerializeField]
-    InventoryItemIconDefinition item;
-
-    Button btn;
-
-
-    public void Init(InventoryItemIconDefinition item, int count, Window_MyStuff myStuffWindow)
+    public class MyStuffEntry : MonoBehaviour
     {
-        this.myStuffWindow = myStuffWindow;
-        this.item = item;
+        Window_MyStuff myStuffWindow;
 
-        icon.sprite = this.item.icon;
+        [SerializeField]
+        TextMeshProUGUI nameLabel, countLabel;
 
-        nameLabel.text = item.displayName;
-        countLabel.text = item.hideStackCount ? "" : "<size=20>x</size><b>" + count.ToString("00") + "</b>";
+        [SerializeField]
+        Image icon;
 
-        
-        btn = GetComponent<Button>();
-        if (btn != null)
+        [SerializeField]
+        InventoryItemIconDefinition item;
+
+        Button btn;
+
+        public void Init(InventoryItemIconDefinition item, int count, Window_MyStuff myStuffWindow)
         {
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() =>
+            this.myStuffWindow = myStuffWindow;
+            this.item = item;
+
+            icon.sprite = this.item.icon;
+
+            nameLabel.text = item.displayName;
+            countLabel.text = item.hideStackCount ? "" : "<size=20>x</size><b>" + count.ToString("00") + "</b>";
+
+            btn = GetComponent<Button>();
+
+            if (btn != null)
             {
-                OnClicked(this);
-            });
-        }
-        else
-            Debug.LogError("Button component not found.");
-
-    }
-
-    
-    
-
-    public void OnClicked(MyStuffEntry entry)
-    {
-        entry.gameObject.transform.DOPunchScale(Vector3.one * 1.1f, 0.2f, 0, 0.5f);
-        Debug.Log("Clicked on Inventory Item in MyStuff");
-
-        switch(entry.item.id.ToUpperInvariant())
-        {
-            case "BROWSECARDS":
-                PopupDialog.PopupButton[] a = new PopupDialog.PopupButton[]
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() =>
                 {
+                    OnClicked(this);
+                });
+            }
+            else
+                Debug.LogError("Button component not found.");
+        }
+
+        public void OnClicked(MyStuffEntry entry)
+        {
+            entry.gameObject.transform.DOPunchScale(Vector3.one * 1.1f, 0.2f, 0, 0.5f);
+            Debug.Log("Clicked on Inventory Item in MyStuff");
+
+            switch (entry.item.id.ToUpperInvariant())
+            {
+                case "BROWSECARDS":
+                    PopupDialog.PopupButton[] a = new PopupDialog.PopupButton[]
+                    {
                     new PopupDialog.PopupButton()
                     {
                         buttonColor = PopupDialog.PopupButtonColor.Plain,
@@ -87,12 +82,12 @@ public class MyStuffEntry : MonoBehaviour
                             DeckBrowser.Instance.Show("marriage");
                         }
                     }
-                };
-                PopupDialog.Instance.Show("Browse Cards", "Choose a deck of cards to browse.", a);
-                break;
-            case "CUSTOMLIST":
-                PopupDialog.PopupButton[] b = new PopupDialog.PopupButton[]
-                {
+                    };
+                    PopupDialog.Instance.Show("Browse Cards", "Choose a deck of cards to browse.", a);
+                    break;
+                case "CUSTOMLIST":
+                    PopupDialog.PopupButton[] b = new PopupDialog.PopupButton[]
+                    {
                     new PopupDialog.PopupButton()
                     {
                         buttonColor = PopupDialog.PopupButtonColor.Green,
@@ -108,18 +103,16 @@ public class MyStuffEntry : MonoBehaviour
                         text = "Nevermind",
                         onClicked = () =>
                         {
-                            
+
                         }
                     }
-                };
-                PopupDialog.Instance.Show("Custom Non-Negotiable List", "Would you like to edit your custom Non-Negotiable List now?", b);
-                break;
-            default:
-
-                break;
+                    };
+                    PopupDialog.Instance.Show("Custom Non-Negotiable List", "Would you like to edit your custom Non-Negotiable List now?", b);
+                    break;
+                default:
+                    break;
+            }
         }
-
     }
-
-
 }
+

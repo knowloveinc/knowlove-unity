@@ -1,19 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
-public class GameSettings : MonoBehaviour
+namespace Knowlove
 {
-    public static float Volume
+    public class GameSettings : MonoBehaviour
     {
-        get
+        public static float Volume
         {
-            return PlayerPrefs.GetFloat("Volume", 1f);
-        }
-        set
-        {
-            PlayerPrefs.SetFloat("Volume", value);
+            get
+            {
+                return PlayerPrefs.GetFloat("Volume", 1f);
+            }
+            set
+            {
+                PlayerPrefs.SetFloat("Volume", value);
+            }
         }
     }
 }
+

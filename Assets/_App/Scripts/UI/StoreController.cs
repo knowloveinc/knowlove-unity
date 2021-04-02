@@ -1,120 +1,117 @@
 ﻿using DG.Tweening;
 using GameBrewStudios;
 using GameBrewStudios.Networking;
-using Newtonsoft.Json;
+using Knowlove.UI.Menus;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Purchasing;
-using UnityEngine.Purchasing.Extension;
-using UnityEngine.Rendering.Universal;
 
-public class StoreController : MonoBehaviour
+namespace Knowlove.UI
 {
-    [SerializeField]
-    Window_Store storeWindow;
-
-    public static StoreController Instance;
-
-    [SerializeField]
-    CanvasGroup canvasGroup;
-
-    [SerializeField]
-    TextMeshProUGUI[] walletLabels;
-
-    [SerializeField]
-    IAPCard[] iapCards;
-
-    [SerializeField]
-    Sprite bronzeBucksIcon, silverBucksIcon, goldBucksIcon;
-
-    private void Awake()
+    public class StoreController : MonoBehaviour
     {
-        if (Instance != null) Destroy(this.gameObject);
+        [SerializeField]
+        Window_Store storeWindow;
 
-        canvasGroup.alpha = 0f;
-        canvasGroup.interactable = false;
-        canvasGroup.blocksRaycasts = false;
-        storeWindow.Hide();
+        public static StoreController Instance;
 
-        Instance = this;
-        DontDestroyOnLoad(this.gameObject);
+        [SerializeField]
+        CanvasGroup canvasGroup;
 
-        User.OnWalletChanged += this.User_OnWalletChanged;
-        User.OnInventoryChanged += this.User_OnInventoryChanged;
-    }
+        [SerializeField]
+        TextMeshProUGUI[] walletLabels;
 
-    private void User_OnInventoryChanged(InventoryItem[] obj)
-    {
-        UpdateFromPlayerInventory();
-    }
+        [SerializeField]
+        IAPCard[] iapCards;
 
-    private void User_OnWalletChanged(int obj)
-    {
-        UpdateFromPlayerWallet();
-    }
+        [SerializeField]
+        Sprite bronzeBucksIcon, silverBucksIcon, goldBucksIcon;
 
-    public static void Show()
-    {
-        Instance.UpdateFromPlayerInventory();
-        Instance.UpdateFromPlayerWallet();
-
-        Instance.canvasGroup.DOFade(1f, 0.25f).OnComplete(() => 
+        private void Awake()
         {
-            
-            Instance.canvasGroup.interactable = true;
-            Instance.canvasGroup.blocksRaycasts = true;
-            Instance.storeWindow.Show();
-        });
-    }
+            if (Instance != null) Destroy(this.gameObject);
 
-    public void Hide()
-    {
-        Instance.canvasGroup.alpha = 0;
-        Instance.canvasGroup.interactable = false;
-        Instance.canvasGroup.blocksRaycasts = false;
-    }
+            canvasGroup.alpha = 0f;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+            storeWindow.Hide();
 
-    public void OnPurchaseSuccess(Product product)
-    {
-        foreach( PayoutDefinition payout in product.definition.payouts)
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+
+            User.OnWalletChanged += this.User_OnWalletChanged;
+            User.OnInventoryChanged += this.User_OnInventoryChanged;
+        }
+
+        private void User_OnInventoryChanged(InventoryItem[] obj)
         {
-            if(payout.type == PayoutType.Currency)
+            UpdateFromPlayerInventory();
+        }
+
+        private void User_OnWalletChanged(int obj)
+        {
+            UpdateFromPlayerWallet();
+        }
+
+        public static void Show()
+        {
+            Instance.UpdateFromPlayerInventory();
+            Instance.UpdateFromPlayerWallet();
+
+            Instance.canvasGroup.DOFade(1f, 0.25f).OnComplete(() =>
             {
-                User.current.AddCurrency((int) payout.quantity, balance => {
-                    DOVirtual.DelayedCall(1f, () => 
-                    {
-                        PopupDialog.Instance.Show("Your new balance is: " + balance.ToString("n0") + " <sprite=0>");
+
+                Instance.canvasGroup.interactable = true;
+                Instance.canvasGroup.blocksRaycasts = true;
+                Instance.storeWindow.Show();
+            });
+        }
+
+        public void Hide()
+        {
+            Instance.canvasGroup.alpha = 0;
+            Instance.canvasGroup.interactable = false;
+            Instance.canvasGroup.blocksRaycasts = false;
+        }
+
+        public void OnPurchaseSuccess(Product product)
+        {
+            foreach (PayoutDefinition payout in product.definition.payouts)
+            {
+                if (payout.type == PayoutType.Currency)
+                {
+                    User.current.AddCurrency((int)payout.quantity, balance => {
+                        DOVirtual.DelayedCall(1f, () =>
+                        {
+                            PopupDialog.Instance.Show("Your new balance is: " + balance.ToString("n0") + " <sprite=0>");
+                        });
                     });
-                });
-               
-            }
-            else
-            {
-                throw new NotImplementedException();
+
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
-    }
 
-    internal void BuyInventoryItem(IAPCard card)
-    {
-        if (card.isIAP) return;
-
-        
-
-        CanvasLoading.Instance.Show();
-        APIManager.GetUserDetails((user) => 
+        internal void BuyInventoryItem(IAPCard card)
         {
-            CanvasLoading.Instance.Hide();
-            bool canPurchase = card.canOwnMultiple ? true : card.amountOwned == 0;
+            if (card.isIAP) return;
 
-            if(user.wallet >= card.currencyCost && canPurchase)
+
+
+            CanvasLoading.Instance.Show();
+            APIManager.GetUserDetails((user) =>
             {
-                PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+                CanvasLoading.Instance.Hide();
+                bool canPurchase = card.canOwnMultiple ? true : card.amountOwned == 0;
+
+                if (user.wallet >= card.currencyCost && canPurchase)
                 {
+                    PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+                    {
                     new PopupDialog.PopupButton()
                     {
                         text = "Yes",
@@ -145,79 +142,81 @@ public class StoreController : MonoBehaviour
                         buttonColor = PopupDialog.PopupButtonColor.Plain,
                         onClicked = () =>{ }
                     }
-                };
+                    };
 
-                PopupDialog.Instance.Show("", "Really purchase " + card.title + " for " + card.currencyCost.ToString("n0") + " <sprite=0>?", buttons);
+                    PopupDialog.Instance.Show("", "Really purchase " + card.title + " for " + card.currencyCost.ToString("n0") + " <sprite=0>?", buttons);
 
 
 
-            }
-            else if(!canPurchase)
-            {
-                PopupDialog.Instance.Show("You already own this item. Visit the My Stuff screen from the main menu to use it.");
-            }
-            else
-            {
-                PopupDialog.Instance.Show("You don't have enough <sprite=0> Know Love Bucks to purchase this item.");
-            }
-        });
+                }
+                else if (!canPurchase)
+                {
+                    PopupDialog.Instance.Show("You already own this item. Visit the My Stuff screen from the main menu to use it.");
+                }
+                else
+                {
+                    PopupDialog.Instance.Show("You don't have enough <sprite=0> Know Love Bucks to purchase this item.");
+                }
+            });
 
-        
-        
-        
-    }
+
+
+
+        }
 
 #if UNITY_EDITOR
-    [ContextMenu("TEST CURRENCY")]
-    public void CurrencyTest()
-    {
-        User.current.AddCurrency(1, null);
-    }
-
-    [ContextMenu("GET ME")]
-    public void TestGetMe()
-    {
-        CanvasLoading.Instance.Show();
-        APIManager.GetUserDetails((user) => 
+        [ContextMenu("TEST CURRENCY")]
+        public void CurrencyTest()
         {
-            CanvasLoading.Instance.Hide();
-            User.current = user;
-            UpdateFromPlayerWallet();
-            UpdateFromPlayerInventory();
-        });
-    }
+            User.current.AddCurrency(1, null);
+        }
+
+        [ContextMenu("GET ME")]
+        public void TestGetMe()
+        {
+            CanvasLoading.Instance.Show();
+            APIManager.GetUserDetails((user) =>
+            {
+                CanvasLoading.Instance.Hide();
+                User.current = user;
+                UpdateFromPlayerWallet();
+                UpdateFromPlayerInventory();
+            });
+        }
 
 #endif
-    
 
-    public void UpdateFromPlayerWallet()
-    {
-        if (walletLabels == null) return;
 
-        int balance = User.current.wallet;
-        for(int i = 0; i < walletLabels.Length; i++)
+        public void UpdateFromPlayerWallet()
         {
-            if (walletLabels[i] != null)
+            if (walletLabels == null) return;
+
+            int balance = User.current.wallet;
+            for (int i = 0; i < walletLabels.Length; i++)
             {
-                walletLabels[i].text = balance.ToString("n0") + " <sprite=0>";
-                walletLabels[i].transform.DOPunchScale(new Vector3(1.5f, 1.5f, 1.5f), 0.5f, 1, 1);
+                if (walletLabels[i] != null)
+                {
+                    walletLabels[i].text = balance.ToString("n0") + " <sprite=0>";
+                    walletLabels[i].transform.DOPunchScale(new Vector3(1.5f, 1.5f, 1.5f), 0.5f, 1, 1);
+                }
             }
         }
-    }
 
-    public void UpdateFromPlayerInventory()
-    {
-        foreach(IAPCard card in iapCards)
+        public void UpdateFromPlayerInventory()
         {
-            card.UpdateCard();
+            foreach (IAPCard card in iapCards)
+            {
+                card.UpdateCard();
+            }
         }
+
+        public void OnPurchaseFailed(Product product, PurchaseFailureReason reason)
+        {
+            if (reason == PurchaseFailureReason.UserCancelled) return;
+
+            PopupDialog.Instance.Show($"An error occured while trying to initiate your purchase of \"{product.metadata.localizedTitle}\". Reason: {reason}");
+        }
+
     }
-
-    public void OnPurchaseFailed(Product product, PurchaseFailureReason reason)
-    {
-        if (reason == PurchaseFailureReason.UserCancelled) return;
-
-        PopupDialog.Instance.Show($"An error occured while trying to initiate your purchase of \"{product.metadata.localizedTitle}\". Reason: {reason}");
-    }
-
 }
+

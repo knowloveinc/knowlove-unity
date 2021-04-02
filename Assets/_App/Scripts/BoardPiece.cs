@@ -5,7 +5,7 @@ using DG.Tweening;
 using Photon.Pun;
 using Photon.Realtime;
 
-namespace GameBrewStudios
+namespace Knowlove
 {
 
     public class BoardPiece : MonoBehaviourPun

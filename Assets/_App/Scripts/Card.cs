@@ -1,15 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
+﻿using UnityEngine;
 using Photon.Pun;
 using DG.Tweening;
-using Lean.Touch;
 
-namespace GameBrewStudios
+namespace Knowlove
 {
-
-    
     public class Card : MonoBehaviourPun
     {
         Vector3 startPosition;

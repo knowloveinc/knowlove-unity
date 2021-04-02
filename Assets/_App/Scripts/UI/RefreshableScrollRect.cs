@@ -1,18 +1,12 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-
-namespace GameBrewStudios
+namespace Knowlove.UI
 {
-    
-
     public class RefreshableScrollRect : ScrollRect
     {
-        
-        
         [SerializeField] 
         float refreshDistance = 150f;
         

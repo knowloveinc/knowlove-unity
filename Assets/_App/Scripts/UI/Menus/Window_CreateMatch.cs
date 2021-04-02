@@ -1,81 +1,82 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class Window_CreateMatch : Window
+namespace Knowlove.UI.Menus
 {
-    [SerializeField]
-    TMP_InputField roomNameField, passwordField;
-
-    [SerializeField]
-    Window_MatchList matchListWindow;
-
-    [SerializeField]
-    Window_WaitingForPlayers waitingForPlayersWindow;
-
-    [SerializeField]
-    TMP_Dropdown playerCountDropdown;
-
-    public override void Show()
+    public class Window_CreateMatch : Window
     {
-        base.Show();
-        roomNameField.text = PhotonNetwork.NickName + "'s Room";
-        passwordField.text = "";
-        playerCountDropdown.value = 0;
-    }
+        [SerializeField]
+        TMP_InputField roomNameField, passwordField;
 
+        [SerializeField]
+        Window_MatchList matchListWindow;
 
-    public void DoCreateMatch()
-    {
+        [SerializeField]
+        Window_WaitingForPlayers waitingForPlayersWindow;
 
-        bool hasPassword = !string.IsNullOrEmpty(passwordField.text);
+        [SerializeField]
+        TMP_Dropdown playerCountDropdown;
 
-        RoomOptions options = new RoomOptions();
-        options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() {};
-
-        if(hasPassword)
+        public override void Show()
         {
-            options.CustomRoomProperties.Add("password", passwordField.text);
-            options.CustomRoomPropertiesForLobby = new string[] { "password" };
+            base.Show();
+            roomNameField.text = PhotonNetwork.NickName + "'s Room";
+            passwordField.text = "";
+            playerCountDropdown.value = 0;
         }
-        
-        options.MaxPlayers = Convert.ToByte(PlayerCountFromDropdown());
-
-        options.IsVisible = true;
-        options.IsOpen = options.MaxPlayers > 1;
-        options.PlayerTtl = 33;
-        options.PublishUserId = true;
-
-        TypedLobby sqlLobby = new TypedLobby("sqlLobby", LobbyType.Default);
 
 
-        if (PhotonNetwork.CreateRoom(roomNameField.text, options, sqlLobby))
+        public void DoCreateMatch()
         {
-            
-            matchListWindow.Hide();
-            waitingForPlayersWindow.Show();
-            this.Hide();
+
+            bool hasPassword = !string.IsNullOrEmpty(passwordField.text);
+
+            RoomOptions options = new RoomOptions();
+            options.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { };
+
+            if (hasPassword)
+            {
+                options.CustomRoomProperties.Add("password", passwordField.text);
+                options.CustomRoomPropertiesForLobby = new string[] { "password" };
+            }
+
+            options.MaxPlayers = Convert.ToByte(PlayerCountFromDropdown());
+
+            options.IsVisible = true;
+            options.IsOpen = options.MaxPlayers > 1;
+            options.PlayerTtl = 33;
+            options.PublishUserId = true;
+
+            TypedLobby sqlLobby = new TypedLobby("sqlLobby", LobbyType.Default);
+
+
+            if (PhotonNetwork.CreateRoom(roomNameField.text, options, sqlLobby))
+            {
+
+                matchListWindow.Hide();
+                waitingForPlayersWindow.Show();
+                this.Hide();
+            }
+            else
+            {
+                PopupDialog.Instance.Show("Create Game Failed", "An error occured while creating your game. Please try again.");
+            }
         }
-        else
+
+        int PlayerCountFromDropdown()
         {
-            PopupDialog.Instance.Show("Create Game Failed", "An error occured while creating your game. Please try again.");
+            /*
+                Options are:
+                    Two Players = 0,
+                    Three Players = 1,
+                    Four Players = 2
+
+            */
+
+            return Mathf.Clamp(playerCountDropdown.value + 2, 2, 4);
         }
-    }
-
-    int PlayerCountFromDropdown()
-    {
-        /*
-            Options are:
-                Two Players = 0,
-                Three Players = 1,
-                Four Players = 2
-             
-        */
-
-        return Mathf.Clamp(playerCountDropdown.value + 2, 2, 4);
     }
 }

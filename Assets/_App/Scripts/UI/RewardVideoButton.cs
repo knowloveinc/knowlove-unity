@@ -1,36 +1,37 @@
 ﻿using ChartboostSDK;
 using GameBrewStudios;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class RewardVideoButton : MonoBehaviour
+namespace Knowlove.UI
 {
-    public static float lastPlayTime = 0f;
-
-    public GameObject buttonChild;
-
-    private void Start()
+    public class RewardVideoButton : MonoBehaviour
     {
-        Chartboost.didCompleteRewardedVideo += this.Chartboost_didDisplayRewardedVideo;
-    }
+        public static float lastPlayTime = 0f;
 
-    private void Chartboost_didDisplayRewardedVideo(CBLocation obj, int reward)
-    {
-        lastPlayTime = Time.time;
-        User.current.AddCurrency(reward, (wallet) => 
+        public GameObject buttonChild;
+
+        private void Start()
         {
-            Debug.Log("ADDED " + reward + " TO WALLET FOR TOTAL OF: " + wallet);
-        });
-    }
+            Chartboost.didCompleteRewardedVideo += this.Chartboost_didDisplayRewardedVideo;
+        }
 
-    private void Update()
-    {
-        buttonChild.SetActive(lastPlayTime == 0f || Time.time - lastPlayTime >= (60f * 30f));
-    }
+        private void Chartboost_didDisplayRewardedVideo(CBLocation obj, int reward)
+        {
+            lastPlayTime = Time.time;
+            User.current.AddCurrency(reward, (wallet) =>
+            {
+                Debug.Log("ADDED " + reward + " TO WALLET FOR TOTAL OF: " + wallet);
+            });
+        }
 
-    public void OnClick()
-    {
-        StartupCanvas.PlayRewardedVideo();
+        private void Update()
+        {
+            buttonChild.SetActive(lastPlayTime == 0f || Time.time - lastPlayTime >= (60f * 30f));
+        }
+
+        public void OnClick()
+        {
+            StartupCanvas.PlayRewardedVideo();
+        }
     }
 }

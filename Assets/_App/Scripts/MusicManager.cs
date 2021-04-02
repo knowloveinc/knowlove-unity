@@ -1,53 +1,54 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
 
-public class MusicManager : MonoBehaviour
+namespace Knowlove
 {
-    public static MusicManager Instance;
-
-    public AudioSource[] players;
-
-    private void Awake()
+    public class MusicManager : MonoBehaviour
     {
-        if(Instance != null)
+        public static MusicManager Instance;
+
+        public AudioSource[] players;
+
+        private void Awake()
         {
-            Destroy(this.gameObject);
-            return;
-        }
+            if (Instance != null)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
 
-        Instance = this;
-        DontDestroyOnLoad(this.gameObject);
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
 
-        SceneManager.activeSceneChanged += this.SceneManager_activeSceneChanged;
+            SceneManager.activeSceneChanged += this.SceneManager_activeSceneChanged;
 
-        for(int i = 0; i < players.Length; i++)
-        {
-            players[i].volume = 0f;
-        }
+            for (int i = 0; i < players.Length; i++)
+            {
+                players[i].volume = 0f;
+            }
 
-        PlaySong(0);
-    }
-
-    private void SceneManager_activeSceneChanged(Scene current, Scene next)
-    {
-        if(next == SceneManager.GetSceneByBuildIndex(0))
-        {
             PlaySong(0);
         }
-    }
 
-    public void PlaySong(int index)
-    {
-        for (int i = 0; i < players.Length; i++)
+        private void SceneManager_activeSceneChanged(Scene current, Scene next)
         {
-            if(!players[i].isPlaying && i == index)
+            if (next == SceneManager.GetSceneByBuildIndex(0))
             {
-                players[i].Play();
+                PlaySong(0);
             }
-            players[i].DOFade(i == index ? 1f : 0f, 0.5f).SetEase(Ease.Linear);
+        }
+
+        public void PlaySong(int index)
+        {
+            for (int i = 0; i < players.Length; i++)
+            {
+                if (!players[i].isPlaying && i == index)
+                {
+                    players[i].Play();
+                }
+                players[i].DOFade(i == index ? 1f : 0f, 0.5f).SetEase(Ease.Linear);
+            }
         }
     }
 }

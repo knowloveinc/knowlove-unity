@@ -1,11 +1,7 @@
-﻿using System;
-using System.Reflection;
-using UnityEditor;
-using UnityEngine;
-
+﻿using UnityEditor;
 
 //This script is only required to get it to show the custom variables that were added instead of displaying the inspector for the base ScrollRect
-namespace GameBrewStudios
+namespace Knowlove.UI
 {
     [CustomEditor(typeof(RefreshableScrollRect), true)]
     [CanEditMultipleObjects]

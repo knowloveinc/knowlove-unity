@@ -1,18 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public abstract class Window : MonoBehaviour
+namespace Knowlove.UI.Menus
 {
-    public virtual void Show()
+    public abstract class Window : MonoBehaviour
     {
-        if (!this.gameObject.activeSelf)
-            gameObject.SetActive(true);
-    }
+        public virtual void Show()
+        {
+            if (!this.gameObject.activeSelf)
+                gameObject.SetActive(true);
+        }
 
-    public virtual void Hide()
-    {
-        if(this.gameObject.activeSelf)
-            gameObject.SetActive(false);
+        public virtual void Hide()
+        {
+            if (this.gameObject.activeSelf)
+                gameObject.SetActive(false);
+        }
     }
 }

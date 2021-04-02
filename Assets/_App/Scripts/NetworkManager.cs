@@ -1,6 +1,6 @@
-﻿using JetBrains.Annotations;
+﻿using GameBrewStudios;
+using Knowlove.UI;
 using Photon.Pun;
-using Photon.Pun.Demo.Cockpit;
 using Photon.Realtime;
 using System;
 using System.Collections;
@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace GameBrewStudios
+namespace Knowlove
 {
     public class NetworkManager : MonoBehaviourPunCallbacks
     {
@@ -217,8 +217,6 @@ namespace GameBrewStudios
         {
             base.OnPlayerEnteredRoom(newPlayer);
 
-
-
             UpdatePlayerList();
 
             Debug.Log("OnPlayerEnteredRoom: " + newPlayer.NickName);
@@ -242,6 +240,7 @@ namespace GameBrewStudios
                 ExitGames.Client.Photon.Hashtable playerProperties = player.CustomProperties;
 
                 playerProperties["avoidSingleCards"] = 0;
+                playerProperties["flipTheTable"] = 0;
                 playerProperties["turnBank"] = 0;
                 playerProperties["protectedFromSingleInRelationship"] = false;
                 playerProperties["diceCount"] = 1;

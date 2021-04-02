@@ -8,44 +8,46 @@ using TMPro;
 
 using UnityEngine;
 
-public class Window_Login : Window
+namespace Knowlove.UI.Menus
 {
-    [SerializeField]
-    TMP_InputField loginEmailField, loginPasswordField, registerEmailField, registerPasswordField1, registerPasswordField2, registerNicknameField;
-
-    [SerializeField]
-    Window_MatchList matchListWindow;
-
-    [SerializeField]
-    Window_PickMode pickModeWindow;
-
-    [SerializeField]
-    RectTransform loginBox, registerBox;
-
-    private const string USERNAME_KEY = "SavedUsername", PASSWORD_KEY = "SavedPassw";
-
-    private void Awake()
+    public class Window_Login : Window
     {
-        registerBox.anchoredPosition = new Vector2(registerBox.anchoredPosition.x, 2000f);
-        loginBox.anchoredPosition = new Vector2(loginBox.anchoredPosition.x, 0f);
-    }
+        [SerializeField]
+        TMP_InputField loginEmailField, loginPasswordField, registerEmailField, registerPasswordField1, registerPasswordField2, registerNicknameField;
 
-    public void CheckForConnection()
-    {
-        
-        CanvasLoading.Instance.Show();
-        APIManager.Connect((success) => 
+        [SerializeField]
+        Window_MatchList matchListWindow;
+
+        [SerializeField]
+        Window_PickMode pickModeWindow;
+
+        [SerializeField]
+        RectTransform loginBox, registerBox;
+
+        private const string USERNAME_KEY = "SavedUsername", PASSWORD_KEY = "SavedPassw";
+
+        private void Awake()
         {
-            CanvasLoading.Instance.Hide();
-            if(success)
+            registerBox.anchoredPosition = new Vector2(registerBox.anchoredPosition.x, 2000f);
+            loginBox.anchoredPosition = new Vector2(loginBox.anchoredPosition.x, 0f);
+        }
+
+        public void CheckForConnection()
+        {
+
+            CanvasLoading.Instance.Show();
+            APIManager.Connect((success) =>
             {
-                loginEmailField.SetTextWithoutNotify(PlayerPrefs.GetString(USERNAME_KEY, ""));
-                loginPasswordField.SetTextWithoutNotify(PlayerPrefs.GetString(PASSWORD_KEY, ""));
-            }
-            else
-            {
-                PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+                CanvasLoading.Instance.Hide();
+                if (success)
                 {
+                    loginEmailField.SetTextWithoutNotify(PlayerPrefs.GetString(USERNAME_KEY, ""));
+                    loginPasswordField.SetTextWithoutNotify(PlayerPrefs.GetString(PASSWORD_KEY, ""));
+                }
+                else
+                {
+                    PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+                    {
                     new PopupDialog.PopupButton()
                     {
                         text = "Try again",
@@ -54,191 +56,191 @@ public class Window_Login : Window
                             CheckForConnection();
                         }
                     }
-                };
-                PopupDialog.Instance.Show("No Internet Connection", "Unable to connect to authentication servers. Please check your internet connection and try again.", buttons);
-            }
-        });
-    }
-
-    public override void Show()
-    {
-        base.Show();
-
-
-        loginEmailField.text = "";
-        loginPasswordField.text = "";
-        registerEmailField.text = "";
-        registerPasswordField1.text = "";
-        registerPasswordField2.text = "";
-        registerNicknameField.text = "";
-
-        Debug.Log("Showing login window...");
-        CheckForConnection();
-    }
-
-    bool isAuthenticating = false;
-
-    public void DoLogin()
-    {
-        Debug.Log("Running DoLogin...");
-        if (isAuthenticating) return;
-
-
-        isAuthenticating = true;
-
-        string emailError; 
-        string passwordError;
-
-        bool emailIsValid = Validation.ValidateEmail(loginEmailField.text, out emailError);
-        bool passwordIsValid = Validation.ValidatePassword(loginPasswordField.text, out passwordError);
-        if (emailIsValid && passwordIsValid)
-        {
-            
-            Debug.Log("Starting api call for authentication...");
-            ServerAPI.OnError += this.ServerAPI_OnError;
-            
-            CanvasLoading.Instance.Show();
-            APIManager.Authenticate(loginEmailField.text, loginPasswordField.text, (success) =>
-            {
-                CanvasLoading.Instance.Hide();
-
-                Debug.LogWarning("FINISHED WITH RESULT: " + success);
-
-                //On successful login, show the Match Finder
-                if (success)
-                {
-                    PlayerPrefs.SetString(USERNAME_KEY, loginEmailField.text);
-                    PlayerPrefs.SetString(PASSWORD_KEY, loginPasswordField.text);
-
-                    //User logged in, what next?
-                    //PopupDialog.Instance.Show("Logged in successfully.");
-                    this.Hide();
-                    pickModeWindow.Show();
+                    };
+                    PopupDialog.Instance.Show("No Internet Connection", "Unable to connect to authentication servers. Please check your internet connection and try again.", buttons);
                 }
-                else
-                {
-                    ShowErrorMessage();
-                }
-
-                ServerAPI.OnError -= this.ServerAPI_OnError;
-                isAuthenticating = false;
             });
         }
-        else
-        {
-            if (!string.IsNullOrEmpty(emailError) || !string.IsNullOrEmpty(passwordError))
-            {
-                Debug.LogError(emailError + " " + passwordError);
-                PopupDialog.Instance.Show("Invalid Username or Password", emailError + " " + passwordError);
-            }
 
-            isAuthenticating = false;
+        public override void Show()
+        {
+            base.Show();
+
+
+            loginEmailField.text = "";
+            loginPasswordField.text = "";
+            registerEmailField.text = "";
+            registerPasswordField1.text = "";
+            registerPasswordField2.text = "";
+            registerNicknameField.text = "";
+
+            Debug.Log("Showing login window...");
+            CheckForConnection();
         }
 
-        
-    }
+        bool isAuthenticating = false;
 
-    public void DoRegister()
-    {
-        Debug.Log("Running DoLogin...");
-        if (isAuthenticating) return;
-
-
-        isAuthenticating = true;
-
-        string emailError;
-        string passwordError;
-
-        bool emailIsValid = Validation.ValidateEmail(registerEmailField.text, out emailError);
-        bool passwordIsValid = Validation.ValidatePassword(registerPasswordField1.text, out passwordError) && registerPasswordField1.text == registerPasswordField2.text;
-        if (emailIsValid && passwordIsValid)
+        public void DoLogin()
         {
+            Debug.Log("Running DoLogin...");
+            if (isAuthenticating) return;
 
-            Debug.Log("Starting api call for authentication...");
-            ServerAPI.OnError += this.ServerAPI_OnError;
 
-            CanvasLoading.Instance.Show();
-            APIManager.Register(registerEmailField.text, registerNicknameField.text, registerPasswordField1.text, (success) =>
+            isAuthenticating = true;
+
+            string emailError;
+            string passwordError;
+
+            bool emailIsValid = Validation.ValidateEmail(loginEmailField.text, out emailError);
+            bool passwordIsValid = Validation.ValidatePassword(loginPasswordField.text, out passwordError);
+            if (emailIsValid && passwordIsValid)
             {
-                CanvasLoading.Instance.Hide();
 
-                Debug.LogWarning("FINISHED WITH RESULT: " + success);
+                Debug.Log("Starting api call for authentication...");
+                ServerAPI.OnError += this.ServerAPI_OnError;
 
-                //On successful login, show the Match Finder
-                if (success)
+                CanvasLoading.Instance.Show();
+                APIManager.Authenticate(loginEmailField.text, loginPasswordField.text, (success) =>
                 {
-                    //User logged in, what next?
-                    //PopupDialog.Instance.Show("Logged in successfully.");
-                    PhotonNetwork.NickName = User.current.displayName;
-                    Debug.Log("<color=Magenta>User nickname set to: " + PhotonNetwork.NickName + "</color>");
-                    this.Hide();
-                    pickModeWindow.Show();
-                }
-                else
-                {
-                    ShowErrorMessage();
-                }
+                    CanvasLoading.Instance.Hide();
 
-                ServerAPI.OnError -= this.ServerAPI_OnError;
-                isAuthenticating = false;
-            });
-        }
-        else
-        {
-            if (!string.IsNullOrEmpty(emailError) || !string.IsNullOrEmpty(passwordError))
-            {
-                Debug.LogError(emailError + " " + passwordError);
-                PopupDialog.Instance.Show("Invalid Username or Password", emailError + " " + passwordError);
-            }
-            else if(registerPasswordField1.text != registerPasswordField2.text)
-            {
-                Debug.LogError("Passwords do not match.");
-                PopupDialog.Instance.Show("Invalid Username or Password", "Passwords do not match.");
+                    Debug.LogWarning("FINISHED WITH RESULT: " + success);
+
+                    //On successful login, show the Match Finder
+                    if (success)
+                    {
+                        PlayerPrefs.SetString(USERNAME_KEY, loginEmailField.text);
+                        PlayerPrefs.SetString(PASSWORD_KEY, loginPasswordField.text);
+
+                        //User logged in, what next?
+                        //PopupDialog.Instance.Show("Logged in successfully.");
+                        this.Hide();
+                        pickModeWindow.Show();
+                    }
+                    else
+                    {
+                        ShowErrorMessage();
+                    }
+
+                    ServerAPI.OnError -= this.ServerAPI_OnError;
+                    isAuthenticating = false;
+                });
             }
             else
             {
-                Debug.LogError("WHY ARE WE HERE???");
+                if (!string.IsNullOrEmpty(emailError) || !string.IsNullOrEmpty(passwordError))
+                {
+                    Debug.LogError(emailError + " " + passwordError);
+                    PopupDialog.Instance.Show("Invalid Username or Password", emailError + " " + passwordError);
+                }
+
+                isAuthenticating = false;
             }
 
-            isAuthenticating = false;
+
         }
 
-
-    }
-
-    private ServerAPI.ServerError lastError;
-
-    public void ShowLoginBox()
-    {
-        registerBox.DOAnchorPosY(2000f, 0.5f);
-        loginBox.anchoredPosition = new Vector2(loginBox.anchoredPosition.x, -2000f);
-        loginBox.DOAnchorPosY(0f, 0.5f);
-    }
-
-    public void ShowRegisterBox()
-    {
-        loginBox.DOAnchorPosY(2000f, 0.5f);
-        registerBox.anchoredPosition = new Vector2(registerBox.anchoredPosition.x, -2000f);
-        registerBox.DOAnchorPosY(0f, 0.5f);
-    }
-
-    private void ServerAPI_OnError(ServerAPI.ServerError obj)
-    {
-        lastError = obj;
-    }
-
-    [SerializeField]
-    Window_ResetPassword resetPasswordWindow;
-
-    public void ForgotPassword()
-    {
-        bool emailIsValid = Validation.ValidateEmail(loginEmailField.text, out string emailError);
-
-        if (emailIsValid)
+        public void DoRegister()
         {
-            ServerAPI.OnError += this.ServerAPI_OnError;
-            PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+            Debug.Log("Running DoLogin...");
+            if (isAuthenticating) return;
+
+
+            isAuthenticating = true;
+
+            string emailError;
+            string passwordError;
+
+            bool emailIsValid = Validation.ValidateEmail(registerEmailField.text, out emailError);
+            bool passwordIsValid = Validation.ValidatePassword(registerPasswordField1.text, out passwordError) && registerPasswordField1.text == registerPasswordField2.text;
+            if (emailIsValid && passwordIsValid)
             {
+
+                Debug.Log("Starting api call for authentication...");
+                ServerAPI.OnError += this.ServerAPI_OnError;
+
+                CanvasLoading.Instance.Show();
+                APIManager.Register(registerEmailField.text, registerNicknameField.text, registerPasswordField1.text, (success) =>
+                {
+                    CanvasLoading.Instance.Hide();
+
+                    Debug.LogWarning("FINISHED WITH RESULT: " + success);
+
+                    //On successful login, show the Match Finder
+                    if (success)
+                    {
+                        //User logged in, what next?
+                        //PopupDialog.Instance.Show("Logged in successfully.");
+                        PhotonNetwork.NickName = User.current.displayName;
+                        Debug.Log("<color=Magenta>User nickname set to: " + PhotonNetwork.NickName + "</color>");
+                        this.Hide();
+                        pickModeWindow.Show();
+                    }
+                    else
+                    {
+                        ShowErrorMessage();
+                    }
+
+                    ServerAPI.OnError -= this.ServerAPI_OnError;
+                    isAuthenticating = false;
+                });
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(emailError) || !string.IsNullOrEmpty(passwordError))
+                {
+                    Debug.LogError(emailError + " " + passwordError);
+                    PopupDialog.Instance.Show("Invalid Username or Password", emailError + " " + passwordError);
+                }
+                else if (registerPasswordField1.text != registerPasswordField2.text)
+                {
+                    Debug.LogError("Passwords do not match.");
+                    PopupDialog.Instance.Show("Invalid Username or Password", "Passwords do not match.");
+                }
+                else
+                {
+                    Debug.LogError("WHY ARE WE HERE???");
+                }
+
+                isAuthenticating = false;
+            }
+
+
+        }
+
+        private ServerAPI.ServerError lastError;
+
+        public void ShowLoginBox()
+        {
+            registerBox.DOAnchorPosY(2000f, 0.5f);
+            loginBox.anchoredPosition = new Vector2(loginBox.anchoredPosition.x, -2000f);
+            loginBox.DOAnchorPosY(0f, 0.5f);
+        }
+
+        public void ShowRegisterBox()
+        {
+            loginBox.DOAnchorPosY(2000f, 0.5f);
+            registerBox.anchoredPosition = new Vector2(registerBox.anchoredPosition.x, -2000f);
+            registerBox.DOAnchorPosY(0f, 0.5f);
+        }
+
+        private void ServerAPI_OnError(ServerAPI.ServerError obj)
+        {
+            lastError = obj;
+        }
+
+        [SerializeField]
+        Window_ResetPassword resetPasswordWindow;
+
+        public void ForgotPassword()
+        {
+            bool emailIsValid = Validation.ValidateEmail(loginEmailField.text, out string emailError);
+
+            if (emailIsValid)
+            {
+                ServerAPI.OnError += this.ServerAPI_OnError;
+                PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+                {
                 new PopupDialog.PopupButton()
                 {
                     text = "Yes",
@@ -271,30 +273,32 @@ public class Window_Login : Window
                     text = "No",
                     buttonColor = PopupDialog.PopupButtonColor.Plain
                 }
-            };
+                };
 
-            PopupDialog.Instance.Show("Forgot Password", "Are you sure you want to reset your password? Click YES to receive an email with a 6-digit code that you can enter on the next screen to reset your password.", buttons);
+                PopupDialog.Instance.Show("Forgot Password", "Are you sure you want to reset your password? Click YES to receive an email with a 6-digit code that you can enter on the next screen to reset your password.", buttons);
+            }
+            else
+            {
+                PopupDialog.Instance.Show("Invalid Email", emailError + "\n\n Please try again.");
+            }
         }
-        else
+
+
+        void ShowErrorMessage()
         {
-            PopupDialog.Instance.Show("Invalid Email", emailError + "\n\n Please try again.");
+            Debug.LogError("Showing login error...  " + lastError.text);
+
+            //if (!string.IsNullOrEmpty(lastError.text))
+            //{
+
+
+            PopupDialog.Instance.Show("Login Error", lastError.ToString());
+            //}
+            //else
+            //{
+            //    PopupDialog.Instance.Show("Something went wrong. Please check your connection and try again.");
+            //}
         }
-    }
-
-
-    void ShowErrorMessage()
-    {
-        Debug.LogError("Showing login error...  " + lastError.text);
-
-        //if (!string.IsNullOrEmpty(lastError.text))
-        //{
-
-
-        PopupDialog.Instance.Show("Login Error", lastError.ToString());
-        //}
-        //else
-        //{
-        //    PopupDialog.Instance.Show("Something went wrong. Please check your connection and try again.");
-        //}
     }
 }
+

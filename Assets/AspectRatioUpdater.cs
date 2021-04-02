@@ -1,21 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(AspectRatioFitter))]
-public class AspectRatioUpdater : MonoBehaviour
+namespace Knowlove
 {
-    AspectRatioFitter fitter;
-    Image image;
-    private void Awake()
+    [RequireComponent(typeof(AspectRatioFitter))]
+    public class AspectRatioUpdater : MonoBehaviour
     {
-        fitter = GetComponent<AspectRatioFitter>();
-        image = GetComponent<Image>();
-    }
+        AspectRatioFitter fitter;
+        Image image;
+        private void Awake()
+        {
+            fitter = GetComponent<AspectRatioFitter>();
+            image = GetComponent<Image>();
+        }
 
-    void Update()
-    {
-        fitter.aspectRatio = image.sprite.rect.width / image.sprite.rect.height;
+        void Update()
+        {
+            fitter.aspectRatio = image.sprite.rect.width / image.sprite.rect.height;
+        }
     }
 }
+
