@@ -240,6 +240,7 @@ namespace Knowlove
                 ExitGames.Client.Photon.Hashtable playerProperties = player.CustomProperties;
 
                 playerProperties["avoidSingleCards"] = 0;
+                playerProperties["wallet"] = 0;
                 playerProperties["flipTheTable"] = 0;
                 playerProperties["turnBank"] = 0;
                 playerProperties["protectedFromSingleInRelationship"] = false;

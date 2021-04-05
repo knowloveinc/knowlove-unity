@@ -5995,8 +5995,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 914.5326, y: 0}
-  m_SizeDelta: {x: 1765.0652, y: 0}
+  m_AnchoredPosition: {x: 950.80896, y: 0}
+  m_SizeDelta: {x: 1837.6179, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &279673540
 MonoBehaviour:
@@ -20727,8 +20727,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1952536991}
   m_HandleRect: {fileID: 1952536990}
   m_Direction: 0
-  m_Value: -0.00000016191092
-  m_Size: 0.7532935
+  m_Value: 0
+  m_Size: 0.7770346
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -26325,6 +26325,7 @@ MonoBehaviour:
   bronzeBucksIcon: {fileID: 0}
   silverBucksIcon: {fileID: 0}
   goldBucksIcon: {fileID: 0}
+  gameStuff: {fileID: 0}
 --- !u!224 &976377770
 RectTransform:
   m_ObjectHideFlags: 0

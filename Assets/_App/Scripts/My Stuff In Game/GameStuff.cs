@@ -3,6 +3,7 @@ using Photon.Pun;
 using UnityEngine;
 using GameBrewStudios.Networking;
 using GameBrewStudios;
+using Knowlove.UI;
 
 namespace Knowlove.MyStuffInGame
 {
@@ -15,6 +16,7 @@ namespace Knowlove.MyStuffInGame
 
         private int _avoidSingle;
         private int _flipTheTable;
+        private int _wallet;
         private int _amountDeleteCard = -1;
 
 
@@ -28,19 +30,47 @@ namespace Knowlove.MyStuffInGame
             get => _flipTheTable;
         }
 
+        public int Wallet
+        {
+            get => _wallet;
+        }
+
+        private void OnDestroy()
+        {
+            if (StoreController.Instance.gameStuff != null)
+                StoreController.Instance.gameStuff = null;
+        }
+
         [ContextMenu("SpesialCard")]
         public void GetSpecialCard()
         {
+            photonView.RPC(nameof(RPC_GetSpecialCard), RpcTarget.AllViaServer);
+        }
+
+        [PunRPC]
+        public void RPC_GetSpecialCard()
+        {
+            if (StoreController.Instance.gameStuff == null)
+                StoreController.Instance.gameStuff = this;
+
             _currentPlayer = PhotonNetwork.LocalPlayer;
             ExitGames.Client.Photon.Hashtable playerProperties = _currentPlayer.CustomProperties;
 
             APIManager.GetUserDetails((user) =>
             {
-                _avoidSingle = user.inventory[0].amount;
-                _flipTheTable = user.inventory[1].amount;
+                for (int i = 0; i < user.inventory.Length; i++)
+                {
+                    if (user.inventory[i].itemId.ToLower() == "tableFlip".ToLower())
+                        _flipTheTable = user.inventory[i].amount;
+                    else if(user.inventory[i].itemId.ToLower() == "avoidSingle".ToLower())
+                        _avoidSingle = user.inventory[i].amount;
+                }
+
+                _wallet = user.wallet;
 
                 playerProperties["avoidSingleCards"] = _avoidSingle;
                 playerProperties["flipTheTable"] = _flipTheTable;
+                playerProperties["wallet"] = _wallet;
                 _currentPlayer.SetCustomProperties(playerProperties);
             });
         }

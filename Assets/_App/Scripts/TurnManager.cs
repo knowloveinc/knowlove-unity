@@ -459,6 +459,7 @@ namespace Knowlove
             int diceCount = (int)playerProperties["diceCount"];
             int avoidSingleCards = (int)playerProperties["avoidSingleCards"];
             int dateCount = (int)playerProperties["dateCount"];
+            int wallet = (int)playerProperties["wallet"];
             bool protectedFromSingleInRelationship = (bool)playerProperties["protectedFromSingleInRelationship"];
 
             switch (action)
@@ -482,6 +483,7 @@ namespace Knowlove
                                 onClicked = () =>
                                 {
                                     _gameStuff.DeleteCardFromInventory(0);
+                                    EndTurn();
                                 }
                             };
 
@@ -491,6 +493,7 @@ namespace Knowlove
                                 onClicked = () =>
                                 {
                                     piece.GoHome(currentPlayer);
+                                    EndTurn();
                                 }
                             };
 
@@ -509,10 +512,25 @@ namespace Knowlove
                                 onClicked = () =>
                                 {
                                     piece.GoHome(currentPlayer);
+                                    EndTurn();
                                 }
                             };
+
                             buttons.Add(btn);
 
+                            if (wallet > 0)
+                            {
+                                PopupDialog.PopupButton openStoreBtn = new PopupDialog.PopupButton()
+                                {
+                                    text = "No, i want to buy the Avoid To Single card",
+                                    onClicked = () =>
+                                    {
+                                        StoreController.Show();
+                                    }
+                                };
+
+                                buttons.Add(openStoreBtn);
+                            }
                         }
                         else
                         {
@@ -523,7 +541,7 @@ namespace Knowlove
 
                     if (!skipPrompt)
                     {
-                        gameUI.ShowPrompt(text, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[turnIndex].pathRing);
+                        gameUI.ShowPrompt(text, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[turnIndex].pathRing, false);
                     }
                     else
                     {
@@ -633,7 +651,7 @@ namespace Knowlove
                                     piece.GoHome(currentPlayer);
                                 }
                             };
-                            gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { yesBtn, noBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[turnIndex].pathRing);
+                            gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { yesBtn, noBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[turnIndex].pathRing, true);
                         }
                     }
                     else
@@ -642,6 +660,7 @@ namespace Knowlove
                         {
                             piece.GoHome(currentPlayer);
                             diceCount = 1;
+                            EndTurn();
                         }
 
                     }
@@ -950,6 +969,7 @@ namespace Knowlove
                     playerBoardPiece.GoToRelationship(currentPlayer, () =>
                     {
                         Debug.Log("Finished moving to relationship path.");
+                        EndTurn();
                         OnFinished?.Invoke();
                     });
 
@@ -959,35 +979,16 @@ namespace Knowlove
 
                     if (avoidSingleCards > 0)
                     {
-                        PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+                        DOVirtual.DelayedCall(0.3f, () =>
                         {
-                            new PopupDialog.PopupButton()
-                            {
-                                text = "Yes",
-                                buttonColor = PopupDialog.PopupButtonColor.Green,
-                                onClicked = () =>
-                                {
-                                    _gameStuff.DeleteCardFromInventory(0);
-                                }
-                            },
-                            new PopupDialog.PopupButton()
-                            {
-                                text = "no",
-                                buttonColor = PopupDialog.PopupButtonColor.Plain,
-                                onClicked = () =>
-                                {
-                                    diceCount = 1;
-                                    playerBoardPiece.GoHome(currentPlayer);
-                                }
-                            }
-                        };
-
-                        PopupDialog.Instance.Show("", "Do you want to use the card " + "Avoid To Single?", buttons);
+                            ShowAvoidCardPrompts(diceCount, playerBoardPiece, currentPlayer);
+                        });
                     }
                     else
                     {
                         diceCount = 1;
                         playerBoardPiece.GoHome(currentPlayer);
+                        EndTurn();
                     }
 
                     OnFinished?.Invoke();
@@ -995,36 +996,16 @@ namespace Knowlove
                 case ProceedAction.BackToSingleAndLoseATurn:
                     if (avoidSingleCards > 0)
                     {
-                        PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+                        DOVirtual.DelayedCall(0.3f, () =>
                         {
-                            new PopupDialog.PopupButton()
-                            {
-                                text = "Yes",
-                                buttonColor = PopupDialog.PopupButtonColor.Green,
-                                onClicked = () =>
-                                {
-                                    _gameStuff.DeleteCardFromInventory(0);
-                                }
-                            },
-                            new PopupDialog.PopupButton()
-                            {
-                                text = "no",
-                                buttonColor = PopupDialog.PopupButtonColor.Plain,
-                                onClicked = () =>
-                                {
-                                    diceCount = 1;
-                                    playerBoardPiece.GoHome(currentPlayer);
-                                }
-                            }
-                        };
-
-                        PopupDialog.Instance.Show("", "Do you want to use the card " + "Avoid To Single?", buttons);
+                            ShowAvoidCardPrompts(diceCount, playerBoardPiece, currentPlayer);
+                        });
                     }
                     else
                     {
-
                         diceCount = 1;
                         playerBoardPiece.GoHome(currentPlayer);
+                        EndTurn();
                     }
 
                     if (turnBank > 0) turnBank = 0;
@@ -1038,6 +1019,7 @@ namespace Knowlove
                     playerBoardPiece.GoToRelationship(currentPlayer, () =>
                     {
                         Debug.Log("Finished moving to relationship path.");
+                        EndTurn();
                         OnFinished?.Invoke();
                     });
 
@@ -1048,6 +1030,7 @@ namespace Knowlove
                     playerBoardPiece.GoToMarriage(currentPlayer, () =>
                     {
                         Debug.Log("Finished moving to marriage path.");
+                        EndTurn();
                         OnFinished?.Invoke();
                     });
                     break;
@@ -1065,21 +1048,29 @@ namespace Knowlove
                 case ProceedAction.LoseATurn:
                     if (turnBank > 0) turnBank = 0;
                     turnBank -= 1;
+
+                    EndTurn();
                     OnFinished?.Invoke();
                     break;
                 case ProceedAction.LoseTwoTurns:
                     if (turnBank > 0) turnBank = 0;
-
                     turnBank -= 2;
+
+                    EndTurn();
                     OnFinished?.Invoke();
                     break;
                 case ProceedAction.LoseThreeTurns:
                     if (turnBank > 0) turnBank = 0;
                     turnBank -= 3;
+
+                    EndTurn();
                     OnFinished?.Invoke();
                     break;
                 case ProceedAction.Nothing:
+                    EndTurn();
+                    break;
                 default:
+                    EndTurn();
                     OnFinished?.Invoke();
                     break;
             }
@@ -1095,6 +1086,36 @@ namespace Knowlove
             CheckTurnState();
             UpdateTurnTimer();
 
+        }
+
+        private void ShowAvoidCardPrompts(int diceCount, BoardPiece playerBoardPiece, Player currentPlayer)
+        {
+            string textPromps = "Do you want to use the card Avoid To Single?";
+
+            PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+            {
+                new PopupDialog.PopupButton()
+                {
+                        text = "Yes",
+                        buttonColor = PopupDialog.PopupButtonColor.Green,
+                        onClicked = () =>
+                        {
+                            _gameStuff.DeleteCardFromInventory(0);
+                        }
+                },
+                new PopupDialog.PopupButton()
+                {
+                    text = "no",
+                    buttonColor = PopupDialog.PopupButtonColor.Plain,
+                    onClicked = () =>
+                    {
+                        diceCount = 1;
+                        playerBoardPiece.GoHome(currentPlayer);
+                    }
+                }
+            };
+
+            gameUI.ShowPrompt(textPromps, buttons, currentPlayer);
         }
 
         public float turnTimer = 30f;

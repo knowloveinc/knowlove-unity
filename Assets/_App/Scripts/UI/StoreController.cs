@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using GameBrewStudios;
 using GameBrewStudios.Networking;
+using Knowlove.MyStuffInGame;
 using Knowlove.UI.Menus;
 using System;
 using TMPro;
@@ -27,6 +28,8 @@ namespace Knowlove.UI
 
         [SerializeField]
         Sprite bronzeBucksIcon, silverBucksIcon, goldBucksIcon;
+
+        public GameStuff gameStuff;
 
         private void Awake()
         {
@@ -124,6 +127,9 @@ namespace Knowlove.UI
                                 CanvasLoading.Instance.Hide();
                                 User.current.wallet = balance;
                                 UpdateFromPlayerWallet();
+
+                                if(gameStuff != null)
+                                    gameStuff.GetSpecialCard();
 
                                 CanvasLoading.Instance.Show();
                                 APIManager.AddItem(card.id, card.amountToGive, (inventory) =>

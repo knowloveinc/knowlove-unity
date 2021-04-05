@@ -511,7 +511,7 @@ namespace Knowlove.UI
                 onCardClicked = () =>
                 {
                     Debug.Log("CARD CLICK RECIEVED ON MASTER, RUNNING ShowPrompt for current user");
-                    ShowPrompt(card.promptMessage, GetPromptButtons(card.promptButtons), NetworkManager.Instance.players[TurnManager.turnIndex], 0);
+                    ShowPrompt(card.promptMessage, GetPromptButtons(card.promptButtons), NetworkManager.Instance.players[TurnManager.turnIndex], 0, false);
                 };
             }
             else
