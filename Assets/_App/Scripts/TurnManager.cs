@@ -482,7 +482,7 @@ namespace Knowlove
                                 text = "Okay",
                                 onClicked = () =>
                                 {
-                                    _gameStuff.DeleteCardFromInventory(0);
+                                    _gameStuff.DeleteCardFromInventory(0, turnIndex);
                                     EndTurn();
                                 }
                             };
@@ -525,7 +525,11 @@ namespace Knowlove
                                     text = "No, i want to buy the Avoid To Single card",
                                     onClicked = () =>
                                     {
-                                        StoreController.Show();
+                                        string actionJson = JsonUtility.ToJson(ProceedAction.Nothing);
+                                        DOVirtual.DelayedCall(0.25f, () =>
+                                        {
+                                            photonView.RPC(nameof(ShowStore), RpcTarget.AllBufferedViaServer, turnIndex, false, actionJson, turnIndex);
+                                        });
                                     }
                                 };
 
@@ -638,7 +642,7 @@ namespace Knowlove
                                 text = "Okay",
                                 onClicked = () =>
                                 {
-                                    _gameStuff.DeleteCardFromInventory(0);
+                                    _gameStuff.DeleteCardFromInventory(0, turnIndex);
                                     text += " [ Avoid Going To Single Card Activated ]";
                                 }
                             };
@@ -957,6 +961,7 @@ namespace Knowlove
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
             int turnBank = (int)playerProperties["turnBank"];
             int diceCount = (int)playerProperties["diceCount"];
+            int wallet = (int)playerProperties["wallet"];
 
             int avoidSingleCards = (int)playerProperties["avoidSingleCards"];
             bool protectedFromSingleInRelationship = (bool)playerProperties["protectedFromSingleInRelationship"];
@@ -984,6 +989,13 @@ namespace Knowlove
                             ShowAvoidCardPrompts(diceCount, playerBoardPiece, currentPlayer);
                         });
                     }
+                    else if (wallet > 0 && avoidSingleCards == 0)
+                    {
+                        DOVirtual.DelayedCall(0.3f, () =>
+                        {
+                            ShowOfferToBuyCard(diceCount, playerBoardPiece, currentPlayer, action);
+                        });
+                    }
                     else
                     {
                         diceCount = 1;
@@ -999,6 +1011,13 @@ namespace Knowlove
                         DOVirtual.DelayedCall(0.3f, () =>
                         {
                             ShowAvoidCardPrompts(diceCount, playerBoardPiece, currentPlayer);
+                        });
+                    }
+                    else if (wallet > 0 && avoidSingleCards == 0)
+                    {
+                        DOVirtual.DelayedCall(0.3f, () =>
+                        {
+                            ShowOfferToBuyCard(diceCount, playerBoardPiece, currentPlayer, action);
                         });
                     }
                     else
@@ -1088,6 +1107,20 @@ namespace Knowlove
 
         }
 
+        public void CallAction(PathNode node, ProceedAction action, bool isProceedAction)
+        {
+            photonView.RPC(nameof(RPC_CallAction), RpcTarget.MasterClient, node, action, isProceedAction);
+        }
+
+        [PunRPC]
+        private void RPC_CallAction(PathNode node, ProceedAction action, bool isProceedAction)
+        {
+            if(isProceedAction)
+                ExecuteProceedAction(action, () => { });
+            else
+                HandlePathNodeAction(node.action, node.nodeText, node.rollCheck, node.rollPassed, node.rollFailed);
+        }
+
         private void ShowAvoidCardPrompts(int diceCount, BoardPiece playerBoardPiece, Player currentPlayer)
         {
             string textPromps = "Do you want to use the card Avoid To Single?";
@@ -1096,12 +1129,12 @@ namespace Knowlove
             {
                 new PopupDialog.PopupButton()
                 {
-                        text = "Yes",
-                        buttonColor = PopupDialog.PopupButtonColor.Green,
-                        onClicked = () =>
-                        {
-                            _gameStuff.DeleteCardFromInventory(0);
-                        }
+                    text = "Yes",
+                    buttonColor = PopupDialog.PopupButtonColor.Green,
+                    onClicked = () =>
+                    {
+                        _gameStuff.DeleteCardFromInventory(0, turnIndex);
+                    }
                 },
                 new PopupDialog.PopupButton()
                 {
@@ -1117,6 +1150,56 @@ namespace Knowlove
 
             gameUI.ShowPrompt(textPromps, buttons, currentPlayer);
         }
+
+        private void ShowOfferToBuyCard(int diceCount, BoardPiece playerBoardPiece, Player currentPlayer, ProceedAction action)
+        {
+            string textPromps = "Do you want to buy the card Avoid To Single?";
+
+            PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+            {
+                new PopupDialog.PopupButton()
+                {
+                    text = "Yes",
+                    buttonColor = PopupDialog.PopupButtonColor.Green,
+                    onClicked = () =>
+                    {
+                        string actionJson = JsonUtility.ToJson(action);
+                        bool isProceed = true;
+                        DOVirtual.DelayedCall(0.25f, () =>
+                        {
+                            photonView.RPC(nameof(ShowStore), RpcTarget.AllBufferedViaServer, turnIndex, isProceed, actionJson, 0);
+                        });
+                    }
+                },
+                new PopupDialog.PopupButton()
+                {
+                    text = "no",
+                    buttonColor = PopupDialog.PopupButtonColor.Plain,
+                    onClicked = () =>
+                    {
+                        diceCount = 1;
+                        playerBoardPiece.GoHome(currentPlayer);
+                        EndTurn();
+                    }
+                }
+            };
+
+            gameUI.ShowPrompt(textPromps, buttons, currentPlayer, 0, false);
+        }
+
+        [PunRPC]
+        private void ShowStore(int playerIndex, bool isProceedAction, string actionJSOn, int index)
+        {
+            Player currentPlayer = NetworkManager.Instance.players[playerIndex];
+            
+            if (PhotonNetwork.LocalPlayer == currentPlayer)
+            {
+                ProceedAction action = JsonUtility.FromJson<ProceedAction>(actionJSOn);
+                StoreController.Show();
+
+                StoreController.Instance.SetAction((int)BoardManager.Instance.pieces[index].pathRing, BoardManager.Instance.pieces[index].pathIndex, isProceedAction, action);
+            }
+        } 
 
         public float turnTimer = 30f;
 

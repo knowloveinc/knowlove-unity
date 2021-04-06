@@ -36,6 +36,7 @@ namespace Knowlove
         AdvanceToRelationshipWithProtectionFromSingle
     }
 
+    [System.Serializable]
     public class PathNode : MonoBehaviour
     {
         public string nodeText;

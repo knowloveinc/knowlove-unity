@@ -75,21 +75,35 @@ namespace Knowlove.MyStuffInGame
             });
         }
 
-        public void DeleteCardFromInventory(int idCard)
+        public void DeleteCardFromInventory(int idCard, int turnIndex)
         {
-            if (idCard == 0)
-                DeleteCardFromServer(idAvoidSingleCard);
-            else if (idCard == 1)
-                DeleteCardFromServer(idFlipTheTableCard);
+            photonView.RPC(nameof(RPC_DeleteCardFromInventory), RpcTarget.AllViaServer, idCard, turnIndex);
+        }
+
+        [PunRPC]
+        private void RPC_DeleteCardFromInventory(int idCard, int turnIndex)
+        {
+            Player currentPlayer = NetworkManager.Instance.players[turnIndex];
+
+            if(PhotonNetwork.LocalPlayer == currentPlayer)
+            {
+                if (idCard == 0)
+                    DeleteCardFromServer(idAvoidSingleCard);
+                else if (idCard == 1)
+                    DeleteCardFromServer(idFlipTheTableCard);
+            }
         }
 
         private void DeleteCardFromServer(string cardName)
         {
-            APIManager.AddItem(cardName, _amountDeleteCard, (inventory) =>
+            APIManager.GetUserDetails((user) => 
             {
-                User.current.inventory = inventory;
+                APIManager.AddItem(cardName, _amountDeleteCard, (inventory) =>
+                {
+                    User.current.inventory = inventory;
 
-                GetSpecialCard();
+                    GetSpecialCard();
+                });
             });
         }
     }

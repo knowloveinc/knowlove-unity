@@ -31,6 +31,11 @@ namespace Knowlove.UI
 
         public GameStuff gameStuff;
 
+        private int _path;
+        private int _pathIndex;
+        private bool _isAction = false;
+        private ProceedAction _proceedAction = ProceedAction.Nothing;
+
         private void Awake()
         {
             if (Instance != null) Destroy(this.gameObject);
@@ -64,7 +69,6 @@ namespace Knowlove.UI
 
             Instance.canvasGroup.DOFade(1f, 0.25f).OnComplete(() =>
             {
-
                 Instance.canvasGroup.interactable = true;
                 Instance.canvasGroup.blocksRaycasts = true;
                 Instance.storeWindow.Show();
@@ -76,6 +80,20 @@ namespace Knowlove.UI
             Instance.canvasGroup.alpha = 0;
             Instance.canvasGroup.interactable = false;
             Instance.canvasGroup.blocksRaycasts = false;
+
+            if (_isAction)
+                CallHandlePathNodeAction(true);
+
+            if (_proceedAction != ProceedAction.Nothing)
+                CallHandlePathNodeAction(false);
+        }
+
+        public void SetAction(int path, int pathIndex, bool isActionProceed, ProceedAction action = ProceedAction.Nothing)
+        {
+            _path = path;
+            _pathIndex = pathIndex;
+            _isAction = isActionProceed;
+            _proceedAction = action;
         }
 
         public void OnPurchaseSuccess(Product product)
@@ -223,6 +241,17 @@ namespace Knowlove.UI
             PopupDialog.Instance.Show($"An error occured while trying to initiate your purchase of \"{product.metadata.localizedTitle}\". Reason: {reason}");
         }
 
+        private void CallHandlePathNodeAction(bool isProceedAction)
+        {
+            PathNode node = BoardManager.Instance.paths[_path].nodes[_pathIndex];
+
+            TurnManager.Instance.CallAction(node, _proceedAction, isProceedAction);
+
+            _isAction = false;
+            _path = 0;
+            _pathIndex = 0;
+            _proceedAction = ProceedAction.Nothing;
+        }
     }
 }
 
