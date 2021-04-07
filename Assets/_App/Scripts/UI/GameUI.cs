@@ -519,7 +519,7 @@ namespace Knowlove.UI
                 onCardClicked = () =>
                 {
                     Debug.Log("CARD CLICK RECIEVED ON MASTER, RUNNING HandlePathNodeAction");
-                    TurnManager.HandlePathNodeAction(card.action, card.parentheses, card.rollCheck, card.rollPassed, card.rollFailed, true);
+                    TurnManager.PathNodeActionLogic.HandlePathNodeAction(card.action, card.parentheses, card.rollCheck, card.rollPassed, card.rollFailed, true);
                 };
             }
 
@@ -679,7 +679,7 @@ namespace Knowlove.UI
                     onClicked = () =>
                     {
                         //GameManager.Instance.pieces[turnIndex].GoHome();
-                        TurnManager.ExecuteProceedAction(action, () => { });
+                        TurnManager.Instance.ProceedActionLogic.ExecuteProceedAction(action, () => { });
                     },
                     buttonColor = PopupDialog.PopupButtonColor.Plain
                 };
