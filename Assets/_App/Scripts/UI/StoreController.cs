@@ -31,8 +31,6 @@ namespace Knowlove.UI
 
         public GameStuff gameStuff;
 
-        private int _path;
-        private int _pathIndex;
         private bool _isAction = false;
         private ProceedAction _proceedAction = ProceedAction.Nothing;
 
@@ -81,17 +79,15 @@ namespace Knowlove.UI
             Instance.canvasGroup.interactable = false;
             Instance.canvasGroup.blocksRaycasts = false;
 
-            if (_isAction)
-                CallHandlePathNodeAction(true);
+            if (!_isAction)
+                CallHandlePathNodeAction(false);
 
             if (_proceedAction != ProceedAction.Nothing)
-                CallHandlePathNodeAction(false);
+                CallHandlePathNodeAction(true);
         }
 
-        public void SetAction(int path, int pathIndex, bool isActionProceed, ProceedAction action = ProceedAction.Nothing)
+        public void SetAction(bool isActionProceed, ProceedAction action = ProceedAction.Nothing)
         {
-            _path = path;
-            _pathIndex = pathIndex;
             _isAction = isActionProceed;
             _proceedAction = action;
         }
@@ -243,13 +239,9 @@ namespace Knowlove.UI
 
         private void CallHandlePathNodeAction(bool isProceedAction)
         {
-            PathNode node = BoardManager.Instance.paths[_path].nodes[_pathIndex];
-
-            TurnManager.Instance.CallAction(node, _proceedAction, isProceedAction);
+            TurnManager.Instance.CallAction(_proceedAction, isProceedAction);
 
             _isAction = false;
-            _path = 0;
-            _pathIndex = 0;
             _proceedAction = ProceedAction.Nothing;
         }
     }

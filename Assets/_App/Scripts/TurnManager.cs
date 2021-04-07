@@ -500,6 +500,13 @@ namespace Knowlove
                             buttons.Add(yesBtn);
                             buttons.Add(noBtn);
                         }
+                        else
+                        {
+                            DOVirtual.DelayedCall(0.25f, () =>
+                            {
+                                ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                            });
+                        }
 
                     }
                     else
@@ -528,7 +535,7 @@ namespace Knowlove
                                         string actionJson = JsonUtility.ToJson(ProceedAction.Nothing);
                                         DOVirtual.DelayedCall(0.25f, () =>
                                         {
-                                            photonView.RPC(nameof(ShowStore), RpcTarget.AllBufferedViaServer, turnIndex, false, actionJson, turnIndex);
+                                            photonView.RPC(nameof(ShowStore), RpcTarget.AllBufferedViaServer, turnIndex, false, actionJson);
                                         });
                                     }
                                 };
@@ -538,9 +545,16 @@ namespace Knowlove
                         }
                         else
                         {
-                            piece.GoHome(currentPlayer);
+                            if(wallet > 0)
+                            {
+                                DOVirtual.DelayedCall(0.25f, () =>
+                                {
+                                    ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                                });
+                            }
+                            else
+                                piece.GoHome(currentPlayer);
                         }
-
                     }
 
                     if (!skipPrompt)
@@ -549,7 +563,8 @@ namespace Knowlove
                     }
                     else
                     {
-                        DOVirtual.DelayedCall(1f, () => EndTurn());
+                        if(avoidSingleCards == 0 && wallet == 0)
+                            DOVirtual.DelayedCall(1f, () => EndTurn());
                     }
 
                     break;
@@ -589,8 +604,6 @@ namespace Knowlove
                             Debug.Log("Finished drawing card animation...");
                             gameUI.ShowCard(card);
                         });
-
-
                     }
                     else
                     {
@@ -603,7 +616,35 @@ namespace Knowlove
                         PopupDialog.PopupButton btn;
                         string dialogText = "You settled for someone who didnt meet your non-negotiable list requirements. (Back to single.)";
 
-                        if (!protectedFromSingleInRelationship && avoidSingleCards < 1)
+                        if (!protectedFromSingleInRelationship && avoidSingleCards < 1 && wallet > 0)
+                        {
+                            btn = new PopupDialog.PopupButton()
+                            {
+                                text = "Okay",
+                                onClicked = () =>
+                                {
+                                    piece.GoHome(currentPlayer);
+                                    EndTurn();
+                                }
+                            };
+
+                            PopupDialog.PopupButton openStoreBtn = new PopupDialog.PopupButton()
+                            {
+                                text = "No, i want to buy the Avoid To Single card",
+                                onClicked = () =>
+                                {
+                                    string actionJson = JsonUtility.ToJson(ProceedAction.Nothing);
+                                    DOVirtual.DelayedCall(0.25f, () =>
+                                    {
+                                        photonView.RPC(nameof(ShowStore), RpcTarget.AllBufferedViaServer, turnIndex, false, actionJson);
+                                    });
+                                }
+                            };
+
+                            diceCount = 1;
+                            gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn, openStoreBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[turnIndex].pathRing, false);
+                        }
+                        else if (!protectedFromSingleInRelationship && avoidSingleCards < 1)
                         {
                             btn = new PopupDialog.PopupButton()
                             {
@@ -613,6 +654,7 @@ namespace Knowlove
                                     piece.GoHome(currentPlayer);
                                 }
                             };
+
                             diceCount = 1;
                             gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[turnIndex].pathRing);
                         }
@@ -660,13 +702,20 @@ namespace Knowlove
                     }
                     else
                     {
-                        if (!protectedFromSingleInRelationship)
+                        if (avoidSingleCards > 0 && wallet > 0)
+                        {
+                            DOVirtual.DelayedCall(0.25f, () => 
+                            {
+                                ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                            } );
+                            
+                        } 
+                        else if (!protectedFromSingleInRelationship)
                         {
                             piece.GoHome(currentPlayer);
                             diceCount = 1;
                             EndTurn();
                         }
-
                     }
 
                     break;
@@ -1107,15 +1156,17 @@ namespace Knowlove
 
         }
 
-        public void CallAction(PathNode node, ProceedAction action, bool isProceedAction)
+        public void CallAction(ProceedAction action, bool isProceedAction)
         {
-            photonView.RPC(nameof(RPC_CallAction), RpcTarget.MasterClient, node, action, isProceedAction);
+            photonView.RPC(nameof(RPC_CallAction), RpcTarget.MasterClient, action, isProceedAction);
         }
 
         [PunRPC]
-        private void RPC_CallAction(PathNode node, ProceedAction action, bool isProceedAction)
+        private void RPC_CallAction(ProceedAction action, bool isProceedAction)
         {
-            if(isProceedAction)
+            PathNode node = BoardManager.Instance.paths[(int)BoardManager.Instance.pieces[turnIndex].pathRing].nodes[BoardManager.Instance.pieces[turnIndex].pathIndex];
+
+            if (isProceedAction)
                 ExecuteProceedAction(action, () => { });
             else
                 HandlePathNodeAction(node.action, node.nodeText, node.rollCheck, node.rollPassed, node.rollFailed);
@@ -1167,7 +1218,7 @@ namespace Knowlove
                         bool isProceed = true;
                         DOVirtual.DelayedCall(0.25f, () =>
                         {
-                            photonView.RPC(nameof(ShowStore), RpcTarget.AllBufferedViaServer, turnIndex, isProceed, actionJson, 0);
+                            photonView.RPC(nameof(ShowStore), RpcTarget.AllBufferedViaServer, turnIndex, isProceed, actionJson);
                         });
                     }
                 },
@@ -1188,7 +1239,7 @@ namespace Knowlove
         }
 
         [PunRPC]
-        private void ShowStore(int playerIndex, bool isProceedAction, string actionJSOn, int index)
+        private void ShowStore(int playerIndex, bool isProceedAction, string actionJSOn)
         {
             Player currentPlayer = NetworkManager.Instance.players[playerIndex];
             
@@ -1197,7 +1248,7 @@ namespace Knowlove
                 ProceedAction action = JsonUtility.FromJson<ProceedAction>(actionJSOn);
                 StoreController.Show();
 
-                StoreController.Instance.SetAction((int)BoardManager.Instance.pieces[index].pathRing, BoardManager.Instance.pieces[index].pathIndex, isProceedAction, action);
+                StoreController.Instance.SetAction(isProceedAction, action);
             }
         } 
 
