@@ -4,32 +4,46 @@ using Photon.Pun;
 using UnityEngine;
 using static Knowlove.TurnManager;
 using Knowlove.UI;
+using Knowlove.MyStuffInGame;
 
 namespace Knowlove.ActionAndPathLogic
 {
     public class ProceedActionLogic : MonoBehaviour
     {
         [SerializeField] private TurnManager _turnManager;
+        [SerializeField] private GameStuff _gameStuff;
         [SerializeField] private PathNodeActionLogic _pathNodeActionLogic;
         [SerializeField] private GameUI _gameUI;
 
+        private int _turnBank;
+        private int _diceCount;
+        private int _wallet;
+        private int _avoidSingleCards;
+        private bool _protectedFromSingleInRelationship;
+
+        private int TurnIndex
+        {
+            get => _turnManager.turnIndex;
+        }
+
         public void ExecuteProceedAction(ProceedAction action, System.Action OnFinished)
         {
-            Player currentPlayer = NetworkManager.Instance.players[_turnManager.turnIndex];
+            Player currentPlayer = NetworkManager.Instance.players[TurnIndex];
             Debug.Log("Executing proceed action for player: " + currentPlayer.NickName);
-            BoardPiece playerBoardPiece = BoardManager.Instance.pieces[_turnManager.turnIndex];
+            BoardPiece playerBoardPiece = BoardManager.Instance.pieces[TurnIndex];
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
-            int turnBank = (int)playerProperties["turnBank"];
-            int diceCount = (int)playerProperties["diceCount"];
-            int wallet = (int)playerProperties["wallet"];
 
-            int avoidSingleCards = (int)playerProperties["avoidSingleCards"];
-            bool protectedFromSingleInRelationship = (bool)playerProperties["protectedFromSingleInRelationship"];
+            _turnBank = (int)playerProperties["turnBank"];
+            _diceCount = (int)playerProperties["diceCount"];
+            _wallet = (int)playerProperties["wallet"];
+
+            _avoidSingleCards = (int)playerProperties["avoidSingleCards"];
+            _protectedFromSingleInRelationship = (bool)playerProperties["protectedFromSingleInRelationship"];
 
             switch (action)
             {
                 case ProceedAction.AdvanceToRelationshipWithProtectionFromSingle:
-                    protectedFromSingleInRelationship = true;
+                    _protectedFromSingleInRelationship = true;
 
                     playerBoardPiece.GoToRelationship(currentPlayer, () =>
                     {
@@ -42,25 +56,23 @@ namespace Knowlove.ActionAndPathLogic
 
                 case ProceedAction.BackToSingle:
                     BackToSingle(action, currentPlayer, playerBoardPiece);
+
                     OnFinished?.Invoke();
                     break;
                 case ProceedAction.BackToSingleAndLoseATurn:
                     BackToSingleAndLoseATurn(action, currentPlayer, playerBoardPiece);
+
                     OnFinished?.Invoke();
                     break;
                 case ProceedAction.GoToRelationship:
-
                     playerBoardPiece.GoToRelationship(currentPlayer, () =>
                     {
                         Debug.Log("Finished moving to relationship path.");
                         _turnManager.EndTurn();
                         OnFinished?.Invoke();
                     });
-
                     break;
                 case ProceedAction.GoToMarriage:
-
-                    Debug.Log("MOVING TO MARRIAGE PATH");
                     playerBoardPiece.GoToMarriage(currentPlayer, () =>
                     {
                         Debug.Log("Finished moving to marriage path.");
@@ -69,7 +81,6 @@ namespace Knowlove.ActionAndPathLogic
                     });
                     break;
                 case ProceedAction.GoToKNOWLOVE:
-                    Debug.Log("YOU WON THE GAME!!!!!");
                     _turnManager.turnState = TurnState.GameOver;
 
                     playerBoardPiece.GoToKnowLove(currentPlayer, () =>
@@ -80,24 +91,18 @@ namespace Knowlove.ActionAndPathLogic
                     });
                     break;
                 case ProceedAction.LoseATurn:
-                    if (turnBank > 0) turnBank = 0;
-                    turnBank -= 1;
+                    LoseTurns(1);
 
-                    _turnManager.EndTurn();
                     OnFinished?.Invoke();
                     break;
                 case ProceedAction.LoseTwoTurns:
-                    if (turnBank > 0) turnBank = 0;
-                    turnBank -= 2;
+                    LoseTurns(2);
 
-                    _turnManager.EndTurn();
                     OnFinished?.Invoke();
                     break;
                 case ProceedAction.LoseThreeTurns:
-                    if (turnBank > 0) turnBank = 0;
-                    turnBank -= 3;
+                    LoseTurns(3);
 
-                    _turnManager.EndTurn();
                     OnFinished?.Invoke();
                     break;
                 case ProceedAction.Nothing:
@@ -109,9 +114,9 @@ namespace Knowlove.ActionAndPathLogic
                     break;
             }
 
-            playerProperties["turnBank"] = turnBank;
-            playerProperties["diceCount"] = diceCount;
-            playerProperties["protectedFromSingleInRelationship"] = protectedFromSingleInRelationship;
+            playerProperties["turnBank"] = _turnBank;
+            playerProperties["diceCount"] = _diceCount;
+            playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
             currentPlayer.SetCustomProperties(playerProperties);
         }
 
@@ -119,34 +124,28 @@ namespace Knowlove.ActionAndPathLogic
         {
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
 
-            int turnBank = (int)playerProperties["turnBank"];
-            int diceCount = (int)playerProperties["diceCount"];
-            int wallet = (int)playerProperties["wallet"];
-            int avoidSingleCards = (int)playerProperties["avoidSingleCards"];
-
-            if (avoidSingleCards > 0)
+            if (_avoidSingleCards > 0)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
-                    _turnManager.ShowAvoidCardPrompts(diceCount, playerBoardPiece, currentPlayer);
+                    ShowAvoidCardPrompts(_diceCount, playerBoardPiece, currentPlayer);
                 });
             }
-            else if (wallet > 0 && avoidSingleCards == 0)
+            else if (_wallet > 0 && _avoidSingleCards == 0)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
-                    ShowOfferToBuyCard(diceCount, playerBoardPiece, currentPlayer, action);
+                    ShowOfferToBuyCard(_diceCount, playerBoardPiece, currentPlayer, action);
                 });
             }
             else
             {
-                diceCount = 1;
+                _diceCount = 1;
                 playerBoardPiece.GoHome(currentPlayer);
                 _turnManager.EndTurn();
             }
 
-            playerProperties["turnBank"] = turnBank;
-            playerProperties["diceCount"] = diceCount;
+            playerProperties["diceCount"] = _diceCount;
             currentPlayer.SetCustomProperties(playerProperties);
         }
 
@@ -154,38 +153,37 @@ namespace Knowlove.ActionAndPathLogic
         {
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
 
-            int turnBank = (int)playerProperties["turnBank"];
-            int diceCount = (int)playerProperties["diceCount"];
-            int wallet = (int)playerProperties["wallet"];
-            int avoidSingleCards = (int)playerProperties["avoidSingleCards"];
-
-            if (avoidSingleCards > 0)
+            if (_avoidSingleCards > 0)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
-                    _turnManager.ShowAvoidCardPrompts(diceCount, playerBoardPiece, currentPlayer);
+                    ShowAvoidCardPrompts(_diceCount, playerBoardPiece, currentPlayer);
                 });
             }
-            else if (wallet > 0 && avoidSingleCards == 0)
+            else if (_wallet > 0 && _avoidSingleCards == 0)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
-                    ShowOfferToBuyCard(diceCount, playerBoardPiece, currentPlayer, action);
+                    ShowOfferToBuyCard(_diceCount, playerBoardPiece, currentPlayer, action);
                 });
             }
             else
             {
-                diceCount = 1;
+                _diceCount = 1;
                 playerBoardPiece.GoHome(currentPlayer);
                 _turnManager.EndTurn();
             }
 
-            if (turnBank > 0) turnBank = 0;
+            if (_turnBank > 0) 
+                _turnBank = 0;
 
-            turnBank -= 1;
+            _turnBank -= 1;
+
+            playerProperties["turnBank"] = _turnBank;
+            currentPlayer.SetCustomProperties(playerProperties);
         }
 
-        public void ShowOfferToBuyCard(int diceCount, BoardPiece playerBoardPiece, Player currentPlayer, ProceedAction action)
+        private void ShowOfferToBuyCard(int diceCount, BoardPiece playerBoardPiece, Player currentPlayer, ProceedAction action)
         {
             string textPromps = "Do you want to buy the card Avoid To Single?";
 
@@ -202,7 +200,7 @@ namespace Knowlove.ActionAndPathLogic
 
                         DOVirtual.DelayedCall(0.25f, () =>
                         {
-                            _pathNodeActionLogic.RPC_ShowStore(_turnManager.turnIndex, isProceed, actionJson);
+                            _pathNodeActionLogic.RPC_ShowStore(TurnIndex, isProceed, actionJson);
                         });
                     }
                 },
@@ -220,6 +218,44 @@ namespace Knowlove.ActionAndPathLogic
             };
 
             _gameUI.ShowPrompt(textPromps, buttons, currentPlayer, 0, false);
+        }
+
+        private void ShowAvoidCardPrompts(int diceCount, BoardPiece playerBoardPiece, Player currentPlayer)
+        {
+            string textPromps = "Do you want to use the card Avoid To Single?";
+
+            PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+            {
+                new PopupDialog.PopupButton()
+                {
+                    text = "Yes",
+                    buttonColor = PopupDialog.PopupButtonColor.Green,
+                    onClicked = () =>
+                    {
+                        _gameStuff.DeleteCardFromInventory(0, TurnIndex);
+                    }
+                },
+                new PopupDialog.PopupButton()
+                {
+                    text = "no",
+                    buttonColor = PopupDialog.PopupButtonColor.Plain,
+                    onClicked = () =>
+                    {
+                        diceCount = 1;
+                        playerBoardPiece.GoHome(currentPlayer);
+                    }
+                }
+            };
+
+            _gameUI.ShowPrompt(textPromps, buttons, currentPlayer);
+        }
+
+        private void LoseTurns(int count)
+        {
+            if (_turnBank > 0) _turnBank = 0;
+            _turnBank -= count;
+
+            _turnManager.EndTurn();
         }
     }
 }

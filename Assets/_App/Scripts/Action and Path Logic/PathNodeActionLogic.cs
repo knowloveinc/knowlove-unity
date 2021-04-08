@@ -13,9 +13,22 @@ namespace Knowlove.ActionAndPathLogic
     public class PathNodeActionLogic : MonoBehaviourPunCallbacks
     {
         [SerializeField] private TurnManager _turnManager;
+        [SerializeField] private RollDiceLogic _rollDiceLogic;
         [SerializeField] private GameUI _gameUI;
         [SerializeField] private GameStuff _gameStuff;
         [SerializeField] private ProceedActionLogic _proceedActionLogic;
+
+        private int _turnBank;
+        private int _diceCount;
+        private int _avoidSingleCards;
+        private int _dateCount;
+        private int _wallet;
+        private bool _protectedFromSingleInRelationship;
+
+        private int TurnIndex
+        {
+            get => _turnManager.turnIndex;
+        }
 
         public void HandlePathNodeAction(PathNodeAction action, string text, int rollCheck = 0, ProceedAction onPassed = ProceedAction.Nothing, ProceedAction onFailed = ProceedAction.Nothing, bool skipPrompt = false)
         {
@@ -25,17 +38,17 @@ namespace Knowlove.ActionAndPathLogic
                 return;
             }
 
-            BoardPiece piece = BoardManager.Instance.pieces[_turnManager.turnIndex];
-
-            Player currentPlayer = NetworkManager.Instance.players[_turnManager.turnIndex];
+            BoardPiece piece = BoardManager.Instance.pieces[TurnIndex];
+            Player currentPlayer = NetworkManager.Instance.players[TurnIndex];
 
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
-            int turnBank = (int)playerProperties["turnBank"];
-            int diceCount = (int)playerProperties["diceCount"];
-            int avoidSingleCards = (int)playerProperties["avoidSingleCards"];
-            int dateCount = (int)playerProperties["dateCount"];
-            int wallet = (int)playerProperties["wallet"];
-            bool protectedFromSingleInRelationship = (bool)playerProperties["protectedFromSingleInRelationship"];
+
+            _turnBank = (int)playerProperties["turnBank"];
+            _diceCount = (int)playerProperties["diceCount"];
+            _avoidSingleCards = (int)playerProperties["avoidSingleCards"];
+            _dateCount = (int)playerProperties["dateCount"];
+            _wallet = (int)playerProperties["wallet"];
+            _protectedFromSingleInRelationship = (bool)playerProperties["protectedFromSingleInRelationship"];
 
             switch (action)
             {
@@ -45,305 +58,43 @@ namespace Knowlove.ActionAndPathLogic
                     _turnManager.turnState = TurnState.GameOver;
                     break;
                 case PathNodeAction.BackToSingle:
-                    List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
-
-                    if (avoidSingleCards > 0)
-                    {
-                        if (!skipPrompt)
-                        {
-                            text += " [ Avoid Going To Single Card Activated ]";
-                            PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
-                            {
-                                text = "Okay",
-                                onClicked = () =>
-                                {
-                                    _gameStuff.DeleteCardFromInventory(0, _turnManager.turnIndex);
-                                    _turnManager.EndTurn();
-                                }
-                            };
-
-                            PopupDialog.PopupButton noBtn = new PopupDialog.PopupButton()
-                            {
-                                text = "No, back to single",
-                                onClicked = () =>
-                                {
-                                    piece.GoHome(currentPlayer);
-                                    _turnManager.EndTurn();
-                                }
-                            };
-
-                            buttons.Add(yesBtn);
-                            buttons.Add(noBtn);
-                        }
-                        else
-                        {
-                            DOVirtual.DelayedCall(0.25f, () =>
-                            {
-                                _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
-                            });
-                        }
-
-                    }
-                    else
-                    {
-                        if (!skipPrompt)
-                        {
-                            PopupDialog.PopupButton btn = new PopupDialog.PopupButton()
-                            {
-                                text = "Okay",
-                                onClicked = () =>
-                                {
-                                    piece.GoHome(currentPlayer);
-                                    _turnManager.EndTurn();
-                                }
-                            };
-
-                            buttons.Add(btn);
-
-                            if (wallet > 0)
-                            {
-                                PopupDialog.PopupButton openStoreBtn = new PopupDialog.PopupButton()
-                                {
-                                    text = "No, i want to buy the Avoid To Single card",
-                                    onClicked = () =>
-                                    {
-                                        string actionJson = JsonUtility.ToJson(ProceedAction.Nothing);
-                                        DOVirtual.DelayedCall(0.25f, () =>
-                                        {
-                                            bool isAction = false;
-                                            photonView.RPC(nameof(ShowStore), RpcTarget.AllBufferedViaServer, _turnManager.turnIndex, isAction, actionJson);
-                                        });
-                                    }
-                                };
-
-                                buttons.Add(openStoreBtn);
-                            }
-                        }
-                        else
-                        {
-                            if (wallet > 0)
-                            {
-                                DOVirtual.DelayedCall(0.25f, () =>
-                                {
-                                    _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
-                                });
-                            }
-                            else
-                                piece.GoHome(currentPlayer);
-                        }
-                    }
-
-                    if (!skipPrompt)
-                    {
-                        _gameUI.ShowPrompt(text, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing, false);
-                    }
-                    else
-                    {
-                        if (avoidSingleCards == 0 && wallet == 0)
-                            DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
-                    }
+                    BackToSingle(text, skipPrompt, piece, currentPlayer);
 
                     break;
                 case PathNodeAction.Scenario:
-                    if (text.ToLower().Contains("dating"))
-                    {
-                        CardData card = BoardManager.Instance.DrawCard("dating");
-                        Debug.Log("Got card: " + card.id);
-                        //GameManager.Instance.DrawCardFromDeck("dating", () =>
-                        DOVirtual.DelayedCall(1f, () =>
-                        {
-                            Debug.Log("Finished drawing card animation...");
-                            _gameUI.ShowCard(card);
-                        });
+                    Scenario(text);
 
-                        dateCount++;
-                    }
-                    else if (text.ToLower().Contains("relationship"))
-                    {
-                        CardData card = BoardManager.Instance.DrawCard("relationship");
-                        Debug.Log("Got card: " + card.id);
-                        //GameManager.Instance.DrawCardFromDeck("relationship", () =>
-                        DOVirtual.DelayedCall(1f, () =>
-                        {
-                            Debug.Log("Finished drawing card animation...");
-                            _gameUI.ShowCard(card);
-                        });
-
-                    }
-                    else if (text.ToLower().Contains("marriage"))
-                    {
-                        CardData card = BoardManager.Instance.DrawCard("marriage");
-                        Debug.Log("Got card: " + card.id);
-                        //GameManager.Instance.DrawCardFromDeck("relationship", () =>
-                        DOVirtual.DelayedCall(1f, () =>
-                        {
-                            Debug.Log("Finished drawing card animation...");
-                            _gameUI.ShowCard(card);
-                        });
-                    }
-                    else
-                    {
-                        Debug.LogError("SHOULD NOT BE ABLE TO HIT THIS CASE IN SCENARIO BRANCH: Scenario type was set to = " + text);
-                    }
                     break;
                 case PathNodeAction.BackToSingleOrDisregardBecauseList:
-                    if (!skipPrompt)
-                    {
-                        PopupDialog.PopupButton btn;
-                        string dialogText = "You settled for someone who didnt meet your non-negotiable list requirements. (Back to single.)";
-
-                        if (!protectedFromSingleInRelationship && avoidSingleCards < 1 && wallet > 0)
-                        {
-                            btn = new PopupDialog.PopupButton()
-                            {
-                                text = "Okay",
-                                onClicked = () =>
-                                {
-                                    piece.GoHome(currentPlayer);
-                                    _turnManager.EndTurn();
-                                }
-                            };
-
-                            PopupDialog.PopupButton openStoreBtn = new PopupDialog.PopupButton()
-                            {
-                                text = "No, i want to buy the Avoid To Single card",
-                                onClicked = () =>
-                                {
-                                    string actionJson = JsonUtility.ToJson(ProceedAction.Nothing);
-                                    DOVirtual.DelayedCall(0.25f, () =>
-                                    {
-                                        bool isAction = false;
-                                        photonView.RPC(nameof(ShowStore), RpcTarget.AllBufferedViaServer, _turnManager.turnIndex, isAction, actionJson);
-                                    });
-                                }
-                            };
-
-                            diceCount = 1;
-                            _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn, openStoreBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing, false);
-                        }
-                        else if (!protectedFromSingleInRelationship && avoidSingleCards < 1)
-                        {
-                            btn = new PopupDialog.PopupButton()
-                            {
-                                text = "Okay",
-                                onClicked = () =>
-                                {
-                                    piece.GoHome(currentPlayer);
-                                }
-                            };
-
-                            diceCount = 1;
-                            _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing);
-                        }
-                        else if (protectedFromSingleInRelationship)
-                        {
-                            dialogText = "Your mate matches your non-negotiable list.";
-                            btn = new PopupDialog.PopupButton()
-                            {
-                                text = "Okay",
-                                onClicked = () =>
-                                {
-                                    Debug.Log("Disregarding issues and doing nothing.");
-                                }
-                            };
-
-                            _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing);
-                        }
-                        else if (avoidSingleCards > 0)
-                        {
-
-                            avoidSingleCards--;
-                            Debug.Log("Used avoid card, not sending user back.");
-                            dialogText += "\n\n[Activated Avoid Going to Single Card]";
-
-                            PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
-                            {
-                                text = "Okay",
-                                onClicked = () =>
-                                {
-                                    _gameStuff.DeleteCardFromInventory(0, _turnManager.turnIndex);
-                                    text += " [ Avoid Going To Single Card Activated ]";
-                                }
-                            };
-
-                            PopupDialog.PopupButton noBtn = new PopupDialog.PopupButton()
-                            {
-                                text = "No, back to single",
-                                onClicked = () =>
-                                {
-                                    piece.GoHome(currentPlayer);
-                                }
-                            };
-                            _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { yesBtn, noBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing, true);
-                        }
-                    }
-                    else
-                    {
-                        if (avoidSingleCards > 0 && wallet > 0)
-                        {
-                            DOVirtual.DelayedCall(0.25f, () =>
-                            {
-                                _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
-                            });
-
-                        }
-                        else if (!protectedFromSingleInRelationship)
-                        {
-                            piece.GoHome(currentPlayer);
-                            diceCount = 1;
-                            _turnManager.EndTurn();
-                        }
-                    }
+                    BackToSingleOrDisregardBecauseList(text, skipPrompt, piece, currentPlayer);
 
                     break;
                 case PathNodeAction.AdvanceAndGetAvoidCard:
-                    //Debug.LogError("Advance and Get Avoid going to single card is not added yet. Just advancing instead.");
-
-                    avoidSingleCards++;
-
-                    BoardManager.Instance.DrawCard("avoid");
-                    _gameUI.AvoidSingleCardAnimation(currentPlayer);
-
-                    DOVirtual.DelayedCall(2f, () =>
-                    {
-                        if (piece.pathRing == PathRing.Dating)
-                        {
-                            protectedFromSingleInRelationship = false;
-                            piece.GoToRelationship(currentPlayer);
-                        }
-                        else if (piece.pathRing == PathRing.Relationship)
-                        {
-                            protectedFromSingleInRelationship = false;
-                            piece.GoToMarriage(currentPlayer);
-                        }
-
-                        DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
-                    });
-
+                    AdvanceAndGetAvoidCard(piece, currentPlayer);
 
                     break;
                 case PathNodeAction.AdvanceToNextPath:
                     if (piece.pathRing == PathRing.Dating)
                     {
-                        protectedFromSingleInRelationship = false;
+                        _protectedFromSingleInRelationship = false;
                         piece.GoToRelationship(currentPlayer);
                     }
                     else if (piece.pathRing == PathRing.Relationship)
                     {
-                        protectedFromSingleInRelationship = false;
+                        _protectedFromSingleInRelationship = false;
                         piece.GoToMarriage(currentPlayer);
                     }
                     DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
 
                     break;
                 case PathNodeAction.AdvanceToRelationshipWithProtectionFromSingle:
-                    protectedFromSingleInRelationship = true;
+                    _protectedFromSingleInRelationship = true;
 
                     piece.GoToRelationship(currentPlayer);
 
                     if (!skipPrompt)
                     {
-                        _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing);
+                        _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
                     }
                     else
                     {
@@ -352,87 +103,26 @@ namespace Knowlove.ActionAndPathLogic
 
                     break;
                 case PathNodeAction.LoseTurn:
-
-                    if (turnBank > 0) turnBank = 0;
-
-                    turnBank -= 1;
-
-                    playerProperties["turnBank"] = turnBank;
-
-                    if (!skipPrompt)
-                    {
-                        _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing);
-                    }
-                    else
-                    {
-                        DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
-                    }
+                    LoseTurnsOrRollAgain(text, -1, true, skipPrompt, currentPlayer);
 
                     break;
                 case PathNodeAction.Lose2Turns:
+                    LoseTurnsOrRollAgain(text, -2, true, skipPrompt, currentPlayer);
 
-                    if (turnBank > 0)
-                        turnBank = 0;
-
-                    turnBank -= 2;
-
-                    playerProperties["turnBank"] = turnBank;
-
-                    if (!skipPrompt)
-                    {
-                        _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing);
-                    }
-                    else
-                    {
-                        DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
-                    }
                     break;
                 case PathNodeAction.Lose3Turns:
-                    if (turnBank > 0) turnBank = 0;
+                    LoseTurnsOrRollAgain(text, -3, true, skipPrompt, currentPlayer);
 
-                    turnBank -= 3;
-
-                    playerProperties["turnBank"] = turnBank;
-
-                    if (!skipPrompt)
-                    {
-                        _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing);
-                    }
-                    else
-                    {
-                        DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
-                    }
                     break;
                 case PathNodeAction.RollAgain:
-                    turnBank += 1;
-                    playerProperties["turnBank"] = turnBank;
+                    LoseTurnsOrRollAgain(text, 1, false, skipPrompt, currentPlayer);
 
-
-                    if (!skipPrompt)
-                    {
-                        _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing);
-                    }
-                    else
-                    {
-                        DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
-                    }
                     break;
                 case PathNodeAction.RollAgainTwice:
-                    turnBank += 2;
-                    playerProperties["turnBank"] = turnBank;
-                    currentPlayer.SetCustomProperties(playerProperties);
+                    LoseTurnsOrRollAgain(text, 2, false, skipPrompt, currentPlayer);
 
-                    if (!skipPrompt)
-                    {
-                        _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing);
-                    }
-                    else
-                    {
-                        DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
-                    }
                     break;
                 case PathNodeAction.RollToProceed:
-
                     if (!skipPrompt)
                     {
                         PopupDialog.PopupButton rbtn = new PopupDialog.PopupButton()
@@ -440,33 +130,23 @@ namespace Knowlove.ActionAndPathLogic
                             text = "Roll",
                             onClicked = () =>
                             {
-                                _turnManager.currentRollCheck = rollCheck;
-                                _turnManager.currentOnPassed = onPassed;
-                                _turnManager.currentOnFailed = onFailed;
-                                _turnManager.RollDice(diceCount, "scenario");
+                                Roll(rollCheck, onPassed, onFailed);
                             }
                         };
 
-                        _gameUI.ShowPrompt(text, new PopupDialog.PopupButton[] { rbtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing, false);
+                        _gameUI.ShowPrompt(text, new PopupDialog.PopupButton[] { rbtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
                     }
                     else
-                    {
-                        _turnManager.currentRollCheck = rollCheck;
-                        _turnManager.currentOnPassed = onPassed;
-                        _turnManager.currentOnFailed = onFailed;
-                        _turnManager.RollDice(diceCount, "scenario");
-                    }
+                        Roll(rollCheck, onPassed, onFailed);
 
                     break;
                 case PathNodeAction.RollWith2Dice:
-
-
-                    turnBank += 1; //Award the extra turn
-                    diceCount = 2;
+                    _turnBank += 1; //Award the extra turn
+                    _diceCount = 2;
 
                     if (!skipPrompt)
                     {
-                        _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing);
+                        _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
                     }
                     else
                     {
@@ -476,17 +156,16 @@ namespace Knowlove.ActionAndPathLogic
                     break;
                 case PathNodeAction.Nothing:
                 default:
-                    _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing);
+                    _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
                     break;
             }
 
-            playerProperties["turnBank"] = turnBank;
-            playerProperties["diceCount"] = diceCount;
-            playerProperties["dateCount"] = dateCount;
-            playerProperties["protectedFromSingleInRelationship"] = protectedFromSingleInRelationship;
+            playerProperties["turnBank"] = _turnBank;
+            playerProperties["diceCount"] = _diceCount;
+            playerProperties["dateCount"] = _dateCount;
+            playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
             currentPlayer.SetCustomProperties(playerProperties);
         }
-
 
         public void RPC_ShowStore(int playerIndex, bool isProceedAction, string actionJSOn)
         {
@@ -508,6 +187,292 @@ namespace Knowlove.ActionAndPathLogic
                 StoreController.Show();
 
                 StoreController.Instance.SetAction(isProceedAction, action);
+            }
+        }
+
+        private void Roll(int rollCheck, ProceedAction onPassed, ProceedAction onFailed)
+        {
+            _turnManager.currentRollCheck = rollCheck;
+            _turnManager.currentOnPassed = onPassed;
+            _turnManager.currentOnFailed = onFailed;
+            _rollDiceLogic.RollDice(_diceCount, "scenario");
+        }
+
+        private void BackToSingle(string text, bool skipPrompt, BoardPiece piece, Player currentPlayer)
+        {
+            List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
+
+            if (_avoidSingleCards > 0)
+            {
+                if (!skipPrompt)
+                {
+                    text += " [ Avoid Going To Single Card Activated ]";
+                    PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
+                    {
+                        text = "Okay",
+                        onClicked = () =>
+                        {
+                            _gameStuff.DeleteCardFromInventory(0, TurnIndex);
+                            _turnManager.EndTurn();
+                        }
+                    };
+
+                    PopupDialog.PopupButton noBtn = new PopupDialog.PopupButton()
+                    {
+                        text = "No, back to single",
+                        onClicked = () =>
+                        {
+                            piece.GoHome(currentPlayer);
+                            _turnManager.EndTurn();
+                        }
+                    };
+
+                    buttons.Add(yesBtn);
+                    buttons.Add(noBtn);
+                }
+                else
+                {
+                    DOVirtual.DelayedCall(0.25f, () =>
+                    {
+                        _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                    });
+                }
+
+            }
+            else
+            {
+                if (!skipPrompt)
+                {
+                    PopupDialog.PopupButton btn = new PopupDialog.PopupButton()
+                    {
+                        text = "Okay",
+                        onClicked = () =>
+                        {
+                            piece.GoHome(currentPlayer);
+                            _turnManager.EndTurn();
+                        }
+                    };
+
+                    buttons.Add(btn);
+
+                    if (_wallet > 0)
+                    {
+                        PopupDialog.PopupButton openStoreBtn = new PopupDialog.PopupButton()
+                        {
+                            text = "No, i want to buy the Avoid To Single card",
+                            onClicked = () =>
+                            {
+                                string actionJson = JsonUtility.ToJson(ProceedAction.Nothing);
+                                DOVirtual.DelayedCall(0.25f, () =>
+                                {
+                                    bool isAction = false;
+                                    photonView.RPC(nameof(ShowStore), RpcTarget.AllBufferedViaServer, TurnIndex, isAction, actionJson);
+                                });
+                            }
+                        };
+
+                        buttons.Add(openStoreBtn);
+                    }
+                }
+                else
+                {
+                    if (_wallet > 0)
+                    {
+                        DOVirtual.DelayedCall(0.25f, () =>
+                        {
+                            _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                        });
+                    }
+                    else
+                        piece.GoHome(currentPlayer);
+                }
+            }
+
+            if (!skipPrompt)
+            {
+                _gameUI.ShowPrompt(text, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
+            }
+            else
+            {
+                if (_avoidSingleCards == 0 && _wallet == 0)
+                    DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
+            }
+        }
+
+        private void Scenario(string text)
+        {
+            if (text.ToLower().Contains("dating"))
+            {
+                ShowCardScenario("dating");
+                _dateCount++;
+            }
+            else if (text.ToLower().Contains("relationship"))
+                ShowCardScenario("relationship");
+            else if (text.ToLower().Contains("marriage"))
+                ShowCardScenario("marriage");
+            else
+                Debug.LogError("SHOULD NOT BE ABLE TO HIT THIS CASE IN SCENARIO BRANCH: Scenario type was set to = " + text);
+        }
+
+        private void ShowCardScenario(string scenario)
+        {
+            CardData card = BoardManager.Instance.DrawCard(scenario);
+            Debug.Log("Got card: " + card.id);
+            //GameManager.Instance.DrawCardFromDeck("relationship", () =>
+            DOVirtual.DelayedCall(1f, () =>
+            {
+                Debug.Log("Finished drawing card animation...");
+                _gameUI.ShowCard(card);
+            });
+        }
+
+        private void BackToSingleOrDisregardBecauseList(string text, bool skipPrompt, BoardPiece piece, Player currentPlayer)
+        {
+            if (!skipPrompt)
+            {
+                PopupDialog.PopupButton btn;
+                string dialogText = "You settled for someone who didnt meet your non-negotiable list requirements. (Back to single.)";
+
+                if (!_protectedFromSingleInRelationship && _avoidSingleCards < 1 && _wallet > 0)
+                {
+                    btn = new PopupDialog.PopupButton()
+                    {
+                        text = "Okay",
+                        onClicked = () =>
+                        {
+                            piece.GoHome(currentPlayer);
+                            _turnManager.EndTurn();
+                        }
+                    };
+
+                    PopupDialog.PopupButton openStoreBtn = new PopupDialog.PopupButton()
+                    {
+                        text = "No, i want to buy the Avoid To Single card",
+                        onClicked = () =>
+                        {
+                            string actionJson = JsonUtility.ToJson(ProceedAction.Nothing);
+                            DOVirtual.DelayedCall(0.25f, () =>
+                            {
+                                bool isAction = false;
+                                photonView.RPC(nameof(ShowStore), RpcTarget.AllBufferedViaServer, TurnIndex, isAction, actionJson);
+                            });
+                        }
+                    };
+
+                    _diceCount = 1;
+                    _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn, openStoreBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
+                }
+                else if (!_protectedFromSingleInRelationship && _avoidSingleCards < 1)
+                {
+                    btn = new PopupDialog.PopupButton()
+                    {
+                        text = "Okay",
+                        onClicked = () =>
+                        {
+                            piece.GoHome(currentPlayer);
+                        }
+                    };
+
+                    _diceCount = 1;
+                    _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
+                }
+                else if (_protectedFromSingleInRelationship)
+                {
+                    dialogText = "Your mate matches your non-negotiable list.";
+                    btn = new PopupDialog.PopupButton()
+                    {
+                        text = "Okay",
+                        onClicked = () => { }
+                    };
+
+                    _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
+                }
+                else if (_avoidSingleCards > 0)
+                {
+
+                    _avoidSingleCards--;
+                    Debug.Log("Used avoid card, not sending user back.");
+                    dialogText += "\n\n[Activated Avoid Going to Single Card]";
+
+                    PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
+                    {
+                        text = "Okay",
+                        onClicked = () =>
+                        {
+                            _gameStuff.DeleteCardFromInventory(0, TurnIndex);
+                        }
+                    };
+
+                    PopupDialog.PopupButton noBtn = new PopupDialog.PopupButton()
+                    {
+                        text = "No, back to single",
+                        onClicked = () =>
+                        {
+                            piece.GoHome(currentPlayer);
+                        }
+                    };
+
+                    _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { yesBtn, noBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, true);
+                }
+            }
+            else
+            {
+                if (_avoidSingleCards > 0 && _wallet > 0)
+                {
+                    DOVirtual.DelayedCall(0.25f, () =>
+                    {
+                        _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                    });
+
+                }
+                else if (!_protectedFromSingleInRelationship)
+                {
+                    piece.GoHome(currentPlayer);
+                    _diceCount = 1;
+                    _turnManager.EndTurn();
+                }
+            }
+        }
+
+        private void AdvanceAndGetAvoidCard(BoardPiece piece, Player currentPlayer)
+        {
+            //Debug.LogError("Advance and Get Avoid going to single card is not added yet. Just advancing instead.");
+
+            _avoidSingleCards++;
+
+            BoardManager.Instance.DrawCard("avoid");
+            _gameUI.AvoidSingleCardAnimation(currentPlayer);
+
+            DOVirtual.DelayedCall(2f, () =>
+            {
+                if (piece.pathRing == PathRing.Dating)
+                {
+                    _protectedFromSingleInRelationship = false;
+                    piece.GoToRelationship(currentPlayer);
+                }
+                else if (piece.pathRing == PathRing.Relationship)
+                {
+                    _protectedFromSingleInRelationship = false;
+                    piece.GoToMarriage(currentPlayer);
+                }
+
+                DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
+            });
+        }
+
+        private void LoseTurnsOrRollAgain(string text, int count, bool isLose, bool skipPrompt, Player currentPlayer)
+        {
+            if (_turnBank > 0 && isLose) _turnBank = 0;
+
+            _turnBank += count;
+
+            if (!skipPrompt)
+            {
+                _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
+            }
+            else
+            {
+                DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
             }
         }
     }

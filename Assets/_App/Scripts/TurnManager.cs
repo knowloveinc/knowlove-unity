@@ -4,8 +4,6 @@ using Knowlove.MyStuffInGame;
 using Knowlove.UI;
 using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Knowlove
@@ -16,15 +14,17 @@ namespace Knowlove
 
         public GameUI gameUI;
         public TurnState turnState = TurnState.TurnEnding;
+        public ProceedAction currentOnPassed, currentOnFailed;
 
         public int turnIndex = 0;
+        public int currentRollCheck;
+        public float turnTimer = 30f;
 
         [SerializeField] private GameStuff _gameStuff;
         [SerializeField] private ProceedActionLogic _proceedActionLogic;
         [SerializeField] private PathNodeActionLogic _pathNodeActionLogic;
 
         private bool _didRoll = false;
-        private int _playersReady = 0;
 
         public ProceedActionLogic ProceedActionLogic
         {
@@ -47,6 +47,26 @@ namespace Knowlove
             TurnEnding
         }
 
+        private void Start()
+        {
+            Instance = this;
+            turnIndex = 0;
+
+            Debug.Log("TurnManager.Start()");
+            gameUI.RPC_HideBottomForPlayer();
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                NetworkManager.OnReadyToStart += ShowUserPickCard;
+            }
+        }
+
+        private void Update()
+        {
+            CheckTurnState();
+            UpdateTurnTimer();
+        }
+
         public static event System.Action<Player, ExitGames.Client.Photon.Hashtable> OnReceivedPlayerProps;
 
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
@@ -61,146 +81,6 @@ namespace Knowlove
             }
 
             OnReceivedPlayerProps?.Invoke(targetPlayer, changedProps);
-        }
-
-        private void Start()
-        {
-            Instance = this;
-            _playersReady = 0;
-            turnIndex = 0;
-
-            Debug.Log("TurnManager.Start()");
-            gameUI.RPC_HideBottomForPlayer();
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                NetworkManager.OnReadyToStart += ShowUserPickCard;
-            }
-        }
-
-        void ShowUserPickCard()
-        {
-            DOVirtual.DelayedCall(2f, () =>
-            {
-                CameraManager.Instance.SetCamera(2);
-
-                gameUI.ShowPickCard();
-            });
-        }
-
-        public void ReadyUp()
-        {
-            gameUI.BuildProgressBarList();
-            photonView.RPC("RPC_ReadyUp", RpcTarget.All);
-        }
-
-        [PunRPC]
-        public void RPC_ReadyUp()
-        {
-            if (PhotonNetwork.IsMasterClient && _playersReady < PhotonNetwork.CurrentRoom.MaxPlayers)
-            {
-                _playersReady++;
-
-                if (_playersReady >= PhotonNetwork.CurrentRoom.MaxPlayers)
-                {
-                    //if(players == null || players.Count == 0)
-                    //{
-                    //    players = NetworkManager.Instance.players;
-                    //}
-
-                    int firstPlayerIndex = UnityEngine.Random.Range(0, NetworkManager.Instance.players.Count);
-                    turnIndex = firstPlayerIndex;
-
-                    List<string> playerNames = new List<string>();
-                    int j = firstPlayerIndex;
-
-                    Debug.Log("First player index = " + firstPlayerIndex);
-                    Debug.Log("Player Count: " + NetworkManager.Instance.players.Count);
-                    for (int i = 0; i < NetworkManager.Instance.players.Count; i++)
-                    {
-
-                        Debug.Log("Adding " + NetworkManager.Instance.players[j].NickName);
-                        playerNames.Add(NetworkManager.Instance.players[j].NickName);
-                        j++;
-                        if (j >= NetworkManager.Instance.players.Count)
-                            j = 0;
-                    }
-
-                    Debug.Log("Sending " + playerNames.Count + " names for slot machine thing");
-                    gameUI.ShowPlayerSelection(playerNames.ToArray());
-                }
-            }
-        }
-
-        internal void PlayerDidElapseOneYear()
-        {
-            ExitGames.Client.Photon.Hashtable playerProps = NetworkManager.Instance.players[turnIndex].CustomProperties;
-
-            //TODO: playerProps was null.....
-            int yearsElapsed = (int)playerProps["yearsElapsed"];
-            yearsElapsed++;
-
-            playerProps["yearsElapsed"] = yearsElapsed;
-
-            NetworkManager.Instance.players[turnIndex].SetCustomProperties(playerProps);
-
-            Debug.Log("Years Elapsed increased for " + NetworkManager.Instance.players[turnIndex].NickName + " to " + yearsElapsed);
-        }
-
-        private void OnDiceFinishedRolling(int diceScore, string location)
-        {
-            Debug.Log("OnDiceFinishedRolling()");
-            photonView.RPC("RPC_OnDiceFinished", RpcTarget.All, diceScore, location);
-        }
-
-        [PunRPC]
-        public void RPC_OnDiceFinished(int diceScore, string location)
-        {
-            Debug.Log("RPC_OnDiceFinished()");
-            if (PhotonNetwork.IsMasterClient)
-            {
-                if (location == "board")
-                {
-                    Debug.Log("Handling board roll...");
-                    turnState = TurnState.RollFinished;
-
-                    string playerName = NetworkManager.Instance.players[turnIndex].NickName;
-
-                    gameUI.SetTopText($"{playerName} rolled a {diceScore.ToString("n0")}", "RESULT");
-                    DOVirtual.DelayedCall(1f, () =>
-                    {
-                        CameraManager.Instance.SetCamera(0);
-                        DOVirtual.DelayedCall(1f, () =>
-                        {
-                            AdvanceGamePieceFoward(diceScore);
-                        });
-                    });
-                }
-                else if (location == "scenario")
-                {
-                    Debug.Log("Handling Scenario roll...");
-                    CameraManager.Instance.SetCamera(0);
-                    HandleScenarioRollResult(diceScore, currentRollCheck, currentOnPassed, currentOnFailed);
-                }
-                else
-                    Debug.Log("Wtf happened here....");
-            }
-        }
-
-        public void RollDice(int amount, string location)
-        {
-            photonView.RPC("RPC_RollDice", RpcTarget.All, amount, location);
-        }
-
-        [PunRPC]
-        public void RPC_RollDice(int amount, string location)
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                CameraManager.Instance.SetCamera(1);
-                BoardManager.Instance.RollDice(amount, location);
-                StartCoroutine(WaitForDiceToRoll());
-            }
         }
 
         internal void ReallyStartGame()
@@ -336,119 +216,16 @@ namespace Knowlove
             });
         }
 
-        private void CheckTurnState()
-        {
-            switch (turnState)
-            {
-                case TurnState.ReadyToRoll:
-                    //Debug.Log("STATE: ReadyToRoll");
-                    break;
-                case TurnState.RollFinished:
-                    //Debug.Log("STATE: RollFinished");
-                    break;
-                case TurnState.MovingBoardPiece:
-                    //Debug.Log("STATE: MovingBoardPiece");
-                    break;
-                case TurnState.PieceMoved:
-                    //Debug.Log("STATE: PieceMoved");
-                    turnState = TurnState.BoardTextShowing;
-                    break;
-                case TurnState.BoardTextShowing:
-                    //Debug.Log("STATE: BoardTextShowing");
-                    break;
-                case TurnState.GameOver:
-                    Debug.Log("GameIsOver");
-                    //gameUI.ShowBottomForPlayer(-1);
-                    break;
-            }
-        }
         public void GameOver(string playerName)
         {
             gameUI.HideBottomForEveryone();
-            photonView.RPC("RPC_GameOver", RpcTarget.All, playerName);
+            photonView.RPC(nameof(RPC_GameOver), RpcTarget.All, playerName);
         }
 
         [PunRPC]
         public void RPC_GameOver(string playerName)
         {
             gameUI.ShowGameOver(playerName);
-        }
-
-        private void AdvanceGamePieceFoward(int spaces)
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                turnState = TurnState.MovingBoardPiece;
-                gameUI.SetTopText("Moving...", "PLEASE WAIT");
-                StartCoroutine(WaitForGamepieceToMove());
-                BoardManager.Instance.photonView.RPC("RPC_MoveBoardPiece", RpcTarget.All, turnIndex, spaces);
-            }
-        }
-
-        IEnumerator WaitForGamepieceToMove()
-        {
-            BoardManager.Instance.movingBoardPiece = true;
-
-            while (BoardManager.Instance.movingBoardPiece == true)
-            { yield return null; }
-
-            GameManager_OnGamePieceFinishedMoving();
-        }
-
-        private void GameManager_OnGamePieceFinishedMoving()
-        {
-            turnState = TurnState.PieceMoved;
-            gameUI.SetTopText("", "");
-            ExecutePathNode((int)BoardManager.Instance.pieces[turnIndex].pathRing, BoardManager.Instance.pieces[turnIndex].pathIndex);
-        }
-
-        public void ExecutePathNode(int path, int pathIndex)
-        {
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                Debug.LogError("Tried running ExecutePathNode on non-master client");
-                return;
-            }
-
-            PathNode node = BoardManager.Instance.paths[path].nodes[pathIndex];
-
-            _pathNodeActionLogic.HandlePathNodeAction(node.action, node.nodeText, node.rollCheck, node.rollPassed, node.rollFailed);
-
-            Debug.Log("Finished executing path node: " + node.action.ToString());
-        }
-
-        IEnumerator WaitForDiceToRoll()
-        {
-            while (!BoardManager.Instance.diceFinishedRolling)
-            {
-                yield return null;
-            }
-
-            OnDiceFinishedRolling(BoardManager.Instance.diceScore, BoardManager.Instance.diceRollLocation);
-        }
-
-        public int currentRollCheck;
-        public ProceedAction currentOnPassed, currentOnFailed;
-
-
-        void HandleScenarioRollResult(int diceScore, int rollCheck, ProceedAction onPassed, ProceedAction onFailed)
-        {
-            if (diceScore >= rollCheck)
-            {
-                _proceedActionLogic.ExecuteProceedAction(onPassed, () =>
-                {
-                    Debug.Log("PROCEED ACTION FINISHED IN PASSED STATE");
-                    EndTurn();
-                });
-            }
-            else
-            {
-                _proceedActionLogic.ExecuteProceedAction(onFailed, () =>
-                {
-                    Debug.Log("PROCEED ACTION FINISHED IN FAILED STATE");
-                    EndTurn();
-                });
-            }
         }
 
         [ContextMenu("Make Current Player Win")]
@@ -509,13 +286,6 @@ namespace Knowlove
             NetworkManager.Instance.players[turnIndex].SetCustomProperties(props);
         }
 
-        private void Update()
-        {
-            CheckTurnState();
-            UpdateTurnTimer();
-
-        }
-
         public void CallAction(ProceedAction action, bool isProceedAction)
         {
             photonView.RPC(nameof(RPC_CallAction), RpcTarget.MasterClient, action, isProceedAction);
@@ -532,58 +302,71 @@ namespace Knowlove
                 _pathNodeActionLogic.HandlePathNodeAction(node.action, node.nodeText, node.rollCheck, node.rollPassed, node.rollFailed);
         }
 
-        public void ShowAvoidCardPrompts(int diceCount, BoardPiece playerBoardPiece, Player currentPlayer)
+        internal void PlayerDidElapseOneYear()
         {
-            string textPromps = "Do you want to use the card Avoid To Single?";
+            ExitGames.Client.Photon.Hashtable playerProps = NetworkManager.Instance.players[turnIndex].CustomProperties;
 
-            PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
-            {
-                new PopupDialog.PopupButton()
-                {
-                    text = "Yes",
-                    buttonColor = PopupDialog.PopupButtonColor.Green,
-                    onClicked = () =>
-                    {
-                        _gameStuff.DeleteCardFromInventory(0, turnIndex);
-                    }
-                },
-                new PopupDialog.PopupButton()
-                {
-                    text = "no",
-                    buttonColor = PopupDialog.PopupButtonColor.Plain,
-                    onClicked = () =>
-                    {
-                        diceCount = 1;
-                        playerBoardPiece.GoHome(currentPlayer);
-                    }
-                }
-            };
+            //TODO: playerProps was null.....
+            int yearsElapsed = (int)playerProps["yearsElapsed"];
+            yearsElapsed++;
 
-            gameUI.ShowPrompt(textPromps, buttons, currentPlayer);
+            playerProps["yearsElapsed"] = yearsElapsed;
+
+            NetworkManager.Instance.players[turnIndex].SetCustomProperties(playerProps);
+
+            Debug.Log("Years Elapsed increased for " + NetworkManager.Instance.players[turnIndex].NickName + " to " + yearsElapsed);
         }
 
-        public float turnTimer = 30f;
-
-        void UpdateTurnTimer()
+        private void UpdateTurnTimer()
         {
             if (PhotonNetwork.IsMasterClient && turnState != TurnState.GameOver && turnState != TurnState.TurnEnding)
             {
 
                 if (NetworkManager.Instance.players[turnIndex].IsInactive)
-                {
                     turnTimer -= Time.deltaTime;
-                }
                 else
-                {
                     turnTimer = 31f;
-                }
-
 
                 if (turnTimer <= 0)
-                {
                     EndTurn();
-                }
             }
+        }
+
+        private void CheckTurnState()
+        {
+            switch (turnState)
+            {
+                case TurnState.ReadyToRoll:
+                    //Debug.Log("STATE: ReadyToRoll");
+                    break;
+                case TurnState.RollFinished:
+                    //Debug.Log("STATE: RollFinished");
+                    break;
+                case TurnState.MovingBoardPiece:
+                    //Debug.Log("STATE: MovingBoardPiece");
+                    break;
+                case TurnState.PieceMoved:
+                    //Debug.Log("STATE: PieceMoved");
+                    turnState = TurnState.BoardTextShowing;
+                    break;
+                case TurnState.BoardTextShowing:
+                    //Debug.Log("STATE: BoardTextShowing");
+                    break;
+                case TurnState.GameOver:
+                    Debug.Log("GameIsOver");
+                    //gameUI.ShowBottomForPlayer(-1);
+                    break;
+            }
+        }
+
+        private void ShowUserPickCard()
+        {
+            DOVirtual.DelayedCall(2f, () =>
+            {
+                CameraManager.Instance.SetCamera(2);
+
+                gameUI.ShowPickCard();
+            });
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

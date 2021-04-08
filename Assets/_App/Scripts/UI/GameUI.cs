@@ -13,45 +13,44 @@ using UnityEngine.UI;
 
 namespace Knowlove.UI
 {
-    public class GameUI : MonoBehaviourPun
+    public class GameUI : MonoBehaviourPunCallbacks
     {
-        [SerializeField] TurnManager TurnManager;
+        [SerializeField] private TurnManager TurnManager;
+        [SerializeField] private RollDiceLogic _rollDiceLogic;
+        [SerializeField] private ReadyPlayers _readyPlayers;
 
-        [SerializeField] RectTransform topPanel;
-        [SerializeField] TextMeshProUGUI topText, topTitle;
+        [SerializeField] private RectTransform topPanel;
+        [SerializeField] private TextMeshProUGUI topText, topTitle;
 
+        [SerializeField] private RectTransform bottomPanel;
+        [SerializeField] private Button bottomButton;
+        [SerializeField] private TextMeshProUGUI bottomButtonLabel;
 
-        [SerializeField] RectTransform bottomPanel;
-        [SerializeField] Button bottomButton;
-        [SerializeField] TextMeshProUGUI bottomButtonLabel;
+        [SerializeField] private StatsPanel statsPanel;
 
-        [SerializeField] StatsPanel statsPanel;
+        [SerializeField] private RectTransform cardUIObj;
 
-        [SerializeField]
-        RectTransform cardUIObj;
+        [SerializeField] private Button cardUIButton;
 
-        [SerializeField]
-        Button cardUIButton;
+        [SerializeField] private TextMeshProUGUI cardUIText;
 
-        [SerializeField]
-        TextMeshProUGUI cardUIText;
+        [SerializeField] private GameObject playerProgressTemplate;
 
+        [SerializeField] private Transform playerProgressContainer;
 
-        [SerializeField]
-        GameObject playerProgressTemplate;
+        [SerializeField] private RectTransform menuRect;
 
-        [SerializeField]
-        Transform playerProgressContainer;
-
-        [SerializeField]
-        RectTransform menuRect;
-
-        [SerializeField]
-        TextMeshProUGUI playerSlotText;
+        [SerializeField] private TextMeshProUGUI playerSlotText;
 
         private void Start()
         {
             playerProgressTemplate.SetActive(false);
+        }
+
+        private void Update()
+        {
+            SetStats();
+            UpdateTimerText();
         }
 
         public void CloseMenu()
@@ -64,12 +63,11 @@ namespace Knowlove.UI
             menuRect.DOAnchorPosX(0, 0.2f);
         }
 
-
         internal void ShowPickCard()
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                photonView.RPC("RPC_ShowPickCard", RpcTarget.All);
+                photonView.RPC(nameof(RPC_ShowPickCard), RpcTarget.All);
             }
         }
 
@@ -83,7 +81,7 @@ namespace Knowlove.UI
         {
             Debug.Log("SENDING SHOW SLOTS MESSAGE");
             //slotMachine.Init();
-            photonView.RPC("RPC_ShowPlayerSelection", RpcTarget.All, playerNames, 0);
+            photonView.RPC(nameof(RPC_ShowPlayerSelection), RpcTarget.All, playerNames, 0);
         }
 
         [PunRPC]
@@ -91,14 +89,13 @@ namespace Knowlove.UI
         {
             Debug.Log("SHOWING SLOTS" + playerNames.Length);
 
-
             StartCoroutine(DOShowPlayerNames(playerNames));
         }
 
         [SerializeField]
-        SlotMachine slotMachine;
+        private SlotMachine _slotMachine;
 
-        IEnumerator DOShowPlayerNames(string[] playerNames)
+        private IEnumerator DOShowPlayerNames(string[] playerNames)
         {
             Debug.Log("SHOW SLOTS COROUTINE");
             float delay = 0.001f;
@@ -109,11 +106,9 @@ namespace Knowlove.UI
 
             if (PhotonNetwork.CurrentRoom.MaxPlayers > 1)
             {
-
                 for (int i = 0; i < 151; i++)
                 {
                     Debug.Log(playerNames.Length);
-
 
                     playerSlotText.text = playerNames[j];
                     j++;
@@ -130,7 +125,6 @@ namespace Knowlove.UI
                 }
 
                 group.DOFade(0f, 0.5f).SetDelay(2f);
-
             }
             else
             {
@@ -139,16 +133,13 @@ namespace Knowlove.UI
                 group.DOFade(0f, 0.5f).SetDelay(2f);
             }
 
-
             yield return new WaitForSeconds(2f);
+
             if (PhotonNetwork.IsMasterClient)
-            {
                 TurnManager.Instance.ReallyStartGame();
-            }
         }
 
         public ListCard[] listCards;
-
 
         public ListCard selectedCard;
 
@@ -167,86 +158,80 @@ namespace Knowlove.UI
         }
 
         [SerializeField]
-        Transform cardPickerPanel;
+        private Transform _cardPickerPanel;
 
         [SerializeField]
-        RectTransform listCardContainer;
+        private RectTransform _listCardContainer;
 
         [SerializeField]
-        RectTransform[] listCardUIObjs;
+        private RectTransform[] _listCardUIObjs;
 
         public void ShowCardPickerPanel()
         {
             //put the container below the screen and swipe it up into view.
-            listCardContainer.anchoredPosition = new Vector3(0f, -1080f, 0f);
-            listCardContainer.DOAnchorPosY(0f, 0.5f);
+            _listCardContainer.anchoredPosition = new Vector3(0f, -1080f, 0f);
+            _listCardContainer.DOAnchorPosY(0f, 0.5f);
 
-            cardPickerPanel.gameObject.SetActive(true);
+            _cardPickerPanel.gameObject.SetActive(true);
 
-
-
-            for (int i = 0; i < listCardUIObjs.Length; i++)
+            for (int i = 0; i < _listCardUIObjs.Length; i++)
             {
-                listCardUIObjs[i].GetComponent<CanvasGroup>().alpha = 1f;
+                _listCardUIObjs[i].GetComponent<CanvasGroup>().alpha = 1f;
             }
-
-
         }
 
         [SerializeField]
-        TextMeshProUGUI listText;
+        private TextMeshProUGUI _listText;
 
         [SerializeField]
-        GameObject listCardButton;
+        private GameObject _listCardButton;
 
         public void OnListCardSelected(int index)
         {
-            listText.text = selectedCard.text.Replace("\\n", "\n");
+            _listText.text = selectedCard.text.Replace("\\n", "\n");
 
-            for (int i = 0; i < listCardUIObjs.Length; i++)
+            for (int i = 0; i < _listCardUIObjs.Length; i++)
             {
                 if (i != index)
                 {
-                    listCardUIObjs[i].DOAnchorPosY(-1080f, 0.5f);
-                    listCardUIObjs[i].DOScale(0f, 0.2f);
+                    _listCardUIObjs[i].DOAnchorPosY(-1080f, 0.5f);
+                    _listCardUIObjs[i].DOScale(0f, 0.2f);
                 }
                 else
                 {
-                    listCardUIObjs[i].DOAnchorPos(new Vector2(0f, 0f), 0.2f);
-                    listCardUIObjs[i].DORotate(new Vector3(0f, 0f, 0f), 0.2f);
-                    listCardUIObjs[i].DOScale(1.5f, 0.2f);
-                    listCardUIObjs[i].GetComponent<CanvasGroup>().DOFade(0f, 0.5f).SetDelay(1f).OnComplete(() =>
+                    _listCardUIObjs[i].DOAnchorPos(new Vector2(0f, 0f), 0.2f);
+                    _listCardUIObjs[i].DORotate(new Vector3(0f, 0f, 0f), 0.2f);
+                    _listCardUIObjs[i].DOScale(1.5f, 0.2f);
+                    _listCardUIObjs[i].GetComponent<CanvasGroup>().DOFade(0f, 0.5f).SetDelay(1f).OnComplete(() =>
                     {
-                        listCardButton.SetActive(true);
+                        _listCardButton.SetActive(true);
 
                         DOVirtual.DelayedCall(0.3f, () =>
                         {
-                            didReadyUp = false;
+                            _didReadyUp = false;
                             ShowListPanel(true);
-                            cardPickerPanel.gameObject.SetActive(false);
+                            _cardPickerPanel.gameObject.SetActive(false);
                         });
                     });
                 }
             }
-
         }
 
         [SerializeField]
-        GameObject listPanel;
+        private GameObject _listPanel;
 
         public void ForceShowListPanel(Player player)
         {
-            photonView.RPC("RPC_ForceShowListPanel", player);
+            photonView.RPC(nameof(RPC_ForceShowListPanel), player);
         }
 
-        bool showBottomAfterClosingListPanel = false;
+        private bool _showBottomAfterClosingListPanel = false;
 
         [PunRPC]
         public void RPC_ForceShowListPanel()
         {
-            showBottomAfterClosingListPanel = true;
+            _showBottomAfterClosingListPanel = true;
             ShowListPanel(true);
-
         }
 
         public void ShowListPanel()
@@ -254,38 +239,33 @@ namespace Knowlove.UI
             ShowListPanel(true);
         }
 
-        bool didReadyUp = false;
+        private bool _didReadyUp = false;
 
         public void ShowListPanel(bool showHelper = false)
         {
-            listPanel.gameObject.SetActive(true);
-            listPanel.transform.Find("helper").gameObject.SetActive(showHelper);
-
+            _listPanel.gameObject.SetActive(true);
+            _listPanel.transform.Find("helper").gameObject.SetActive(showHelper);
         }
 
         public void HideListPanel()
         {
             Debug.Log("<color=Red>HideListPanel()</color>");
 
-            listPanel.gameObject.SetActive(false);
+            _listPanel.gameObject.SetActive(false);
 
-            if (!didReadyUp)
+            if (!_didReadyUp)
             {
-                didReadyUp = true;
-                TurnManager.ReadyUp();
+                _didReadyUp = true;
+                _readyPlayers.ReadyUp();
             }
 
-            if (showBottomAfterClosingListPanel)
+            if (_showBottomAfterClosingListPanel)
             {
-                showBottomAfterClosingListPanel = false;
+                _showBottomAfterClosingListPanel = false;
                 int index = NetworkManager.Instance.players.IndexOf(PhotonNetwork.LocalPlayer);
                 Debug.Log("<color=Cyan>Current Player Index = " + index + "</color>");
                 ShowBottomForPlayer(index);
-
             }
-
-
-
         }
 
         public void ExitGame()
@@ -297,24 +277,20 @@ namespace Knowlove.UI
         {
             PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
             {
-            new PopupDialog.PopupButton()
-            {
-                text = "Yes, Leave",
-                onClicked = () =>
+                new PopupDialog.PopupButton()
                 {
-                    PhotonNetwork.LeaveRoom();
+                    text = "Yes, Leave",
+                    onClicked = () =>
+                    {
+                        PhotonNetwork.LeaveRoom();
+                    },
+                    buttonColor = PopupDialog.PopupButtonColor.Red
                 },
-                buttonColor = PopupDialog.PopupButtonColor.Red
-
-            },
-            new PopupDialog.PopupButton()
-            {
-                text = "Nevermind",
-                onClicked = () =>
+                new PopupDialog.PopupButton()
                 {
-
+                    text = "Nevermind",
+                    onClicked = () => { }
                 }
-            }
             };
 
             PopupDialog.Instance.Show("Really Leave Game?", "If you leave this match, it will end the game for all players. Are you sure you want to leave? (Please be considerate of others.)", buttons);
@@ -322,7 +298,7 @@ namespace Knowlove.UI
 
         public void BuildProgressBarList()
         {
-            photonView.RPC("RPC_BuildProgressBarList", RpcTarget.All);
+            photonView.RPC(nameof(RPC_BuildProgressBarList), RpcTarget.All);
         }
         [PunRPC]
         public void RPC_BuildProgressBarList()
@@ -342,15 +318,12 @@ namespace Knowlove.UI
 
                 PlayerProgress p = obj.GetComponent<PlayerProgress>();
                 p.Init(NetworkManager.Instance.players[i]);
-
             }
         }
 
-
-
         public void SetTopText(string text, string title = "TURN")
         {
-            photonView.RPC("RPC_SetTopText", RpcTarget.All, text, title);
+            photonView.RPC(nameof(RPC_SetTopText), RpcTarget.All, text, title);
         }
 
         [PunRPC]
@@ -360,45 +333,28 @@ namespace Knowlove.UI
             topTitle.text = title;
 
             if (topTitle.text.ToLower().Contains("turn") && topText.text.ToLower().Contains(PhotonNetwork.LocalPlayer.NickName.ToLower()))
-            {
                 topText.text = "YOUR TURN";
-            }
 
             if (topText.text.ToLower().Contains("rolled a "))
-            {
                 topText.text = topText.text.Replace(PhotonNetwork.LocalPlayer.NickName, "You");
-            }
 
             topText.text.Replace("[host]", "");
-
-        }
-
-        private void Update()
-        {
-            SetStats();
-            UpdateTimerText();
         }
 
         [SerializeField]
-        TextMeshProUGUI timerText;
+        private TextMeshProUGUI _timerText;
 
         void UpdateTimerText()
         {
             if (TurnManager.Instance.turnState != TurnManager.TurnState.GameOver && TurnManager.Instance.turnState != TurnManager.TurnState.TurnEnding)
             {
                 if (TurnManager.Instance.turnTimer <= 0f || TurnManager.Instance.turnTimer > 30f)
-                {
-                    timerText.text = "";
-                }
+                    _timerText.text = "";
                 else
-                {
-                    timerText.text = TurnManager.Instance.turnTimer.ToString("n0");
-                }
+                    _timerText.text = TurnManager.Instance.turnTimer.ToString("n0");
             }
             else
-            {
-                timerText.text = "";
-            }
+                _timerText.text = "";
         }
 
         internal void SetStats()
@@ -420,7 +376,6 @@ namespace Knowlove.UI
 
         public void ShowBottomForPlayer(int index)
         {
-
             Debug.Log("NetworkManager.Instance.players.Count = " + NetworkManager.Instance.players.Count);
 
             for (int i = 0; i < NetworkManager.Instance.players.Count; i++)
@@ -428,26 +383,23 @@ namespace Knowlove.UI
                 if (i == index)
                 {
                     Debug.Log("Trying to show bottom for " + NetworkManager.Instance.players[i].NickName);
-                    photonView.RPC("RPC_ShowBottomForPlayer", NetworkManager.Instance.players[i]);
+                    photonView.RPC(nameof(RPC_ShowBottomForPlayer), NetworkManager.Instance.players[i]);
                 }
                 else
                 {
-                    photonView.RPC("RPC_HideBottomForPlayer", NetworkManager.Instance.players[i]);
+                    photonView.RPC(nameof(RPC_HideBottomForPlayer), NetworkManager.Instance.players[i]);
                 }
             }
-
-
         }
 
         public void HideBottomForEveryone()
         {
-            photonView.RPC("RPC_HideBottomForPlayer", RpcTarget.All);
+            photonView.RPC(nameof(RPC_HideBottomForPlayer), RpcTarget.All);
         }
 
         [PunRPC]
         public void RPC_ShowBottomForPlayer()
         {
-
             mapWindow.SetActive(false);
             mapButton.SetActive(true);
 
@@ -465,7 +417,7 @@ namespace Knowlove.UI
             {
                 mapWindow.SetActive(false);
                 mapButton.SetActive(false);
-                TurnManager.RollDice(diceCount, "board");
+                _rollDiceLogic.RollDice(diceCount, "board");
 
                 bottomButton.interactable = false;
                 bottomPanel.DOAnchorPosY(-bottomPanel.sizeDelta.y, 0.5f);
@@ -478,7 +430,6 @@ namespace Knowlove.UI
             {
                 bottomButton.interactable = true;
             });
-
         }
 
         [PunRPC]
@@ -490,15 +441,11 @@ namespace Knowlove.UI
             bottomPanel.DOAnchorPosY(-bottomPanel.sizeDelta.y, 0.5f);
         }
 
-
-        private List<System.Action> promptButtonActions = new List<Action>();
-
+        private List<System.Action> _promptButtonActions = new List<Action>();
 
         public void ShowCard(CardData card)
         {
             //Only the master can call this... All players should then get the RPC to show the card
-
-
             if (!PhotonNetwork.IsMasterClient)
             {
                 Debug.LogError("DO NOT RUN ShowCard() ON NON-MASTER CLIENTS");
@@ -523,19 +470,18 @@ namespace Knowlove.UI
                 };
             }
 
-            waitingClickFromUserNickName = NetworkManager.Instance.players[TurnManager.turnIndex].NickName;
+            _waitingClickFromUserNickName = NetworkManager.Instance.players[TurnManager.turnIndex].NickName;
             foreach (Player player in NetworkManager.Instance.players)
             {
                 Debug.LogWarning("-------");
                 Debug.Log("Player Nickname: " + player.NickName);
                 Debug.LogWarning("Player ID: " + player.UserId);
             }
-            Debug.Log("Set waiting User ID to " + waitingClickFromUserNickName);
-
+            Debug.Log("Set waiting User ID to " + _waitingClickFromUserNickName);
 
             bool isFancyCard = card.action == PathNodeAction.AdvanceToRelationshipWithProtectionFromSingle;
 
-            photonView.RPC("RPC_ShowCard", RpcTarget.All, card.text + "(" + card.parentheses + ")", NetworkManager.Instance.players[TurnManager.turnIndex], (int)BoardManager.Instance.pieces[TurnManager.turnIndex].pathRing, isFancyCard);
+            photonView.RPC(nameof(RPC_ShowCard), RpcTarget.All, card.text + "(" + card.parentheses + ")", NetworkManager.Instance.players[TurnManager.turnIndex], (int)BoardManager.Instance.pieces[TurnManager.turnIndex].pathRing, isFancyCard);
         }
 
 
@@ -588,7 +534,6 @@ namespace Knowlove.UI
                 //});
             }
 
-
             CanvasGroup scenarioTextGroup = cardUIObj.Find("SCENARIO").GetComponent<CanvasGroup>();
             TextMeshProUGUI scenarioText = scenarioTextGroup.GetComponent<TextMeshProUGUI>();
             string scenarioTextStr = PhotonNetwork.LocalPlayer.NickName.ToLower() != targetPlayer.NickName.ToLower() ? $"<size=30>{targetPlayer.NickName.Replace("[host]", "").Trim()} Got A</size>\n" : "<size=30>You Got A</size>\n";
@@ -609,14 +554,12 @@ namespace Knowlove.UI
                     scenarioTextGroup.alpha = 0f;
                 });
             });
-
-
         }
 
         public void OnCardClicked()
         {
             Debug.Log("CLICKED CARD: Calling RPC NOW");
-            photonView.RPC("RPC_OnCardClicked", RpcTarget.All, PhotonNetwork.LocalPlayer.NickName);
+            photonView.RPC(nameof(RPC_OnCardClicked), RpcTarget.All, PhotonNetwork.LocalPlayer.NickName);
 
             //Go ahead and hide the card immediately for the player who clicked on it, incase there is any delay in the response returning to them
             HideCard();
@@ -624,26 +567,24 @@ namespace Knowlove.UI
 
         public System.Action onCardClicked = null;
 
-        string waitingClickFromUserNickName = null;
+        private string _waitingClickFromUserNickName = null;
 
         [PunRPC]
         public void RPC_OnCardClicked(string userNickname)
         {
             Debug.Log("RPC_OnCardClicked()");
 
-            Debug.Log(waitingClickFromUserNickName);
+            Debug.Log(_waitingClickFromUserNickName);
 
-            if (PhotonNetwork.IsMasterClient && !string.IsNullOrEmpty(waitingClickFromUserNickName) && userNickname == waitingClickFromUserNickName)
+            if (PhotonNetwork.IsMasterClient && !string.IsNullOrEmpty(_waitingClickFromUserNickName) && userNickname == _waitingClickFromUserNickName)
             {
                 //The correct user has clicked and we are running on the master client, execute the proper response from the cache
                 onCardClicked?.Invoke();
 
-                if (userNickname == waitingClickFromUserNickName)
-                    photonView.RPC("RPC_HideCard", RpcTarget.All);
+                if (userNickname == _waitingClickFromUserNickName)
+                    photonView.RPC(nameof(RPC_HideCard), RpcTarget.All);
             }
-
             //If the user who clicked is the one we were waiting on, go ahead and hide the card for everyone.
-
         }
 
         [PunRPC]
@@ -652,9 +593,8 @@ namespace Knowlove.UI
             HideCard();
         }
 
-        public void HideCard()
+        private void HideCard()
         {
-
             CanvasGroup cg = cardUIObj.GetComponent<CanvasGroup>();
 
             if (cg.interactable == false) return; //This means we already started hiding it and dont need to do it again.
@@ -690,8 +630,6 @@ namespace Knowlove.UI
             return buttons.ToArray();
         }
 
-
-
         public void ShowPrompt(string text, PopupDialog.PopupButton[] buttons = null, Player player = null, int bgColor = 0, bool autoEndTurn = true)
         {
             if (!PhotonNetwork.IsMasterClient)
@@ -705,7 +643,6 @@ namespace Knowlove.UI
                 Debug.LogError("NEVER CALL THIS WITH PLAYER == NULL");
                 return;
             }
-
 
             PopupDialog.PopupButton[] btns = buttons;
             List<string> buttonTexts = new List<string>();
@@ -741,34 +678,33 @@ namespace Knowlove.UI
             {
                 btns = new PopupDialog.PopupButton[]
                 {
-                new PopupDialog.PopupButton()
-                {
-                    text = "Okay",
-                    onClicked = () =>
+                    new PopupDialog.PopupButton()
                     {
-                        SoundManager.Instance.PlaySound("confirm");
-
-                        if(doEndTurn)
+                        text = "Okay",
+                        onClicked = () =>
                         {
-                            DOVirtual.DelayedCall(1f, () =>
+                            SoundManager.Instance.PlaySound("confirm");
+
+                            if(doEndTurn)
                             {
-                                Debug.Log("Ending turn after dialog prompt button click.");
-                                TurnManager.EndTurn();
-                            });
+                                DOVirtual.DelayedCall(1f, () =>
+                                {
+                                    Debug.Log("Ending turn after dialog prompt button click.");
+                                    TurnManager.EndTurn();
+                                });
+                            }
                         }
                     }
-                }
                 };
             }
 
-
             //Store the buttons here on the master so when the client makes the RPC_PromptResponse call we can reference the proper onClick events.
-            currentButtons = btns;
+            _currentButtons = btns;
 
-            photonView.RPC("RPC_ShowPrompt", RpcTarget.All, text, buttonTexts.ToArray(), player, bgColor);
+            photonView.RPC(nameof(RPC_ShowPrompt), RpcTarget.All, text, buttonTexts.ToArray(), player, bgColor);
         }
 
-        PopupDialog.PopupButton[] currentButtons;
+        private PopupDialog.PopupButton[] _currentButtons;
 
         [PunRPC]
         public void RPC_ShowPrompt(string text, string[] buttonTexts, Player player, int bgColor = 0)
@@ -776,9 +712,7 @@ namespace Knowlove.UI
             List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
 
             if (buttonTexts == null || buttonTexts.Length == 0)
-            {
                 buttonTexts = new string[] { "Okay" };
-            }
 
             int i = 0;
             foreach (string buttonText in buttonTexts)
@@ -787,7 +721,7 @@ namespace Knowlove.UI
                 buttons.Add(new PopupDialog.PopupButton()
                 {
                     text = buttonText,
-                    onClicked = () => { photonView.RPC("RPC_PromptResponse", RpcTarget.All, index, player); }
+                    onClicked = () => { photonView.RPC(nameof(RPC_PromptResponse), RpcTarget.All, index, player); }
                 });
 
                 i++;
@@ -803,35 +737,24 @@ namespace Knowlove.UI
         {
             if (PhotonNetwork.IsMasterClient)
             {
-
-                if (currentButtons == null || currentButtons.Length == 0 || buttonIndex >= currentButtons.Length)
-                {
+                if (_currentButtons == null || _currentButtons.Length == 0 || buttonIndex >= _currentButtons.Length)
                     return;
-                }
 
-                currentButtons[buttonIndex].onClicked.Invoke();
+                _currentButtons[buttonIndex].onClicked.Invoke();
             }
 
             if (PhotonNetwork.LocalPlayer != player)
-            {
                 PopupDialog.Instance.Close();
-            }
-
-
         }
-
-
-
 
         internal void AvoidSingleCardAnimation(Player player)
         {
             if (player == null) return;
 
-            photonView.RPC("RPC_AvoidSingleCardAnimation", RpcTarget.All, player);
+            photonView.RPC(nameof(RPC_AvoidSingleCardAnimation), RpcTarget.All, player);
         }
 
-        [SerializeField]
-        RectTransform avoidSingleCardSprite;
+        [SerializeField] private RectTransform _avoidSingleCardSprite;
 
         [PunRPC]
         public void RPC_AvoidSingleCardAnimation(Player player)
@@ -851,39 +774,33 @@ namespace Knowlove.UI
             if (targetPlayerBar == null)
                 return;
 
-            avoidSingleCardSprite.anchoredPosition = new Vector2(0f, -1080f);
-            avoidSingleCardSprite.localScale = new Vector3(0.1f, .1f, .1f);
-            DOTween.Kill(avoidSingleCardSprite);
-            avoidSingleCardSprite.DORotate(new Vector3(0f, 0f, 360f * 3f), 0.22f);
-            avoidSingleCardSprite.DOScale(Vector3.one, 0.25f).OnComplete(() =>
+            _avoidSingleCardSprite.anchoredPosition = new Vector2(0f, -1080f);
+            _avoidSingleCardSprite.localScale = new Vector3(0.1f, .1f, .1f);
+            DOTween.Kill(_avoidSingleCardSprite);
+            _avoidSingleCardSprite.DORotate(new Vector3(0f, 0f, 360f * 3f), 0.22f);
+            _avoidSingleCardSprite.DOScale(Vector3.one, 0.25f).OnComplete(() =>
             {
-                avoidSingleCardSprite.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), 0.25f);
+                _avoidSingleCardSprite.DOPunchScale(new Vector3(0.1f, 0.1f, 0.1f), 0.25f);
             });
-            avoidSingleCardSprite.DOAnchorPos(Vector2.zero, 0.25f).OnComplete(() =>
+            _avoidSingleCardSprite.DOAnchorPos(Vector2.zero, 0.25f).OnComplete(() =>
             {
                 Vector2 targetPos = targetPlayerBar != null ? targetPlayerBar.GetComponent<RectTransform>().anchoredPosition : Vector2.zero;
-                avoidSingleCardSprite.DOAnchorPos(targetPos, 0.5f).SetDelay(1f);
-                avoidSingleCardSprite.DOScale(Vector3.zero, 0.5f).SetDelay(1f).OnComplete(() =>
+                _avoidSingleCardSprite.DOAnchorPos(targetPos, 0.5f).SetDelay(1f);
+                _avoidSingleCardSprite.DOScale(Vector3.zero, 0.5f).SetDelay(1f).OnComplete(() =>
                 {
                     Debug.Log("Avoid signle card animation finished");
                 });
             });
         }
 
-
-
-
-
         [SerializeField]
-        Window_GameOver gameOverWindow;
+        private Window_GameOver _gameOverWindow;
 
         public void ShowGameOver(string winnerName)
         {
-            gameOverWindow.Init(winnerName);
-            gameOverWindow.Show();
-
+            _gameOverWindow.Init(winnerName);
+            _gameOverWindow.Show();
         }
-
     }
 }
 

@@ -9,24 +9,18 @@ namespace Knowlove.UI
 {
     public class StartupCanvas : MonoBehaviour
     {
-        [SerializeField]
-        Window pickModeWindow, loginWindow, settingsWindow, createMatchWindow, matchListWindow, waitingForPlayersWindow;
+        [SerializeField] private Window pickModeWindow, loginWindow, settingsWindow, createMatchWindow, matchListWindow, waitingForPlayersWindow;
 
-        [SerializeField]
-        AudioMixer mixer;
+        [SerializeField] private AudioMixer mixer;
 
         private void Start()
         {
-
-
             matchListWindow.Hide();
             settingsWindow.Hide();
             createMatchWindow.Hide();
             waitingForPlayersWindow.Hide();
 
-
             mixer.SetFloat("MasterVolume", Mathf.Log(GameSettings.Volume) * 20f);
-
 
             if (User.current == null || string.IsNullOrEmpty(User.current._id))
             {
@@ -38,8 +32,6 @@ namespace Knowlove.UI
                 loginWindow.Hide();
                 pickModeWindow.Show();
             }
-
-
 
 #if UNITY_ANDROID
         string appId = CBSettings.getSelectAndroidAppId();
@@ -79,7 +71,6 @@ namespace Knowlove.UI
             PlayRewardedVideo();
         }
 
-
         public void QuitApplication()
         {
             PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
@@ -106,10 +97,7 @@ namespace Knowlove.UI
             PopupDialog.Instance.Show("Close Know Love", "Are you sure you want to exit Know Love?", buttons);
         }
 
-
-
-
-        void SetupDelegates()
+        private void SetupDelegates()
         {
             // Listen to all impression-related events
             Chartboost.didInitialize += didInitialize;
@@ -191,12 +179,11 @@ namespace Knowlove.UI
             Debug.Log("Failed to record click");
         }
 
-        bool initialized = false;
+        private bool initialized = false;
 
         private void didInitialize(bool initialized)
         {
             this.initialized = initialized;
-
         }
     }
 }
