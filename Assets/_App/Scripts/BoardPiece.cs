@@ -7,7 +7,6 @@ using Photon.Realtime;
 
 namespace Knowlove
 {
-
     public class BoardPiece : MonoBehaviourPun
     {
         public Transform startingPoint;

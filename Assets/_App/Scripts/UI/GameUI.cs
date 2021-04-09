@@ -1,5 +1,5 @@
 ﻿using DG.Tweening;
-using GameBrewStudios;
+using Knowlove.FlipTheTableLogic;
 using Knowlove.UI.Menus;
 using Lean.Touch;
 using Photon.Pun;
@@ -18,6 +18,7 @@ namespace Knowlove.UI
         [SerializeField] private TurnManager TurnManager;
         [SerializeField] private RollDiceLogic _rollDiceLogic;
         [SerializeField] private ReadyPlayers _readyPlayers;
+        [SerializeField] private FlipTheTable _flipTheTable;
 
         [SerializeField] private RectTransform topPanel;
         [SerializeField] private TextMeshProUGUI topText, topTitle;
@@ -45,12 +46,23 @@ namespace Knowlove.UI
         private void Start()
         {
             playerProgressTemplate.SetActive(false);
+            _flipTheTable.StartedFlipTable += SetActiveObject;
         }
 
         private void Update()
         {
             SetStats();
             UpdateTimerText();
+        }
+
+        private void OnDestroy()
+        {
+            _flipTheTable.StartedFlipTable -= SetActiveObject;
+        }
+
+        public void SetActiveObject(bool isActive)
+        {
+            gameObject.SetActive(isActive);
         }
 
         public void CloseMenu()
@@ -69,12 +81,6 @@ namespace Knowlove.UI
             {
                 photonView.RPC(nameof(RPC_ShowPickCard), RpcTarget.All);
             }
-        }
-
-        [System.Serializable]
-        public class ListCard
-        {
-            public string text;
         }
 
         public void ShowPlayerSelection(string[] playerNames)
@@ -454,7 +460,6 @@ namespace Knowlove.UI
 
             if (card.isPrompt)
             {
-
                 onCardClicked = () =>
                 {
                     Debug.Log("CARD CLICK RECIEVED ON MASTER, RUNNING ShowPrompt for current user");
@@ -803,4 +808,3 @@ namespace Knowlove.UI
         }
     }
 }
-
