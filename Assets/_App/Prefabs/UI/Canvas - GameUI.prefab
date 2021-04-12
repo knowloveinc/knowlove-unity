@@ -2027,6 +2027,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d3522fd7819894ca85450829e60a00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TurnManager: {fileID: 0}
   winnerNameLabel: {fileID: 4592793376188914136}
   groups:
   - {fileID: 4592793376167980234}
@@ -2289,8 +2290,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4592793376371565628}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 8227643772261465500}
+        m_TargetAssemblyTypeName: Knowlove.UI.MenuPanel, Assembly-CSharp
         m_MethodName: LeaveMatch
         m_Mode: 1
         m_Arguments:
@@ -2947,6 +2948,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29f8dba726799fc4fae3c117097b5fe7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TurnManager: {fileID: 0}
   label: {fileID: 4592793375088098462}
   rect: {fileID: 4592793374872587092}
   arrow: {fileID: 4592793376303316308}
@@ -3139,6 +3141,8 @@ GameObject:
   - component: {fileID: 4592793374926524944}
   - component: {fileID: 4592793374926524946}
   - component: {fileID: 4592793374926524947}
+  - component: {fileID: 2984383006864944017}
+  - component: {fileID: 7681502942000214363}
   m_Layer: 5
   m_Name: Panel - HUD
   m_TagString: Untagged
@@ -3212,6 +3216,47 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2984383006864944017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793374926524945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a71f923ca76d424498275849048aa43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TurnManager: {fileID: 0}
+  _rollDiceLogic: {fileID: 0}
+  _pathNodeActionLogic: {fileID: 0}
+  _moveBoardPiece: {fileID: 0}
+  topPanel: {fileID: 4592793374390777264}
+  topText: {fileID: 4592793376128456323}
+  topTitle: {fileID: 4592793375727693144}
+--- !u!114 &7681502942000214363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793374926524945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4592793374958256843
 GameObject:
   m_ObjectHideFlags: 0
@@ -6108,6 +6153,8 @@ GameObject:
   - component: {fileID: 4592793375643160965}
   - component: {fileID: 4592793375643160962}
   - component: {fileID: 4592793375643160963}
+  - component: {fileID: 4592793375008395355}
+  - component: {fileID: 7482341522862317666}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -6242,6 +6289,47 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &4592793375008395355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793375643160961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18f9a314f217a024d83781fe43553b33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TurnManager: {fileID: 0}
+  _bottomPanel: {fileID: 4592793375008395361}
+  _gamePrompt: {fileID: 0}
+  _pathNodeActionLogic: {fileID: 0}
+  cardUIObj: {fileID: 4592793375643160960}
+  cardUIButton: {fileID: 4592793375643160962}
+  cardUIText: {fileID: 4592793375004649695}
+--- !u!114 &7482341522862317666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793375643160961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4592793375723699679
 GameObject:
   m_ObjectHideFlags: 0
@@ -6529,6 +6617,8 @@ GameObject:
   - component: {fileID: 4592793375746190091}
   - component: {fileID: 4592793375746190088}
   - component: {fileID: 4592793375746190089}
+  - component: {fileID: 4592793375008395357}
+  - component: {fileID: 4592793375008395358}
   m_Layer: 5
   m_Name: SLOTS (1)
   m_TagString: Untagged
@@ -6666,6 +6756,43 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &4592793375008395357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793375746190103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52671288f77dee4faa7fdd90f6d53a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _slotMachine: {fileID: 4592793374677614601}
+  playerSlotText: {fileID: 4592793375746190088}
+  _readyPlayers: {fileID: 0}
+--- !u!114 &4592793375008395358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793375746190103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4592793375763026674
 GameObject:
   m_ObjectHideFlags: 0
@@ -6832,6 +6959,8 @@ GameObject:
   - component: {fileID: 4592793375768894097}
   - component: {fileID: 4592793375768894110}
   - component: {fileID: 4592793375768894111}
+  - component: {fileID: 4592793375008395356}
+  - component: {fileID: 6140458998922343477}
   m_Layer: 5
   m_Name: Panel - Players Progress
   m_TagString: Untagged
@@ -6923,6 +7052,43 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &4592793375008395356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793375768894109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e3dcf2fcc9f7c9469642a1886e498f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _readyPlayers: {fileID: 0}
+  playerProgressTemplate: {fileID: 4592793375815793519}
+  playerProgressContainer: {fileID: 4592793375768894108}
+--- !u!114 &6140458998922343477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793375768894109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4592793375771581874
 GameObject:
   m_ObjectHideFlags: 0
@@ -7598,8 +7764,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4592793376371565628}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 8227643772261465500}
+        m_TargetAssemblyTypeName: Knowlove.UI.MenuPanel, Assembly-CSharp
         m_MethodName: CloseMenu
         m_Mode: 1
         m_Arguments:
@@ -8105,8 +8271,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4592793376371565628}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 8227643772261465500}
+        m_TargetAssemblyTypeName: Knowlove.UI.MenuPanel, Assembly-CSharp
         m_MethodName: OpenMenu
         m_Mode: 1
         m_Arguments:
@@ -8218,6 +8384,8 @@ GameObject:
   - component: {fileID: 4592793376064156032}
   - component: {fileID: 4592793376064156034}
   - component: {fileID: 4592793376064156035}
+  - component: {fileID: 4592793375008395361}
+  - component: {fileID: 4592793375008395360}
   m_Layer: 5
   m_Name: Bottom
   m_TagString: Untagged
@@ -8283,6 +8451,47 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4592793375008395361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793376064156033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e965189145df7a14f8960c25ed21d555, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapWindow: {fileID: 4592793374899439767}
+  mapButton: {fileID: 4592793375264815690}
+  TurnManager: {fileID: 0}
+  _rollDiceLogic: {fileID: 0}
+  bottomPanel: {fileID: 4592793376064156032}
+  bottomButton: {fileID: 4592793375003833724}
+  bottomButtonLabel: {fileID: 4592793374551266324}
+--- !u!114 &4592793375008395360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793376064156033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4592793376101453555
 GameObject:
   m_ObjectHideFlags: 0
@@ -8647,6 +8856,7 @@ GameObject:
   - component: {fileID: 4592793376164178073}
   - component: {fileID: 4592793376164178150}
   - component: {fileID: 4592793376164178151}
+  - component: {fileID: 8227643772261465500}
   m_Layer: 5
   m_Name: Panel - Menu
   m_TagString: Untagged
@@ -8740,6 +8950,19 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &8227643772261465500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793376164178149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a395e2fda8a47b489d361743e4dd549, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuRect: {fileID: 4592793376164178148}
 --- !u!1 &4592793376167980246
 GameObject:
   m_ObjectHideFlags: 0
@@ -9476,6 +9699,8 @@ GameObject:
   - component: {fileID: 4592793376267385451}
   - component: {fileID: 4592793376267385448}
   - component: {fileID: 4592793376267385449}
+  - component: {fileID: 3259302697878684667}
+  - component: {fileID: 4312974785294559535}
   m_Layer: 5
   m_Name: Avoid Single Card
   m_TagString: Untagged
@@ -9595,6 +9820,44 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &3259302697878684667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793376267385463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 586a85d6c6b897341ad61db4750109e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _avoidSingleCardSprite: {fileID: 4592793376267385462}
+  playerProgressContainer: {fileID: 4592793375768894108}
+  _pathNodeActionLogic: {fileID: 0}
+  _proceedActionLogic: {fileID: 0}
+--- !u!114 &4312974785294559535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793376267385463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4592793376287348120
 GameObject:
   m_ObjectHideFlags: 0
@@ -10210,7 +10473,7 @@ GameObject:
   - component: {fileID: 4592793376371565627}
   - component: {fileID: 4592793376371565624}
   - component: {fileID: 4592793376371565628}
-  - component: {fileID: 3642969599473009722}
+  - component: {fileID: 2671829163638109473}
   m_Layer: 5
   m_Name: Canvas - GameUI
   m_TagString: Untagged
@@ -10318,23 +10581,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TurnManager: {fileID: 0}
-  _rollDiceLogic: {fileID: 0}
+  _flipTheTable: {fileID: 0}
   _readyPlayers: {fileID: 0}
-  topPanel: {fileID: 4592793374390777264}
-  topText: {fileID: 4592793375727693144}
-  topTitle: {fileID: 4592793376128456323}
-  bottomPanel: {fileID: 4592793376064156032}
-  bottomButton: {fileID: 4592793375003833724}
-  bottomButtonLabel: {fileID: 4592793374551266324}
+  _bottomPanel: {fileID: 4592793375008395361}
   statsPanel: {fileID: 4592793374872587080}
-  cardUIObj: {fileID: 4592793375643160960}
-  cardUIButton: {fileID: 4592793375643160962}
-  cardUIText: {fileID: 4592793375004649695}
-  playerProgressTemplate: {fileID: 4592793375815793519}
-  playerProgressContainer: {fileID: 4592793375768894108}
-  menuRect: {fileID: 4592793376164178148}
-  playerSlotText: {fileID: 4592793375746190088}
-  _slotMachine: {fileID: 4592793374677614601}
   listCards:
   - text: "He or She...\\n- Must believe in a Higher Power\\n- Must be spiritual\\n-
       Must be naturally satisfied with being his or her authentic self\\n- Must have
@@ -10414,11 +10664,7 @@ MonoBehaviour:
   _listCardButton: {fileID: 4592793374730706750}
   _listPanel: {fileID: 4592793375471678581}
   _timerText: {fileID: 4592793375175611767}
-  mapWindow: {fileID: 4592793374899439767}
-  mapButton: {fileID: 4592793375264815690}
-  _avoidSingleCardSprite: {fileID: 4592793376267385462}
-  _gameOverWindow: {fileID: 4592793374754643047}
---- !u!114 &3642969599473009722
+--- !u!114 &2671829163638109473
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

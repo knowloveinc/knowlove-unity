@@ -21,6 +21,11 @@ namespace Knowlove.FlipTheTableLogic
             get => _rotationPosition;
         }
 
+        public Rigidbody Rigidbody
+        {
+            get => _rigidbodyComponent;
+        }
+
         private void Awake()
         {
             _rigidbodyComponent = GetComponent<Rigidbody>();

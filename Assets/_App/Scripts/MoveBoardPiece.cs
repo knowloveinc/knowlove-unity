@@ -1,6 +1,7 @@
 ﻿using Knowlove.ActionAndPathLogic;
 using Knowlove.UI;
 using Photon.Pun;
+using System;
 using System.Collections;
 using UnityEngine;
 using static Knowlove.TurnManager;
@@ -10,15 +11,16 @@ namespace Knowlove
     public class MoveBoardPiece : MonoBehaviourPunCallbacks
     {
         [SerializeField] private TurnManager _turnManager;
-        [SerializeField] private GameUI _gameUI;
         [SerializeField] private PathNodeActionLogic _pathNodeActionLogic;
+
+        public Action<string, string> ShowedStatePiece;
 
         public void AdvanceGamePieceFoward(int spaces)
         {
             if (PhotonNetwork.IsMasterClient)
             {
                 _turnManager.turnState = TurnState.MovingBoardPiece;
-                _gameUI.SetTopText("Moving...", "PLEASE WAIT");
+                ShowedStatePiece?.Invoke("Moving...", "PLEASE WAIT");
                 StartCoroutine(WaitForGamepieceToMove());
                 BoardManager.Instance.photonView.RPC("RPC_MoveBoardPiece", RpcTarget.All, _turnManager.turnIndex, spaces);
             }
@@ -37,7 +39,7 @@ namespace Knowlove
         private void GameManager_OnGamePieceFinishedMoving()
         {
             _turnManager.turnState = TurnState.PieceMoved;
-            _gameUI.SetTopText("", "");
+            ShowedStatePiece?.Invoke("", "");
             ExecutePathNode((int)BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing, BoardManager.Instance.pieces[_turnManager.turnIndex].pathIndex);
         }
 

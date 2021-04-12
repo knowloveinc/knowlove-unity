@@ -7,14 +7,16 @@ using DG.Tweening;
 using Knowlove.UI;
 using static Knowlove.TurnManager;
 using Knowlove.MyStuffInGame;
+using System;
 
 namespace Knowlove.ActionAndPathLogic
 {
     public class PathNodeActionLogic : MonoBehaviourPunCallbacks
     {
+        public delegate void ShowedPrompts(string text, PopupDialog.PopupButton[] buttons = null, Player player = null, int bgColor = 0, bool autoEndTurn = true);
+
         [SerializeField] private TurnManager _turnManager;
         [SerializeField] private RollDiceLogic _rollDiceLogic;
-        [SerializeField] private GameUI _gameUI;
         [SerializeField] private GameStuff _gameStuff;
         [SerializeField] private ProceedActionLogic _proceedActionLogic;
 
@@ -24,6 +26,12 @@ namespace Knowlove.ActionAndPathLogic
         private int _dateCount;
         private int _wallet;
         private bool _protectedFromSingleInRelationship;
+
+        public Action<Player> UsedAvoidSingleCard;
+        public Action<string, string> WentToKnowLove;
+        public Action<CardData> PickedCardScenario;
+
+        public event ShowedPrompts ChoicedOfPlayer;
 
         private int TurnIndex
         {
@@ -54,7 +62,7 @@ namespace Knowlove.ActionAndPathLogic
             {
                 case PathNodeAction.GoToKNOWLOVE:
                     piece.GoToKnowLove(currentPlayer);
-                    _gameUI.SetTopText("Won the Game!", currentPlayer.NickName);
+                    WentToKnowLove?.Invoke("Won the Game!", currentPlayer.NickName);
                     _turnManager.turnState = TurnState.GameOver;
                     break;
                 case PathNodeAction.BackToSingle:
@@ -93,13 +101,9 @@ namespace Knowlove.ActionAndPathLogic
                     piece.GoToRelationship(currentPlayer);
 
                     if (!skipPrompt)
-                    {
-                        _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
-                    }
+                        ChoicedOfPlayer?.Invoke(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
                     else
-                    {
                         DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
-                    }
 
                     break;
                 case PathNodeAction.LoseTurn:
@@ -134,7 +138,7 @@ namespace Knowlove.ActionAndPathLogic
                             }
                         };
 
-                        _gameUI.ShowPrompt(text, new PopupDialog.PopupButton[] { rbtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
+                        ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { rbtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
                     }
                     else
                         Roll(rollCheck, onPassed, onFailed);
@@ -145,18 +149,14 @@ namespace Knowlove.ActionAndPathLogic
                     _diceCount = 2;
 
                     if (!skipPrompt)
-                    {
-                        _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
-                    }
+                        ChoicedOfPlayer?.Invoke(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
                     else
-                    {
                         DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
-                    }
 
                     break;
                 case PathNodeAction.Nothing:
                 default:
-                    _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
+                    ChoicedOfPlayer?.Invoke(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
                     break;
             }
 
@@ -212,8 +212,10 @@ namespace Knowlove.ActionAndPathLogic
                         text = "Okay",
                         onClicked = () =>
                         {
+                            UsedAvoidSingleCard?.Invoke(currentPlayer);
                             _gameStuff.DeleteCardFromInventory(0, TurnIndex);
-                            _turnManager.EndTurn();
+                            
+                            DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
                         }
                     };
 
@@ -289,9 +291,7 @@ namespace Knowlove.ActionAndPathLogic
             }
 
             if (!skipPrompt)
-            {
-                _gameUI.ShowPrompt(text, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
-            }
+                ChoicedOfPlayer?.Invoke(text, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
             else
             {
                 if (_avoidSingleCards == 0 && _wallet == 0)
@@ -322,7 +322,7 @@ namespace Knowlove.ActionAndPathLogic
             DOVirtual.DelayedCall(1f, () =>
             {
                 Debug.Log("Finished drawing card animation...");
-                _gameUI.ShowCard(card);
+                PickedCardScenario?.Invoke(card);
             });
         }
 
@@ -360,7 +360,7 @@ namespace Knowlove.ActionAndPathLogic
                     };
 
                     _diceCount = 1;
-                    _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn, openStoreBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
+                    ChoicedOfPlayer?.Invoke(dialogText, new PopupDialog.PopupButton[] { btn, openStoreBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
                 }
                 else if (!_protectedFromSingleInRelationship && _avoidSingleCards < 1)
                 {
@@ -374,7 +374,7 @@ namespace Knowlove.ActionAndPathLogic
                     };
 
                     _diceCount = 1;
-                    _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
+                    ChoicedOfPlayer?.Invoke(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
                 }
                 else if (_protectedFromSingleInRelationship)
                 {
@@ -385,7 +385,7 @@ namespace Knowlove.ActionAndPathLogic
                         onClicked = () => { }
                     };
 
-                    _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
+                    ChoicedOfPlayer?.Invoke(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
                 }
                 else if (_avoidSingleCards > 0)
                 {
@@ -399,6 +399,7 @@ namespace Knowlove.ActionAndPathLogic
                         text = "Okay",
                         onClicked = () =>
                         {
+                            UsedAvoidSingleCard?.Invoke(currentPlayer);
                             _gameStuff.DeleteCardFromInventory(0, TurnIndex);
                         }
                     };
@@ -412,7 +413,7 @@ namespace Knowlove.ActionAndPathLogic
                         }
                     };
 
-                    _gameUI.ShowPrompt(dialogText, new PopupDialog.PopupButton[] { yesBtn, noBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, true);
+                    ChoicedOfPlayer?.Invoke(dialogText, new PopupDialog.PopupButton[] { yesBtn, noBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, true);
                 }
             }
             else
@@ -438,10 +439,8 @@ namespace Knowlove.ActionAndPathLogic
         {
             //Debug.LogError("Advance and Get Avoid going to single card is not added yet. Just advancing instead.");
 
-            _avoidSingleCards++;
-
             BoardManager.Instance.DrawCard("avoid");
-            _gameUI.AvoidSingleCardAnimation(currentPlayer);
+            UsedAvoidSingleCard?.Invoke(currentPlayer);
 
             DOVirtual.DelayedCall(2f, () =>
             {
@@ -467,13 +466,9 @@ namespace Knowlove.ActionAndPathLogic
             _turnBank += count;
 
             if (!skipPrompt)
-            {
-                _gameUI.ShowPrompt(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
-            }
+                ChoicedOfPlayer?.Invoke(text, null, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
             else
-            {
                 DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
-            }
         }
     }
 }

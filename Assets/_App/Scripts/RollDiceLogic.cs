@@ -2,6 +2,7 @@
 using Knowlove.ActionAndPathLogic;
 using Knowlove.UI;
 using Photon.Pun;
+using System;
 using System.Collections;
 using UnityEngine;
 using static Knowlove.TurnManager;
@@ -11,9 +12,10 @@ namespace Knowlove
     public class RollDiceLogic : MonoBehaviourPunCallbacks
     {
         [SerializeField] private TurnManager _turnManager;
-        [SerializeField] private GameUI _gameUI;
         [SerializeField] private ProceedActionLogic _proceedActionLogic;
         [SerializeField] private MoveBoardPiece _moveBoardPiece;
+
+        public Action<string, string> DiceFinishedRoll;
 
         public void RollDice(int amount, string location)
         {
@@ -59,7 +61,7 @@ namespace Knowlove
 
                     string playerName = NetworkManager.Instance.players[_turnManager.turnIndex].NickName;
 
-                    _gameUI.SetTopText($"{playerName} rolled a {diceScore.ToString("n0")}", "RESULT");
+                    DiceFinishedRoll?.Invoke($"{playerName} rolled a {diceScore.ToString("n0")}", "RESULT");
                     DOVirtual.DelayedCall(1f, () =>
                     {
                         CameraManager.Instance.SetCamera(0);

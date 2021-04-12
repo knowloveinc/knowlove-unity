@@ -17,6 +17,7 @@ namespace Knowlove.FlipTheTableLogic
         [SerializeField] private float y = 1200f;
         [SerializeField] private float z = 500f;
         [SerializeField] private float speed = 1f;
+        [SerializeField] private int cameraNumber = 0;
 
         private bool[] _isMoveFinish;
         private bool _isMove;
@@ -45,7 +46,8 @@ namespace Knowlove.FlipTheTableLogic
         [ContextMenu("Flip")]
         public void FlipTable()
         {
-            photonView.RPC(nameof(RPC_FlipTable), RpcTarget.AllBufferedViaServer);
+            if(!_isMove)
+                photonView.RPC(nameof(RPC_FlipTable), RpcTarget.AllBufferedViaServer);
         }
 
         [ContextMenu("CollectFlip")]
@@ -58,22 +60,36 @@ namespace Knowlove.FlipTheTableLogic
         private void RPC_FlipTable()
         {
             StartedFlipTable?.Invoke(false);
+            CameraManager.Instance.SetCamera(cameraNumber);
 
-            for (int i = 0; i < _flipObjects.Length; i++)
+            for (int i = 0; i < _flipObjects.Length - 2; i++)
             {
                 _flipObjects[i].SetActiveKinematic(false);
                 _flipObjects[i].SetPiecePosition();
             }
 
-            DOVirtual.DelayedCall(2f, () => 
+            DOVirtual.DelayedCall(0.5f, () => 
             {
-                _rigidbody.AddForce(new Vector3(x, y, z));
+                for (int i = _flipObjects.Length - 1; i > _flipObjects.Length - 3; i--)
+                {
+                    _flipObjects[i].SetActiveKinematic(false);
+                    _flipObjects[i].Rigidbody.AddForce(new Vector3(x, y, z));
+                }
             }); 
         }
 
         [PunRPC]
         private void RPC_CollectTable()
         {
+            CameraManager.Instance.SetCamera(0);
+
+            for (int i = _flipObjects.Length - 1; i > _flipObjects.Length - 3; i--)
+            {
+                _flipObjects[i].transform.position = _flipObjects[i].StartPosition;
+                _flipObjects[i].transform.rotation = _flipObjects[i].RotationPosition;
+                CheckFinishMove(i);
+            }
+
             _isMove = true;
             Physics.IgnoreLayerCollision(10, 10);
 
@@ -82,7 +98,7 @@ namespace Knowlove.FlipTheTableLogic
                 _flipObjects[i].SetActiveKinematic(true);
             }
 
-            for (int i = 0; i < _flipObjects.Length; i++)
+            for (int i = 0; i < _flipObjects.Length - 2; i++)
             {
                 if (Vector3.Distance(_flipObjects[i].transform.position, _flipObjects[i].StartPosition) < 0.001f)
                 {
@@ -90,8 +106,8 @@ namespace Knowlove.FlipTheTableLogic
                     continue;
                 }
 
-                _flipObjects[i].transform.position = Vector3.MoveTowards(_flipObjects[i].transform.position, _flipObjects[i].StartPosition, speed * Time.deltaTime);
-                _flipObjects[i].transform.rotation = Quaternion.RotateTowards(_flipObjects[i].transform.rotation, _flipObjects[i].RotationPosition, speed * Time.deltaTime * 200);
+                _flipObjects[i].transform.position = Vector3.MoveTowards(_flipObjects[i].transform.position, _flipObjects[i].StartPosition, speed / 2 * Time.deltaTime);
+                _flipObjects[i].transform.rotation = Quaternion.RotateTowards(_flipObjects[i].transform.rotation, _flipObjects[i].RotationPosition, speed * Time.deltaTime * 250);
             }
         }
 

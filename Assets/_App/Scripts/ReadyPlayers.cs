@@ -1,5 +1,6 @@
 ﻿using Knowlove.UI;
 using Photon.Pun;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,10 +8,12 @@ namespace Knowlove
 {
     public class ReadyPlayers : MonoBehaviourPunCallbacks
     {
-        [SerializeField] private GameUI _gameUI;
         [SerializeField] private TurnManager _turnManager;
 
         private int _playersReady = 0;
+
+        public Action PlayerReadied;
+        public Action<string[]> RPC_PlayerReadied;
 
         private void Start()
         {
@@ -19,7 +22,7 @@ namespace Knowlove
 
         public void ReadyUp()
         {
-            _gameUI.BuildProgressBarList();
+            PlayerReadied?.Invoke();
             photonView.RPC(nameof(RPC_ReadyUp), RpcTarget.All);
         }
 
@@ -56,7 +59,7 @@ namespace Knowlove
                     }
 
                     Debug.Log("Sending " + playerNames.Count + " names for slot machine thing");
-                    _gameUI.ShowPlayerSelection(playerNames.ToArray());
+                    RPC_PlayerReadied?.Invoke(playerNames.ToArray());
                 }
             }
         }

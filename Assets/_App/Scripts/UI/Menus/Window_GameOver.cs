@@ -8,14 +8,18 @@ namespace Knowlove.UI.Menus
     {
         string winnerName = "";
 
-        [SerializeField]
-        TextMeshProUGUI winnerNameLabel;
+        [SerializeField] private TurnManager TurnManager;
 
-        [SerializeField]
-        CanvasGroup[] groups;
+        [SerializeField] private TextMeshProUGUI winnerNameLabel;
 
-        [SerializeField]
-        GameObject hud;
+        [SerializeField] private CanvasGroup[] groups;
+
+        [SerializeField] private GameObject hud;
+
+        private void Start()
+        {
+            TurnManager.PlayerWonName += ShowGameOver;
+        }
         private void OnEnable()
         {
             hud.SetActive(false);
@@ -25,9 +29,19 @@ namespace Knowlove.UI.Menus
         {
             hud.SetActive(true);
         }
+        private void OnDestroy()
+        {
+            TurnManager.PlayerWonName += ShowGameOver;
+        }
         public void Init(string winnerName)
         {
             this.winnerName = winnerName;
+        }
+
+        public void ShowGameOver(string winnerName)
+        {
+            Init(winnerName);
+            Show();
         }
 
         public override void Show()

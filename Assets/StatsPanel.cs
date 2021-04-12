@@ -8,20 +8,26 @@ namespace Knowlove
 {
     public class StatsPanel : MonoBehaviourPun
     {
-        [SerializeField]
-        TextMeshProUGUI label;
+        [SerializeField] private TurnManager TurnManager;
+        [SerializeField] private TextMeshProUGUI label;
 
-        [SerializeField]
-        RectTransform rect;
+        [SerializeField] private RectTransform rect;
 
-        [SerializeField]
-        Image arrow;
+        [SerializeField] private Image arrow;
 
-        [SerializeField]
-        TextMeshProUGUI showHideText;
+        [SerializeField] private TextMeshProUGUI showHideText;
 
-        [SerializeField]
-        bool isVisible = false;
+        [SerializeField] private bool isVisible = false;
+
+        private void Start()
+        {
+            TurnManager.ShowedStatsForAll += ShowForEveryone;
+        }
+
+        private void OnDestroy()
+        {
+            TurnManager.ShowedStatsForAll -= ShowForEveryone;
+        }
 
         public void SetText(string text)
         {

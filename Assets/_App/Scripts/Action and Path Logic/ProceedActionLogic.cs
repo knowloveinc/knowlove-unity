@@ -5,21 +5,26 @@ using UnityEngine;
 using static Knowlove.TurnManager;
 using Knowlove.UI;
 using Knowlove.MyStuffInGame;
+using System;
 
 namespace Knowlove.ActionAndPathLogic
 {
     public class ProceedActionLogic : MonoBehaviour
     {
+        public delegate void ShowedPrompts(string text, PopupDialog.PopupButton[] buttons = null, Player player = null, int bgColor = 0, bool autoEndTurn = true);
+
         [SerializeField] private TurnManager _turnManager;
         [SerializeField] private GameStuff _gameStuff;
         [SerializeField] private PathNodeActionLogic _pathNodeActionLogic;
-        [SerializeField] private GameUI _gameUI;
 
         private int _turnBank;
         private int _diceCount;
         private int _wallet;
         private int _avoidSingleCards;
         private bool _protectedFromSingleInRelationship;
+
+        public event ShowedPrompts ChoicedOfPlayer;
+        public Action<Player> UsedAvoidSingleCard;
 
         private int TurnIndex
         {
@@ -217,7 +222,7 @@ namespace Knowlove.ActionAndPathLogic
                 }
             };
 
-            _gameUI.ShowPrompt(textPromps, buttons, currentPlayer, 0, false);
+            ChoicedOfPlayer?.Invoke(textPromps, buttons, currentPlayer, 0, false);
         }
 
         private void ShowAvoidCardPrompts(int diceCount, BoardPiece playerBoardPiece, Player currentPlayer)
@@ -232,6 +237,7 @@ namespace Knowlove.ActionAndPathLogic
                     buttonColor = PopupDialog.PopupButtonColor.Green,
                     onClicked = () =>
                     {
+                        UsedAvoidSingleCard?.Invoke(currentPlayer);
                         _gameStuff.DeleteCardFromInventory(0, TurnIndex);
                     }
                 },
@@ -247,7 +253,7 @@ namespace Knowlove.ActionAndPathLogic
                 }
             };
 
-            _gameUI.ShowPrompt(textPromps, buttons, currentPlayer);
+            ChoicedOfPlayer?.Invoke(textPromps, buttons, currentPlayer);
         }
 
         private void LoseTurns(int count)

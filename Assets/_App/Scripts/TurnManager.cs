@@ -4,6 +4,7 @@ using Knowlove.MyStuffInGame;
 using Knowlove.UI;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 using UnityEngine;
 
 namespace Knowlove
@@ -12,7 +13,6 @@ namespace Knowlove
     {
         public static TurnManager Instance;
 
-        public GameUI gameUI;
         public TurnState turnState = TurnState.TurnEnding;
         public ProceedAction currentOnPassed, currentOnFailed;
 
@@ -25,6 +25,14 @@ namespace Knowlove
         [SerializeField] private PathNodeActionLogic _pathNodeActionLogic;
 
         private bool _didRoll = false;
+
+        public Action SettedPlayerProperties;
+        public Action ShowedStatsForAll;
+        public Action GameOvered;
+        public Action<string> PlayerWonName;
+        public Action<Player> DatingOrHomePathRing;
+        public Action<int> StartedTurn;  // int = playerIndex
+        public Action<string, string> StartedAndEndedTurn;  // (string text, string title)
 
         public ProceedActionLogic ProceedActionLogic
         {
@@ -53,12 +61,6 @@ namespace Knowlove
             turnIndex = 0;
 
             Debug.Log("TurnManager.Start()");
-            gameUI.RPC_HideBottomForPlayer();
-
-            if (PhotonNetwork.IsMasterClient)
-            {
-                NetworkManager.OnReadyToStart += ShowUserPickCard;
-            }
         }
 
         private void Update()
@@ -76,7 +78,7 @@ namespace Knowlove
                 Debug.Log("Player Properties Updated: " + targetPlayer.CustomProperties.ToStringFull());
                 if (targetPlayer.ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
                 {
-                    gameUI.SetStats();
+                    SettedPlayerProperties?.Invoke();
                 }
             }
 
@@ -95,7 +97,7 @@ namespace Knowlove
                 ExitGames.Client.Photon.Hashtable roomProps = PhotonNetwork.CurrentRoom.CustomProperties;
                 roomProps.Add("didShowStatsForAll", true);
                 PhotonNetwork.CurrentRoom.SetCustomProperties(roomProps);
-                gameUI.ShowStatsPanelForEveryone();
+                ShowedStatsForAll?.Invoke();
             }
 
             CameraManager.Instance.SetCamera(0);
@@ -121,17 +123,17 @@ namespace Knowlove
         {
             if (!PhotonNetwork.IsMasterClient) return;
 
-            gameUI.SetTopText(NetworkManager.Instance.players[turnIndex].NickName);
+            StartedAndEndedTurn?.Invoke(NetworkManager.Instance.players[turnIndex].NickName, "TURN");
 
             if (BoardManager.Instance.pieces[turnIndex].pathRing == PathRing.Dating || BoardManager.Instance.pieces[turnIndex].pathRing == PathRing.Home)
             {
                 Debug.Log("Showing List Panel");
-                gameUI.ForceShowListPanel(NetworkManager.Instance.players[turnIndex]);
+                DatingOrHomePathRing?.Invoke(NetworkManager.Instance.players[turnIndex]);
             }
             else
             {
                 Debug.Log("Showing Bottom for " + turnIndex + " Name: " + NetworkManager.Instance.players[turnIndex].NickName);
-                gameUI.ShowBottomForPlayer(turnIndex);
+                StartedTurn?.Invoke(turnIndex);
             }
         }
 
@@ -198,9 +200,9 @@ namespace Knowlove
             turnState = TurnState.TurnEnding;
 
             if (isSkip)
-                gameUI.SetTopText("Skipping " + NetworkManager.Instance.players[turnIndex].NickName);
+                StartedAndEndedTurn?.Invoke("Skipping " + NetworkManager.Instance.players[turnIndex].NickName, "TURN");
             else
-                gameUI.SetTopText("Turn ending..");
+                StartedAndEndedTurn?.Invoke("Turn ending..", "TURN");
 
             if ((int)NetworkManager.Instance.players[turnIndex].CustomProperties["turnBank"] < 1)
             {
@@ -218,14 +220,14 @@ namespace Knowlove
 
         public void GameOver(string playerName)
         {
-            gameUI.HideBottomForEveryone();
+            GameOvered?.Invoke();
             photonView.RPC(nameof(RPC_GameOver), RpcTarget.All, playerName);
         }
 
         [PunRPC]
         public void RPC_GameOver(string playerName)
         {
-            gameUI.ShowGameOver(playerName);
+            PlayerWonName?.Invoke(playerName);
         }
 
         [ContextMenu("Make Current Player Win")]
@@ -359,16 +361,6 @@ namespace Knowlove
             }
         }
 
-        private void ShowUserPickCard()
-        {
-            DOVirtual.DelayedCall(2f, () =>
-            {
-                CameraManager.Instance.SetCamera(2);
-
-                gameUI.ShowPickCard();
-            });
-        }
-
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
             if (stream.IsWriting)
@@ -386,4 +378,3 @@ namespace Knowlove
         }
     }
 }
-
