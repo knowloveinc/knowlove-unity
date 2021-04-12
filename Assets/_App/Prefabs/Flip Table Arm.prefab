@@ -75,6 +75,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isPiece: 0
+  isRightForce: 0
+  isLeftForce: 0
+  x: 0
+  y: 0
+  z: 0
 --- !u!1 &8295000830098587980
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,7 +125,7 @@ GameObject:
   - component: {fileID: 8295000830293643417}
   - component: {fileID: 8295000830293643418}
   - component: {fileID: 8295000830293643419}
-  - component: {fileID: 8295000830293643421}
+  - component: {fileID: 8295000828932545299}
   m_Layer: 0
   m_Name: First Arm
   m_TagString: Untagged
@@ -202,7 +207,7 @@ MonoBehaviour:
   - {fileID: 8295000830293643419}
   - {fileID: 8295000829769035564}
   x: 0
-  y: 7000
+  y: 8000
   z: 0
   speed: 1
   cameraNumber: 4
@@ -219,7 +224,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isPiece: 0
---- !u!114 &8295000830293643421
+  isRightForce: 0
+  isLeftForce: 0
+  x: 0
+  y: 0
+  z: 0
+--- !u!114 &8295000828932545299
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

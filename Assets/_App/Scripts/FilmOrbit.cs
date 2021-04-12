@@ -7,12 +7,12 @@ namespace Knowlove
     {
         public float speed = 10f;
 
-        private Cinemachine.CinemachineVirtualCamera m_VirtualCam;
+        private CinemachineVirtualCamera m_VirtualCam;
 
         void Start()
         {
-            if (GetComponent<Cinemachine.CinemachineVirtualCamera>())
-                m_VirtualCam = GetComponent<Cinemachine.CinemachineVirtualCamera>();
+            if (GetComponent<CinemachineVirtualCamera>())
+                m_VirtualCam = GetComponent<CinemachineVirtualCamera>();
         }
 
         void Update()

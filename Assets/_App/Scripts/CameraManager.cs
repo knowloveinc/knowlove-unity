@@ -18,7 +18,7 @@ public class CameraManager : MonoBehaviourPun
 
     public void SetCamera(int index)
     {
-        photonView.RPC("RPC_SetCamera", RpcTarget.All, index);
+        photonView.RPC(nameof(RPC_SetCamera), RpcTarget.All, index);
     }
 
     [PunRPC]

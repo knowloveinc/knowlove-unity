@@ -14,16 +14,40 @@ namespace Knowlove
     public class NetworkManager : MonoBehaviourPunCallbacks
     {
 
-        public static event System.Action OnJoinedRoomFinished;
+        public static event Action OnJoinedRoomFinished;
 
         public List<RoomInfo> roomList = new List<RoomInfo>();
+        public List<Player> players = new List<Player>();
 
-        #region Listeners
+        public bool readyToStart = false;
 
+        #region Public Methods
 
-        public void Connect()
+        public bool isConnecting = false;
+
+        private void Awake()
         {
 
+            if (Instance != null)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+
+        }
+
+        public bool isUserAuthenticated()
+        {
+            return User.current != null;
+        }
+        #endregion
+
+        #region Listeners
+        public void Connect()
+        {
             PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.GameVersion = "0.8.2";
 
@@ -31,8 +55,6 @@ namespace Knowlove
 
             PhotonNetwork.ConnectUsingSettings();
         }
-
-
 
         public override void OnConnected()
         {
@@ -43,7 +65,6 @@ namespace Knowlove
         public override void OnConnectedToMaster()
         {
             //OnConnectedToMaster being called signals that we can now make calls to join rooms and list them etc
-
             base.OnConnectedToMaster();
 
             Debug.Log("CONNECTED TO MASTER");
@@ -52,8 +73,6 @@ namespace Knowlove
 
             if (!PhotonNetwork.OfflineMode)
                 PhotonNetwork.JoinLobby(sqlLobby);
-
-
         }
 
         public override void OnDisconnected(DisconnectCause cause)
@@ -77,12 +96,9 @@ namespace Knowlove
                 };
 
                 PopupDialog.Instance.Show("Disconnected", $"Lost connection to game server. Reason: {cause}\n\n Please try again later.", buttons);
-
             }
             else
-            {
                 Debug.Log("Disconnect appear to be intentional...");
-            }
         }
 
         public override void OnCreatedRoom()
@@ -126,9 +142,7 @@ namespace Knowlove
             UpdatePlayerList();
 
             if (PhotonNetwork.IsMasterClient)
-            {
                 StartCoroutine(WaitingForPlayers());
-            }
 
             Debug.Log($"JOINED ROOM: {PhotonNetwork.CurrentRoom.Name}");
 
@@ -138,11 +152,8 @@ namespace Knowlove
                 Debug.Log(playerCount + " of " + PhotonNetwork.CurrentRoom.MaxPlayers);
                 Debug.Log("Joined room that is waiting for more players...");
 
-
                 if (SceneManager.GetActiveScene().name.ToUpper().Contains("NETWORK"))
-                {
                     Debug.Log("Connect another client to begin...");
-                }
             }
             else
             {
@@ -150,17 +161,13 @@ namespace Knowlove
 
                 OnJoinedRoomFinished?.Invoke();
                 Debug.Log("Ready to start.. ");
-
             }
 
             GameObject myPlayer = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
             PlayerController pCtrl = myPlayer.GetComponent<PlayerController>();
-
         }
 
-        public bool readyToStart = false;
-
-        IEnumerator WaitingForPlayers()
+        private IEnumerator WaitingForPlayers()
         {
             readyToStart = false;
             while (PhotonNetwork.CurrentRoom != null && players.Count < PhotonNetwork.CurrentRoom.MaxPlayers)
@@ -201,7 +208,7 @@ namespace Knowlove
             StartCoroutine(GoBackToMainMenu());
         }
 
-        IEnumerator GoBackToMainMenu()
+        private IEnumerator GoBackToMainMenu()
         {
             CanvasLoading.Instance.Show();
             yield return new WaitForSeconds(1f);
@@ -210,8 +217,6 @@ namespace Knowlove
             yield return op;
             CanvasLoading.Instance.Hide();
         }
-
-        public List<Player> players = new List<Player>();
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
@@ -261,7 +266,6 @@ namespace Knowlove
             OnPlayerLeft?.Invoke(otherPlayer);
             UpdatePlayerList();
 
-
             if (players.Count < PhotonNetwork.CurrentRoom.MaxPlayers && TurnManager.Instance.turnState != TurnManager.TurnState.GameOver)
             {
                 PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
@@ -281,7 +285,6 @@ namespace Knowlove
             }
         }
 
-
         public override void OnMasterClientSwitched(Player newMasterClient)
         {
             base.OnMasterClientSwitched(newMasterClient);
@@ -291,9 +294,7 @@ namespace Knowlove
         {
             base.OnRoomPropertiesUpdate(propertiesThatChanged);
         }
-
         #endregion
-
 
         public static NetworkManager Instance;
 
@@ -303,35 +304,6 @@ namespace Knowlove
         public static event System.Action OnReadyToStart;
         public static event System.Action<Player> OnPlayerLeft;
         public static event Action OnRoomListUpdated;
-
-        #endregion
-
-        #region Public Methods
-
-
-        public bool isConnecting = false;
-
-
-
-        private void Awake()
-        {
-
-            if (Instance != null)
-            {
-                Destroy(this.gameObject);
-                return;
-            }
-
-            Instance = this;
-            DontDestroyOnLoad(this.gameObject);
-
-        }
-
-        public bool isUserAuthenticated()
-        {
-            return User.current != null;
-        }
-
 
         #endregion
     }

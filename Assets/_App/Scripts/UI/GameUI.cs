@@ -16,7 +16,21 @@ namespace Knowlove.UI
         [SerializeField] private BottomPanel _bottomPanel;
         [SerializeField] private StatsPanel statsPanel;
 
+        [SerializeField] private TextMeshProUGUI _timerText;
+
+        [SerializeField] private Transform _cardPickerPanel;
+        [SerializeField] private RectTransform _listCardContainer;
+        [SerializeField] private RectTransform[] _listCardUIObjs;
+
+        [SerializeField] private TextMeshProUGUI _listText;
+        [SerializeField] private GameObject _listCardButton;
+        [SerializeField] private GameObject _listPanel;
+
+        public ListCard[] listCards;
+        public ListCard selectedCard;
+
         private bool _didReadyUp = false;
+        private bool _showBottomAfterClosingListPanel = false;
 
         private void Start()
         {
@@ -55,18 +69,6 @@ namespace Knowlove.UI
             gameObject.SetActive(isActive);
         }
 
-        internal void ShowPickCard()
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                photonView.RPC(nameof(RPC_ShowPickCard), RpcTarget.All);
-            }
-        }
-
-        public ListCard[] listCards;
-
-        public ListCard selectedCard;
-
         [PunRPC]
         public void RPC_ShowPickCard()
         {
@@ -75,15 +77,6 @@ namespace Knowlove.UI
 
             ShowCardPickerPanel();
         }
-
-        [SerializeField]
-        private Transform _cardPickerPanel;
-
-        [SerializeField]
-        private RectTransform _listCardContainer;
-
-        [SerializeField]
-        private RectTransform[] _listCardUIObjs;
 
         public void ShowCardPickerPanel()
         {
@@ -98,10 +91,6 @@ namespace Knowlove.UI
                 _listCardUIObjs[i].GetComponent<CanvasGroup>().alpha = 1f;
             }
         }
-
-        [SerializeField] private TextMeshProUGUI _listText;
-
-        [SerializeField] private GameObject _listCardButton;
 
         public void OnListCardSelected(int index)
         {
@@ -134,15 +123,10 @@ namespace Knowlove.UI
             }
         }
 
-        [SerializeField]
-        private GameObject _listPanel;
-
         public void ForceShowListPanel(Player player)
         {
             photonView.RPC(nameof(RPC_ForceShowListPanel), player);
         }
-
-        private bool _showBottomAfterClosingListPanel = false;
 
         [PunRPC]
         public void RPC_ForceShowListPanel()
@@ -188,20 +172,12 @@ namespace Knowlove.UI
             PhotonNetwork.LeaveRoom();
         }
 
-        [SerializeField]
-        private TextMeshProUGUI _timerText;
-
-        private void UpdateTimerText()
+        internal void ShowPickCard()
         {
-            if (TurnManager.Instance.turnState != TurnManager.TurnState.GameOver && TurnManager.Instance.turnState != TurnManager.TurnState.TurnEnding)
+            if (PhotonNetwork.IsMasterClient)
             {
-                if (TurnManager.Instance.turnTimer <= 0f || TurnManager.Instance.turnTimer > 30f)
-                    _timerText.text = "";
-                else
-                    _timerText.text = TurnManager.Instance.turnTimer.ToString("n0");
+                photonView.RPC(nameof(RPC_ShowPickCard), RpcTarget.All);
             }
-            else
-                _timerText.text = "";
         }
 
         internal void SetStats()
@@ -219,6 +195,19 @@ namespace Knowlove.UI
             text = $"# Dates: {dateCount}\n# Relationships: {relationshipCount}\n # Marriages: {marriageCount}\n # Years Elapsed: {yearsElapsed}";
 
             statsPanel.SetText(text);
+        }
+
+        private void UpdateTimerText()
+        {
+            if (TurnManager.Instance.turnState != TurnManager.TurnState.GameOver && TurnManager.Instance.turnState != TurnManager.TurnState.TurnEnding)
+            {
+                if (TurnManager.Instance.turnTimer <= 0f || TurnManager.Instance.turnTimer > 30f)
+                    _timerText.text = "";
+                else
+                    _timerText.text = TurnManager.Instance.turnTimer.ToString("n0");
+            }
+            else
+                _timerText.text = "";
         }
 
         private void ShowUserPickCard()

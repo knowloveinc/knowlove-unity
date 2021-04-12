@@ -31,14 +31,6 @@ namespace Knowlove
             PlaySong(0);
         }
 
-        private void SceneManager_activeSceneChanged(Scene current, Scene next)
-        {
-            if (next == SceneManager.GetSceneByBuildIndex(0))
-            {
-                PlaySong(0);
-            }
-        }
-
         public void PlaySong(int index)
         {
             for (int i = 0; i < players.Length; i++)
@@ -48,6 +40,14 @@ namespace Knowlove
                     players[i].Play();
                 }
                 players[i].DOFade(i == index ? 1f : 0f, 0.5f).SetEase(Ease.Linear);
+            }
+        }
+
+        private void SceneManager_activeSceneChanged(Scene current, Scene next)
+        {
+            if (next == SceneManager.GetSceneByBuildIndex(0))
+            {
+                PlaySong(0);
             }
         }
     }

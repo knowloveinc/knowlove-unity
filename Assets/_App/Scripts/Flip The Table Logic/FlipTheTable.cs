@@ -75,6 +75,11 @@ namespace Knowlove.FlipTheTableLogic
                     _flipObjects[i].SetActiveKinematic(false);
                     _flipObjects[i].Rigidbody.AddForce(new Vector3(x, y, z));
                 }
+
+                for (int i = 0; i < _flipObjects.Length - 2; i++)
+                {
+                    _flipObjects[i].TakeForceOnCard();
+                }
             }); 
         }
 
@@ -106,7 +111,7 @@ namespace Knowlove.FlipTheTableLogic
                     continue;
                 }
 
-                _flipObjects[i].transform.position = Vector3.MoveTowards(_flipObjects[i].transform.position, _flipObjects[i].StartPosition, speed / 2 * Time.deltaTime);
+                _flipObjects[i].transform.position = Vector3.MoveTowards(_flipObjects[i].transform.position, _flipObjects[i].StartPosition, speed * Time.deltaTime);
                 _flipObjects[i].transform.rotation = Quaternion.RotateTowards(_flipObjects[i].transform.rotation, _flipObjects[i].RotationPosition, speed * Time.deltaTime * 250);
             }
         }

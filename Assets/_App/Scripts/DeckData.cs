@@ -27,7 +27,6 @@ namespace Knowlove
         public string name;
         public List<CardData> cards;
 
-
         protected List<CardData> available;
         protected List<CardData> drawn;
 
@@ -53,8 +52,6 @@ namespace Knowlove
             //return cards[Random.Range(0, cards.Count)];
         }
 
-
-
         public void Shuffle()
         {
             if (PhotonNetwork.IsMasterClient)
@@ -74,9 +71,7 @@ namespace Knowlove
                     available[b] = card1;
                     available[a] = limbo;
                 }
-            }
-
-            
+            }         
         }
     }
 }

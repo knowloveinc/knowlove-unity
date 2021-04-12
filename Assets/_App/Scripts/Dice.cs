@@ -5,11 +5,9 @@ namespace Knowlove
 {
     public class Dice : MonoBehaviourPun
     {
+        private float four, three, six, one, two, five;
 
-        float four, three, six, one, two, five;
-
-        float[] sideNormals = new float[6];
-
+        private float[] sideNormals = new float[6];
 
         public int number = -1;
 
@@ -28,7 +26,6 @@ namespace Knowlove
             sideNormals[3] = four;
             sideNormals[4] = five;
             sideNormals[5] = six;
-
 
             int lowest = -1;
 

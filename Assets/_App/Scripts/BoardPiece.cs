@@ -13,18 +13,17 @@ namespace Knowlove
 
         public Transform knowLovePoint;
 
-        [SerializeField]
-        AudioClip tapSound;
+        [SerializeField] private AudioClip tapSound;
 
-        [SerializeField]
-        AudioSource source;
+        [SerializeField] private AudioSource source;
 
         public bool isMoving = false;
 
         public PathRing pathRing;
         public int pathIndex = -1;
 
-        
+        private int jumpPathIndex = 0;
+
         [ContextMenu("Go Home")]
         public void GoHome( Player player = null, System.Action OnFinished = null)
         {
@@ -108,11 +107,22 @@ namespace Knowlove
             StartCoroutine(DoJumpPath(positions, OnFinished));
         }
 
-
-        int jumpPathIndex = 0;
-        IEnumerator DoJumpPath(List<Vector3> positions, System.Action OnFinished)
+        public void JumpTo(Vector3 position, System.Action OnFinished)
         {
+            isMoving = true;
+            transform.DOJump(position, 0.5f, 1, 0.5f).OnComplete(() =>
+            {
+                if (tapSound != null)
+                {
+                    source.PlayOneShot(tapSound);
+                }
+                isMoving = false;
+                OnFinished?.Invoke();
+            });
+        }
 
+        private IEnumerator DoJumpPath(List<Vector3> positions, System.Action OnFinished)
+        {
             isMoving = true;
             jumpPathIndex = 0;
             foreach (Vector3 pos in positions)
@@ -143,21 +153,5 @@ namespace Knowlove
             isMoving = false;
             OnFinished?.Invoke();
         }
-
-
-        public void JumpTo(Vector3 position, System.Action OnFinished)
-        {
-            isMoving = true;
-            transform.DOJump(position, 0.5f, 1, 0.5f).OnComplete(() =>
-            {
-                if (tapSound != null)
-                {
-                    source.PlayOneShot(tapSound);
-                }
-                isMoving = false;
-                OnFinished?.Invoke();
-            });
-        }
-
     }
 }

@@ -4288,8 +4288,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomList: []
-  readyToStart: 0
   players: []
+  readyToStart: 0
   isConnecting: 0
 --- !u!4 &229604353
 Transform:

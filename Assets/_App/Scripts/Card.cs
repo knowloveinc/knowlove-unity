@@ -16,7 +16,7 @@ namespace Knowlove
         [ContextMenu("RPC DrawCard")]
         public void DrawToCamera()
         {
-            photonView.RPC("RPC_DrawToCamera", RpcTarget.All);
+            photonView.RPC(nameof(RPC_DrawToCamera), RpcTarget.All);
         }
 
         [PunRPC]

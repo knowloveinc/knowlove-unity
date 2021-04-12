@@ -11,6 +11,13 @@ namespace Knowlove.FlipTheTableLogic
 
         [SerializeField] private bool _isPiece;
 
+        [SerializeField] private bool isRightForce;
+        [SerializeField] private bool isLeftForce;
+
+        [SerializeField] private float x;
+        [SerializeField] private float y;
+        [SerializeField] private float z;
+
         public Vector3 StartPosition
         {
             get => _startPosition;
@@ -52,6 +59,14 @@ namespace Knowlove.FlipTheTableLogic
         {
             if (_isPiece && gameObject.activeSelf)
                 _boxCollider.enabled = isActive;
+        }
+
+        public void TakeForceOnCard()
+        {
+            if (isRightForce)
+                _rigidbodyComponent.AddForce(-x, y, z);
+            else if (isLeftForce)
+                _rigidbodyComponent.AddForce(x, y, z);
         }
     }
 }
