@@ -21,9 +21,29 @@ namespace Knowlove.UI
         [SerializeField] private Button cardUIButton;
         [SerializeField] private TextMeshProUGUI cardUIText;
 
+        [SerializeField] private Image _mack;
+        [SerializeField] private GameObject _silhouette;
+
+        [SerializeField] private LeanFingerTap _leanFingerTap;
+        [SerializeField] private LeanPinchScale _leanPinchScale;
+        [SerializeField] private LeanSelectable _leanSelectable;
+
+        [SerializeField] private CanvasGroup _scenarioCanvasGroup;
+
         private string _waitingClickFromUserNickName = null;
+        private bool _isShowCard;
 
         public System.Action onCardClicked = null;
+
+        public bool IsShowCard
+        {
+            get => _isShowCard;
+        }
+
+        public LeanSelectable LeanSelectable
+        {
+            get => _leanSelectable;
+        }
 
         private void Start()
         {
@@ -78,13 +98,15 @@ namespace Knowlove.UI
         [PunRPC]
         private void RPC_ShowCard(string cardText, Player targetPlayer, int pathIndex, bool isFancyCard)
         {
+            _isShowCard = true;
+
             _bottomPanel.mapWindow.SetActive(false);
             _bottomPanel.mapButton.SetActive(false);
 
-            Image cardImage = cardUIObj.transform.Find("Mask").GetComponent<Image>();
+            Image cardImage = _mack;
             cardImage.color = isFancyCard ? new Color(104 / 255f, 54 / 255f, 149 / 255f) : Color.white;
 
-            cardUIObj.transform.Find("Mask/silhouette").gameObject.SetActive(isFancyCard);
+            _silhouette.gameObject.SetActive(isFancyCard);
 
             cardUIObj.anchoredPosition = new Vector2(cardUIObj.anchoredPosition.x, -1080f);
 
@@ -95,13 +117,13 @@ namespace Knowlove.UI
             //cardUIButton.onClick.RemoveAllListeners();
             cardUIButton.enabled = false;
 
-            LeanFingerTap lft = cardUIObj.transform.Find("Mask").GetComponent<LeanFingerTap>();
+            LeanFingerTap lft = _leanFingerTap;
             lft.OnFinger.RemoveAllListeners();
 
-            LeanPinchScale lps = cardUIObj.transform.Find("Mask").GetComponent<LeanPinchScale>();
+            LeanPinchScale lps = _leanPinchScale;
             lps.transform.localScale = Vector3.one;
 
-            LeanSelectable ls = cardUIObj.transform.Find("Mask").GetComponent<LeanSelectable>();
+            LeanSelectable ls = _leanSelectable;
             ls.Select();
 
             //Only make the card clickable for the user who is taking their turn right now.
@@ -121,7 +143,7 @@ namespace Knowlove.UI
                 //});
             }
 
-            CanvasGroup scenarioTextGroup = cardUIObj.Find("SCENARIO").GetComponent<CanvasGroup>();
+            CanvasGroup scenarioTextGroup = _scenarioCanvasGroup;
             TextMeshProUGUI scenarioText = scenarioTextGroup.GetComponent<TextMeshProUGUI>();
             string scenarioTextStr = PhotonNetwork.LocalPlayer.NickName.ToLower() != targetPlayer.NickName.ToLower() ? $"<size=30>{targetPlayer.NickName.Replace("[host]", "").Trim()} Got A</size>\n" : "<size=30>You Got A</size>\n";
 
@@ -178,6 +200,8 @@ namespace Knowlove.UI
 
         private void HideCard()
         {
+            _isShowCard = false;
+
             CanvasGroup cg = cardUIObj.GetComponent<CanvasGroup>();
 
             if (cg.interactable == false) return; //This means we already started hiding it and dont need to do it again.

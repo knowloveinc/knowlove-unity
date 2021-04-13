@@ -25,6 +25,7 @@ namespace Knowlove.UI.Menus
             base.Hide();
         }
 
+        [ContextMenu("OpenStore")]
         public void OpenStore()
         {
             StoreController.Show();

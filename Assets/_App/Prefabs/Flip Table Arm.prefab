@@ -188,6 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86b20d145969a0041b7e464a30c300e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cardUI: {fileID: 0}
   _flipObjects:
   - {fileID: 0}
   - {fileID: 0}

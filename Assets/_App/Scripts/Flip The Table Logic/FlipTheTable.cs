@@ -2,6 +2,7 @@
 using DG.Tweening;
 using Photon.Pun;
 using System;
+using Knowlove.UI;
 
 namespace Knowlove.FlipTheTableLogic
 {
@@ -10,21 +11,30 @@ namespace Knowlove.FlipTheTableLogic
         private Rigidbody _rigidbody;
         private Vector3 _startPosition;
 
+        [SerializeField] private CardUI _cardUI;
+        [SerializeField] private GameObject _flipTheTableUI;
         [SerializeField] private FlipObject[] _flipObjects;
 
-        [SerializeField] private float x = 1200f;
-        [SerializeField] private float y = 1200f;
-        [SerializeField] private float z = 500f;
+        [SerializeField] private float x = 0f;
+        [SerializeField] private float y = 5500f;
+        [SerializeField] private float z = 0f;
         [SerializeField] private float speed = 1f;
         [SerializeField] private int cameraNumber = 4;
 
         private bool[] _isMoveFinish;
         private bool _isMove;
+        private bool _isPopup;
 
         public Action<bool> StartedFlipTable;
 
+        public bool IsMove
+        {
+            get => _isMove;
+        }
+
         private void Start()
         {
+            _isPopup = false;
             _rigidbody = GetComponent<Rigidbody>();
             _startPosition = transform.position;
             _isMove = false;
@@ -45,8 +55,15 @@ namespace Knowlove.FlipTheTableLogic
         [ContextMenu("Flip")]
         public void FlipTable()
         {
-            if(!_isMove)
+            if (!_isMove)
+            {
                 photonView.RPC(nameof(RPC_FlipTable), RpcTarget.AllBufferedViaServer);
+
+                DOVirtual.DelayedCall(4f, () =>
+                {
+                    CollectTable();
+                });
+            }      
         }
 
         [ContextMenu("CollectFlip")]
@@ -58,6 +75,8 @@ namespace Knowlove.FlipTheTableLogic
         [PunRPC]
         private void RPC_FlipTable()
         {
+            _flipTheTableUI.gameObject.SetActive(false);
+            CheckSomeAction();
             StartedFlipTable?.Invoke(false);
             CameraManager.Instance.SetCamera(cameraNumber);
 
@@ -102,6 +121,11 @@ namespace Knowlove.FlipTheTableLogic
                 _flipObjects[i].SetActiveKinematic(true);
             }
 
+            MoveObject();
+        }
+
+        private void MoveObject()
+        {
             for (int i = 0; i < _flipObjects.Length - 2; i++)
             {
                 if (Vector3.Distance(_flipObjects[i].transform.position, _flipObjects[i].StartPosition) < 0.001f)
@@ -111,8 +135,35 @@ namespace Knowlove.FlipTheTableLogic
                 }
 
                 _flipObjects[i].transform.position = Vector3.MoveTowards(_flipObjects[i].transform.position, _flipObjects[i].StartPosition, speed * Time.deltaTime);
-                _flipObjects[i].transform.rotation = Quaternion.RotateTowards(_flipObjects[i].transform.rotation, _flipObjects[i].RotationPosition, speed * Time.deltaTime * 250);
+                _flipObjects[i].transform.rotation = Quaternion.RotateTowards(_flipObjects[i].transform.rotation, _flipObjects[i].RotationPosition, speed * Time.deltaTime * 300);
             }
+        }
+
+        private void CheckSomeAction()
+        {
+            if (PopupDialog.Instance.canvasGroup.alpha == 1)
+            {
+                _isPopup = true;
+                PopupDialog.Instance.canvasGroup.alpha = 0;
+            }
+
+            if (StoreController.Instance.IsOpenStore)
+                StoreController.Instance.gameObject.SetActive(false);
+        }
+
+        private void ReturnAction()
+        {
+            if (_cardUI.IsShowCard)
+                _cardUI.LeanSelectable.Select();
+
+            if (_isPopup)
+            {
+                _isPopup = false;
+                PopupDialog.Instance.canvasGroup.alpha = 1;
+            }
+
+            if (StoreController.Instance.IsOpenStore)
+                StoreController.Instance.gameObject.SetActive(true);
         }
 
         private void CheckFinishMove(int count)
@@ -130,6 +181,8 @@ namespace Knowlove.FlipTheTableLogic
                 _isMoveFinish[i] = false;
             }
 
+            ReturnAction();
+            _flipTheTableUI.gameObject.SetActive(true);
             StartedFlipTable?.Invoke(true);
             _isMove = false;
             Physics.IgnoreLayerCollision(10, 10, false);

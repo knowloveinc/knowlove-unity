@@ -25,23 +25,33 @@ namespace Knowlove.UI
         [SerializeField] private Sprite bronzeBucksIcon, silverBucksIcon, goldBucksIcon;
 
         private bool _isAction = false;
+        private bool _isOpenStore;
         private ProceedAction _proceedAction = ProceedAction.Nothing;
+
+        public bool IsOpenStore
+        {
+            get => _isOpenStore;
+        }
 
         private void Awake()
         {
             if (Instance != null) 
                 Destroy(this.gameObject);
 
+            if (Instance == null)
+                Instance = this;
+
             canvasGroup.alpha = 0f;
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
             storeWindow.Hide();
-
-            Instance = this;
+           
             DontDestroyOnLoad(this.gameObject);
 
             User.OnWalletChanged += this.User_OnWalletChanged;
             User.OnInventoryChanged += this.User_OnInventoryChanged;
+
+            _isOpenStore = false;
         }
 
         private void User_OnInventoryChanged(InventoryItem[] obj)
@@ -68,20 +78,24 @@ namespace Knowlove.UI
         }
 
         public void Hide()
-        {
+        {           
             Instance.canvasGroup.alpha = 0;
             Instance.canvasGroup.interactable = false;
             Instance.canvasGroup.blocksRaycasts = false;
 
-            if (!_isAction)
+            if (!_isAction && _isOpenStore)
                 CallHandlePathNodeAction(false);
+                
 
-            if (_proceedAction != ProceedAction.Nothing)
+            if (_proceedAction != ProceedAction.Nothing && _isOpenStore)
                 CallHandlePathNodeAction(true);
+
+            _isOpenStore = false;
         }
 
         public void SetAction(bool isActionProceed, ProceedAction action = ProceedAction.Nothing)
         {
+            _isOpenStore = true;
             _isAction = isActionProceed;
             _proceedAction = action;
         }

@@ -22,6 +22,7 @@ namespace Knowlove
         [SerializeField] private GameStuff _gameStuff;
         [SerializeField] private ProceedActionLogic _proceedActionLogic;
         [SerializeField] private PathNodeActionLogic _pathNodeActionLogic;
+        [SerializeField] private GameObject _flipTheTableUI;
 
         private bool _didRoll = false;
 
@@ -113,6 +114,7 @@ namespace Knowlove
                 //turnIndex = 0;
                 NextTurn();
                 _gameStuff.GetSpecialCard();
+                _flipTheTableUI.gameObject.SetActive(true);
             }
             else
                 Debug.LogError("Current Room == null ????");
