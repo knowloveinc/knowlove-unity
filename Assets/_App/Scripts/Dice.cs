@@ -42,9 +42,7 @@ namespace Knowlove
         public void ToggleActive(bool enabled)
         {
             if (photonView.IsSceneView)
-            {
                 gameObject.SetActive(enabled);
-            }
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
 
 namespace Knowlove

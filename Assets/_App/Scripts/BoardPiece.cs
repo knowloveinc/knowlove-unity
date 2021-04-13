@@ -45,14 +45,12 @@ namespace Knowlove
                     player.SetCustomProperties(playerProperties);
                 }
 
-
                 OnFinished?.Invoke(); 
             });
         }
 
         public void GoToKnowLove(Player player = null, System.Action OnFinished = null)
         {
-
             Debug.Log("Player = " + player);
             if (player != null)
             {
@@ -61,11 +59,8 @@ namespace Knowlove
                 playerProperties["progress"] = 1f;
                 player.SetCustomProperties(playerProperties);
 
-
                 TurnManager.Instance.GameOver(player.NickName);
             }
-
-            
 
             JumpTo(knowLovePoint.position, OnFinished);
         }
@@ -80,6 +75,7 @@ namespace Knowlove
                 playerProperties["relationshipCount"] = (int)playerProperties["relationshipCount"] + 1;
                 player.SetCustomProperties(playerProperties); ;
             }
+
             JumpTo(BoardManager.Instance.paths[1].NodesAsVector3()[0], () => { OnFinished?.Invoke(); pathIndex = 0; pathRing = PathRing.Relationship; });
         }
 
@@ -93,6 +89,7 @@ namespace Knowlove
                 playerProperties["marriageCount"] = (int)playerProperties["marriageCount"] + 1;
                 player.SetCustomProperties(playerProperties);
             }
+
             JumpTo(BoardManager.Instance.paths[2].NodesAsVector3()[0], () => { OnFinished?.Invoke(); pathIndex = 0; pathRing = PathRing.Marriage; });
         }
 
@@ -125,6 +122,7 @@ namespace Knowlove
         {
             isMoving = true;
             jumpPathIndex = 0;
+
             foreach (Vector3 pos in positions)
             {
                 int index = jumpPathIndex;
@@ -139,15 +137,11 @@ namespace Knowlove
                     }
 
                     if (tapSound != null)
-                    {
                         SoundManager.Instance.PlaySound(tapSound.name);
-                    }
                 });
 
                 while(jumpPathIndex == index)
-                {
                     yield return null;
-                }
             }
 
             isMoving = false;

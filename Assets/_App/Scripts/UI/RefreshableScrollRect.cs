@@ -7,17 +7,16 @@ namespace Knowlove.UI
 {
     public class RefreshableScrollRect : ScrollRect
     {
-        [SerializeField] 
-        float refreshDistance = 150f;
-        
-        [SerializeField] 
-        Animator loadingAnimator;
+        private const string _activityIndicatorStartLoadingName = "Loading";
 
         public GameObject loadingAnimatorParent;
 
-        [SerializeField]
-        UnityEvent onRefreshed = new UnityEvent();
+        public bool isDragging = false;
 
+        [SerializeField] private Animator loadingAnimator;
+        [SerializeField] private UnityEvent onRefreshed = new UnityEvent();
+
+        [SerializeField] private float refreshDistance = 150f;
 
         private float startPosition;
         private float progress;
@@ -30,7 +29,7 @@ namespace Knowlove.UI
         /// </summary>
         public float Progress
         {
-            get { return progress; }
+            get => progress; 
         }
 
         /// <summary>
@@ -38,21 +37,8 @@ namespace Knowlove.UI
         /// </summary>
         public bool IsRefreshing
         {
-            get { return refreshInProgress; }
+            get => refreshInProgress; 
         }
-
-        
-        /// <summary>
-        /// Call When Refresh is End.
-        /// </summary>
-        public void EndRefreshing()
-        {
-            isPulled = false;
-            refreshInProgress = false;
-            //loadingAnimator.SetBool(_activityIndicatorStartLoadingName, false);
-        }
-
-        const string _activityIndicatorStartLoadingName = "Loading";
 
         protected override void Start()
         {
@@ -69,16 +55,37 @@ namespace Knowlove.UI
             base.LateUpdate();
 
             if (!isPulled)
-            {
                 return;
-            }
 
             if (!refreshInProgress)
-            {
                 return;
-            }
 
             content.anchoredPosition = stopPosition;
+        }
+
+        /// <summary>
+        /// Call When Refresh is End.
+        /// </summary>
+        public void EndRefreshing()
+        {
+            isPulled = false;
+            refreshInProgress = false;
+            //loadingAnimator.SetBool(_activityIndicatorStartLoadingName, false);
+        }
+
+        public override void OnBeginDrag(PointerEventData eventData)
+        {
+            base.OnBeginDrag(eventData);
+            EndRefreshing();
+
+            isDragging = true;
+        }
+
+        public override void OnEndDrag(PointerEventData eventData)
+        {
+            base.OnEndDrag(eventData);
+
+            isDragging = false;
         }
 
         private void OnScroll(Vector2 normalizedPosition)
@@ -92,34 +99,22 @@ namespace Knowlove.UI
         {
             //When a scroll rect is pulled down, its value is positive, so ignore negative values because thats normal scrolling.
             if (distance < 0f)
-            {
                 return;
-            }
 
             if (refreshInProgress && Mathf.Abs(distance) < 1f)
-            {
                 refreshInProgress = false;
-            }
 
             if (isPulled && isDragging)
-            {
                 return;
-            }
 
             progress = distance / refreshDistance;
 
             if (progress < 1f)
-            {
                 return;
-            }
 
             //Show loading animation
             if (isDragging)
-            {
-                isPulled = true;
-                
-                //loadingAnimator.SetBool(_activityIndicatorStartLoadingName, true);
-            }
+                isPulled = true; //loadingAnimator.SetBool(_activityIndicatorStartLoadingName, true);
 
             //Fire onRefreshed event
             if (isPulled && !isDragging)
@@ -135,24 +130,5 @@ namespace Knowlove.UI
         {
             return content.anchoredPosition.y;
         }
-
-
-        public bool isDragging = false;
-
-        public override void OnBeginDrag(PointerEventData eventData)
-        {
-            base.OnBeginDrag(eventData);
-            EndRefreshing();
-            
-            isDragging = true;
-        }
-
-        public override void OnEndDrag(PointerEventData eventData)
-        {
-            base.OnEndDrag(eventData);
-
-            isDragging = false;
-        }
-
     }
 }

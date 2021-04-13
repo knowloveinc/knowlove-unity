@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Knowlove
@@ -11,9 +10,7 @@ namespace Knowlove
         public PathNode GetPathNode(int index)
         {
             if (index < nodes.Count)
-            {
                 return nodes[index];
-            }
 
             return null;
         }
@@ -39,16 +36,14 @@ namespace Knowlove
                 int i = 1;
                 foreach(Transform child in transform)
                 {
-
                     PathNode node = child.GetComponent<PathNode>();
+
                     if(node != null)
                     {
                         node.gameObject.name = "NODE: " + i;
                         nodes.Add(node);
                         i++;
                     }
-
-
                 }
             }
         }

@@ -8,17 +8,13 @@ namespace Knowlove.UI.Menus
 {
     public class Window_CreateMatch : Window
     {
-        [SerializeField]
-        TMP_InputField roomNameField, passwordField;
+        [SerializeField] private TMP_InputField roomNameField, passwordField;
 
-        [SerializeField]
-        Window_MatchList matchListWindow;
+        [SerializeField] private Window_MatchList matchListWindow;
 
-        [SerializeField]
-        Window_WaitingForPlayers waitingForPlayersWindow;
+        [SerializeField] private Window_WaitingForPlayers waitingForPlayersWindow;
 
-        [SerializeField]
-        TMP_Dropdown playerCountDropdown;
+        [SerializeField] private TMP_Dropdown playerCountDropdown;
 
         public override void Show()
         {
@@ -28,10 +24,8 @@ namespace Knowlove.UI.Menus
             playerCountDropdown.value = 0;
         }
 
-
         public void DoCreateMatch()
         {
-
             bool hasPassword = !string.IsNullOrEmpty(passwordField.text);
 
             RoomOptions options = new RoomOptions();
@@ -52,7 +46,6 @@ namespace Knowlove.UI.Menus
 
             TypedLobby sqlLobby = new TypedLobby("sqlLobby", LobbyType.Default);
 
-
             if (PhotonNetwork.CreateRoom(roomNameField.text, options, sqlLobby))
             {
 
@@ -61,12 +54,10 @@ namespace Knowlove.UI.Menus
                 this.Hide();
             }
             else
-            {
                 PopupDialog.Instance.Show("Create Game Failed", "An error occured while creating your game. Please try again.");
-            }
         }
 
-        int PlayerCountFromDropdown()
+        private int PlayerCountFromDropdown()
         {
             /*
                 Options are:
@@ -75,7 +66,6 @@ namespace Knowlove.UI.Menus
                     Four Players = 2
 
             */
-
             return Mathf.Clamp(playerCountDropdown.value + 2, 2, 4);
         }
     }

@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using Knowlove.ActionAndPathLogic;
-using Knowlove.UI;
 using Photon.Pun;
 using System;
 using System.Collections;
@@ -36,9 +35,7 @@ namespace Knowlove
         private IEnumerator WaitForDiceToRoll()
         {
             while (!BoardManager.Instance.diceFinishedRolling)
-            {
                 yield return null;
-            }
 
             OnDiceFinishedRolling(BoardManager.Instance.diceScore, BoardManager.Instance.diceRollLocation);
         }
@@ -62,6 +59,7 @@ namespace Knowlove
                     string playerName = NetworkManager.Instance.players[_turnManager.turnIndex].NickName;
 
                     DiceFinishedRoll?.Invoke($"{playerName} rolled a {diceScore.ToString("n0")}", "RESULT");
+
                     DOVirtual.DelayedCall(1f, () =>
                     {
                         CameraManager.Instance.SetCamera(0);

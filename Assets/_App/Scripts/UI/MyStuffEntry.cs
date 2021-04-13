@@ -8,22 +8,18 @@ namespace Knowlove.UI
 {
     public class MyStuffEntry : MonoBehaviour
     {
-        Window_MyStuff myStuffWindow;
+        private Window_MyStuff _myStuffWindow;
+        private Button _btn;
 
-        [SerializeField]
-        TextMeshProUGUI nameLabel, countLabel;
+        [SerializeField] private TextMeshProUGUI nameLabel, countLabel;
 
-        [SerializeField]
-        Image icon;
+        [SerializeField] private Image icon;
 
-        [SerializeField]
-        InventoryItemIconDefinition item;
-
-        Button btn;
+        [SerializeField] private InventoryItemIconDefinition item;
 
         public void Init(InventoryItemIconDefinition item, int count, Window_MyStuff myStuffWindow)
         {
-            this.myStuffWindow = myStuffWindow;
+            this._myStuffWindow = myStuffWindow;
             this.item = item;
 
             icon.sprite = this.item.icon;
@@ -31,12 +27,12 @@ namespace Knowlove.UI
             nameLabel.text = item.displayName;
             countLabel.text = item.hideStackCount ? "" : "<size=20>x</size><b>" + count.ToString("00") + "</b>";
 
-            btn = GetComponent<Button>();
+            _btn = GetComponent<Button>();
 
-            if (btn != null)
+            if (_btn != null)
             {
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(() =>
+                _btn.onClick.RemoveAllListeners();
+                _btn.onClick.AddListener(() =>
                 {
                     OnClicked(this);
                 });
@@ -55,58 +51,57 @@ namespace Knowlove.UI
                 case "BROWSECARDS":
                     PopupDialog.PopupButton[] a = new PopupDialog.PopupButton[]
                     {
-                    new PopupDialog.PopupButton()
-                    {
-                        buttonColor = PopupDialog.PopupButtonColor.Plain,
-                        text = "Dating Deck",
-                        onClicked = () =>
+                        new PopupDialog.PopupButton()
                         {
-                            DeckBrowser.Instance.Show("dating");
-                        }
-                    },
-                    new PopupDialog.PopupButton()
-                    {
-                        buttonColor = PopupDialog.PopupButtonColor.Plain,
-                        text = "Relationship Deck",
-                        onClicked = () =>
+                            buttonColor = PopupDialog.PopupButtonColor.Plain,
+                            text = "Dating Deck",
+                            onClicked = () =>
+                            {
+                                DeckBrowser.Instance.Show("dating");
+                            }
+                        },
+                        new PopupDialog.PopupButton()
                         {
-                            DeckBrowser.Instance.Show("relationship");
-                        }
-                    },
-                    new PopupDialog.PopupButton()
-                    {
-                        buttonColor = PopupDialog.PopupButtonColor.Plain,
-                        text = "Marriage Deck",
-                        onClicked = () =>
+                            buttonColor = PopupDialog.PopupButtonColor.Plain,
+                            text = "Relationship Deck",
+                            onClicked = () =>
+                            {
+                                DeckBrowser.Instance.Show("relationship");
+                            }
+                        },
+                        new PopupDialog.PopupButton()
                         {
-                            DeckBrowser.Instance.Show("marriage");
+                            buttonColor = PopupDialog.PopupButtonColor.Plain,
+                            text = "Marriage Deck",
+                            onClicked = () =>
+                            {
+                                DeckBrowser.Instance.Show("marriage");
+                            }
                         }
-                    }
                     };
+
                     PopupDialog.Instance.Show("Browse Cards", "Choose a deck of cards to browse.", a);
                     break;
                 case "CUSTOMLIST":
                     PopupDialog.PopupButton[] b = new PopupDialog.PopupButton[]
                     {
-                    new PopupDialog.PopupButton()
-                    {
-                        buttonColor = PopupDialog.PopupButtonColor.Green,
-                        text = "Modify My List",
-                        onClicked = () =>
+                        new PopupDialog.PopupButton()
                         {
-                            this.myStuffWindow.OpenListEditor();
-                        }
-                    },
-                    new PopupDialog.PopupButton()
-                    {
-                        buttonColor = PopupDialog.PopupButtonColor.Plain,
-                        text = "Nevermind",
-                        onClicked = () =>
+                            buttonColor = PopupDialog.PopupButtonColor.Green,
+                            text = "Modify My List",
+                            onClicked = () =>
+                            {
+                                this._myStuffWindow.OpenListEditor();
+                            }
+                        },
+                        new PopupDialog.PopupButton()
                         {
-
+                            buttonColor = PopupDialog.PopupButtonColor.Plain,
+                            text = "Nevermind",
+                            onClicked = () => { }
                         }
-                    }
                     };
+
                     PopupDialog.Instance.Show("Custom Non-Negotiable List", "Would you like to edit your custom Non-Negotiable List now?", b);
                     break;
                 default:

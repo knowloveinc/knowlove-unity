@@ -6,11 +6,9 @@ namespace Knowlove.UI.Menus
 {
     public class Setting_VolumeSlider : MonoBehaviour
     {
-        [SerializeField]
-        Slider slider;
+        [SerializeField] private Slider slider;
 
-        [SerializeField]
-        AudioMixer mixer;
+        [SerializeField] private AudioMixer mixer;
 
         private void OnEnable()
         {

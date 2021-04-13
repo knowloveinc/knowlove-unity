@@ -1,6 +1,4 @@
-﻿using DG.Tweening;
-using GameBrewStudios;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
@@ -13,23 +11,24 @@ namespace Knowlove.UI.Menus
     public class Window_MatchList : Window, IMatchmakingCallbacks, ILobbyCallbacks
     {
 
-        [SerializeField]
-        RefreshableScrollRect scrollRect;
+        [SerializeField] private RefreshableScrollRect scrollRect;
 
-        [SerializeField]
-        GameObject listPrefab;
+        [SerializeField] private GameObject listPrefab;
 
-        [SerializeField]
-        Window_CreateMatch createMatchWindow;
+        [SerializeField] private Window_CreateMatch createMatchWindow;
 
-        [SerializeField]
-        Window_PickMode pickModeWindow;
+        [SerializeField] private Window_PickMode pickModeWindow;
 
-        [SerializeField]
-        Window_WaitingForPlayers waitingWindow;
+        [SerializeField] private Window_WaitingForPlayers waitingWindow;
 
-        [SerializeField]
-        Window_EnterMatchPassword enterPasswordWindow;
+        [SerializeField] private Window_EnterMatchPassword enterPasswordWindow;
+
+        [SerializeField] private GameObject noRoomsMessage;
+
+        private void OnDestroy()
+        {
+            Hide();
+        }
 
         public override void Show()
         {
@@ -37,10 +36,7 @@ namespace Knowlove.UI.Menus
             NetworkManager.OnRoomListUpdated += this.NetworkManager_OnRoomListUpdated;
 
             base.Show();
-
-
         }
-
 
         public override void Hide()
         {
@@ -52,33 +48,17 @@ namespace Knowlove.UI.Menus
         public void GoBack()
         {
             if (PhotonNetwork.IsConnectedAndReady)
-            {
                 PhotonNetwork.Disconnect();
-            }
 
             Hide();
             pickModeWindow.Show();
-
         }
 
-        private void OnDestroy()
-        {
-            Hide();
-        }
-
-        private void NetworkManager_OnRoomListUpdated()
-        {
-            PopulateList();
-            scrollRect.EndRefreshing();
-        }
         public void GetRoomList()
         {
-
             TypedLobby sqlLobby = new TypedLobby("sqlLobby", LobbyType.Default);
             if (PhotonNetwork.GetCustomRoomList(sqlLobby, "live = 86"))
-            {
                 Debug.LogWarning("GETTING ROOM LIST");
-            }
             else
             {
                 Debug.Log("Failed to call get room list");
@@ -93,36 +73,37 @@ namespace Knowlove.UI.Menus
 
             PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
             {
-            new PopupDialog.PopupButton()
-            {
-                text = "Join",
-                onClicked = () =>
+                new PopupDialog.PopupButton()
                 {
-                    if(roomInfo.CustomProperties.ContainsKey("password"))
+                    text = "Join",
+                    onClicked = () =>
                     {
-                        Debug.Log("Showing password screen");
-                        enterPasswordWindow.Init(roomInfo, (string)roomInfo.CustomProperties["password"]);
-                        enterPasswordWindow.Show();
+                        if(roomInfo.CustomProperties.ContainsKey("password"))
+                        {
+                            Debug.Log("Showing password screen");
+                            enterPasswordWindow.Init(roomInfo, (string)roomInfo.CustomProperties["password"]);
+                            enterPasswordWindow.Show();
+                        }
+                        else
+                        {
+                            CanvasLoading.Instance.Show();
+
+                            NetworkManager.OnJoinedRoomFinished += this.NetworkManager_OnJoinedRoomFinished;
+
+                            PhotonNetwork.JoinRoom(roomInfo.Name);
+                        }
                     }
-                    else
+                },
+                new PopupDialog.PopupButton()
+                {
+                    text = "Cancel",
+                    onClicked = () =>
                     {
-                        CanvasLoading.Instance.Show();
-
-                        NetworkManager.OnJoinedRoomFinished += this.NetworkManager_OnJoinedRoomFinished;
-
-                        PhotonNetwork.JoinRoom(roomInfo.Name);
+                        //Leave this empty, and the popup will simply close when this button is clicked.
                     }
                 }
-            },
-            new PopupDialog.PopupButton()
-            {
-                text = "Cancel",
-                onClicked = () =>
-                {
-                    //Leave this empty, and the popup will simply close when this button is clicked.
-                }
-            }
             };
+
             PopupDialog.Instance.Show("Join room?", $"Are you sure you want to join \"{roomInfo.Name}\"?", buttons);
         }
 
@@ -133,15 +114,13 @@ namespace Knowlove.UI.Menus
             waitingWindow.Show();
         }
 
-        [SerializeField] GameObject noRoomsMessage;
-
         public void PopulateList()
         {
             Debug.Log("Populating room list...");
             CanvasLoading.Instance.Show();
+
             foreach (Transform child in scrollRect.content)
             {
-
                 if (child.gameObject != scrollRect.loadingAnimatorParent && child.gameObject != noRoomsMessage)
                     Destroy(child.gameObject);
             }
@@ -180,8 +159,6 @@ namespace Knowlove.UI.Menus
                     {
                         OnRoomSelected(roomInfo);
                     });
-
-
                 }
             }
             else
@@ -190,51 +167,23 @@ namespace Knowlove.UI.Menus
                 Debug.LogWarning("There don't seem to be any rooms to join. Try creating one.");
             }
 
-
-
             CanvasLoading.Instance.Hide();
         }
-
 
         public void CreateRoom()
         {
             createMatchWindow.Show();
             //PhotonNetwork.CreateRoom(User.current.displayName, new RoomOptions() { MaxPlayers = 2 });
-        }
-
-        public void OnFriendListUpdate(List<FriendInfo> friendList)
-        {
-
-        }
-
-        public void OnCreatedRoom()
-        {
-
-        }
+        }     
 
         public void OnCreateRoomFailed(short returnCode, string message)
         {
             PopupDialog.Instance.Show("Create Game Failed", message);
         }
 
-        public void OnJoinedRoom()
-        {
-
-        }
-
         public void OnJoinRoomFailed(short returnCode, string message)
         {
             PopupDialog.Instance.Show("Join Game Failed", message);
-        }
-
-        public void OnJoinRandomFailed(short returnCode, string message)
-        {
-
-        }
-
-        public void OnLeftRoom()
-        {
-
         }
 
         public void OnJoinedLobby()
@@ -256,6 +205,22 @@ namespace Knowlove.UI.Menus
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
         {
             throw new System.NotImplementedException();
+        }
+
+        public void OnFriendListUpdate(List<FriendInfo> friendList) { }
+
+        public void OnCreatedRoom() { }
+
+        public void OnJoinedRoom() { }
+
+        public void OnJoinRandomFailed(short returnCode, string message) { }
+
+        public void OnLeftRoom() { }
+
+        private void NetworkManager_OnRoomListUpdated()
+        {
+            PopulateList();
+            scrollRect.EndRefreshing();
         }
     }
 }

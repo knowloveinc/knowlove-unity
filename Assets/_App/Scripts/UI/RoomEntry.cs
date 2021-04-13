@@ -8,11 +8,9 @@ namespace Knowlove.UI
 {
     public class RoomEntry : MonoBehaviour
     {
-        [SerializeField]
-        RoomInfo roomInfo;
+        [SerializeField] private RoomInfo roomInfo;
 
-        [SerializeField]
-        TextMeshProUGUI roomLabel, playerCountLabel;
+        [SerializeField] private TextMeshProUGUI roomLabel, playerCountLabel;
 
         internal void Init(RoomInfo info)
         {
@@ -35,9 +33,7 @@ namespace Knowlove.UI
             }
 
             if (hasPassword)
-            {
                 roomLabel.text += " (" + (string)info.CustomProperties["password"] + ")";
-            }
 
             button.onClick.AddListener(() =>
             {

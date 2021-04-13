@@ -13,6 +13,7 @@ namespace Knowlove
 {
     public class NetworkManager : MonoBehaviourPunCallbacks
     {
+        public static NetworkManager Instance;
 
         public static event Action OnJoinedRoomFinished;
 
@@ -20,6 +21,15 @@ namespace Knowlove
         public List<Player> players = new List<Player>();
 
         public bool readyToStart = false;
+
+        #region Events
+
+        public static event System.Action OnPhotonConnected;
+        public static event System.Action OnReadyToStart;
+        public static event System.Action<Player> OnPlayerLeft;
+        public static event Action OnRoomListUpdated;
+
+        #endregion
 
         #region Public Methods
 
@@ -294,17 +304,6 @@ namespace Knowlove
         {
             base.OnRoomPropertiesUpdate(propertiesThatChanged);
         }
-        #endregion
-
-        public static NetworkManager Instance;
-
-        #region Events
-
-        public static event System.Action OnPhotonConnected;
-        public static event System.Action OnReadyToStart;
-        public static event System.Action<Player> OnPlayerLeft;
-        public static event Action OnRoomListUpdated;
-
         #endregion
     }
 }

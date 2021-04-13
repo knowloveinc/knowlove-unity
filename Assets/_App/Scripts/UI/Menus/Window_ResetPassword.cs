@@ -6,18 +6,17 @@ namespace Knowlove.UI.Menus
 {
     public class Window_ResetPassword : Window
     {
-        [SerializeField]
-        Window_Login loginWindow;
+        public string email = "";
 
-        [SerializeField]
-        TMP_InputField codeField, newPasswordField, confirmPasswordField;
+        [SerializeField] private Window_Login loginWindow;
+        [SerializeField] private TMP_InputField codeField, newPasswordField, confirmPasswordField;
+
+        private ServerAPI.ServerError lastError;
 
         public override void Show()
         {
             Debug.LogError("This window has its own Show method that takes a string arguement for user email.");
         }
-
-        public string email = "";
 
         public void Show(string email)
         {
@@ -32,10 +31,12 @@ namespace Knowlove.UI.Menus
         public void Submit()
         {
             bool passwordIsValid = Validation.ValidatePassword(newPasswordField.text, out string passwordError);
+
             if (passwordIsValid && newPasswordField.text == confirmPasswordField.text)
             {
                 ServerAPI.OnError += this.ServerAPI_OnError;
                 CanvasLoading.Instance.Show();
+
                 APIManager.ResetPassword(email, codeField.text, newPasswordField.text, (result) =>
                 {
                     ServerAPI.OnError -= this.ServerAPI_OnError;
@@ -51,35 +52,19 @@ namespace Knowlove.UI.Menus
                     else
                     {
                         if (result.ContainsKey("error"))
-                        {
                             PopupDialog.Instance.Show((string)result["error"]);
-                        }
                         else
-                        {
                             PopupDialog.Instance.Show("Something went wrong while processing your request. Please try again. \n" + (!string.IsNullOrEmpty(lastError.text) ? lastError.text : ""));
-                        }
                     }
-
                 });
             }
             else
             {
                 if (!passwordIsValid && !string.IsNullOrEmpty(passwordError))
-                {
                     PopupDialog.Instance.Show(passwordError);
-                }
                 else if (newPasswordField.text != confirmPasswordField.text)
-                {
                     PopupDialog.Instance.Show("Passwords do not match.");
-                }
             }
-        }
-
-        ServerAPI.ServerError lastError;
-
-        private void ServerAPI_OnError(ServerAPI.ServerError obj)
-        {
-            lastError = obj;
         }
 
         public void GoBack()
@@ -92,6 +77,11 @@ namespace Knowlove.UI.Menus
         {
             this.email = "";
             base.Hide();
+        }
+
+        private void ServerAPI_OnError(ServerAPI.ServerError obj)
+        {
+            lastError = obj;
         }
     }
 }

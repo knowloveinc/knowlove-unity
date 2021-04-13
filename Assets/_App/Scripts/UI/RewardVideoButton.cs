@@ -14,6 +14,10 @@ namespace Knowlove.UI
         {
             Chartboost.didCompleteRewardedVideo += this.Chartboost_didDisplayRewardedVideo;
         }
+        private void Update()
+        {
+            buttonChild.SetActive(lastPlayTime == 0f || Time.time - lastPlayTime >= (60f * 30f));
+        }
 
         private void Chartboost_didDisplayRewardedVideo(CBLocation obj, int reward)
         {
@@ -22,11 +26,6 @@ namespace Knowlove.UI
             {
                 Debug.Log("ADDED " + reward + " TO WALLET FOR TOTAL OF: " + wallet);
             });
-        }
-
-        private void Update()
-        {
-            buttonChild.SetActive(lastPlayTime == 0f || Time.time - lastPlayTime >= (60f * 30f));
         }
 
         public void OnClick()

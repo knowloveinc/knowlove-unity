@@ -2770,7 +2770,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2782,9 +2782,9 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 32
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
-  m_textAlignment: 514
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
   m_characterSpacing: 5.93
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -6774,14 +6774,14 @@ MonoBehaviour:
   id: klbucks1000
   amountToGive: 0
   ownedCount: {fileID: 0}
-  currencyCost: 0
-  isIAP: 1
-  canOwnMultiple: 0
   titleLabel: {fileID: 1371980398}
   descLabel: {fileID: 1365387142}
   iconTextLabel: {fileID: 1666442984}
   priceLabel: {fileID: 176124}
   iconImage: {fileID: 2069829458}
+  currencyCost: 0
+  isIAP: 1
+  canOwnMultiple: 0
 --- !u!1 &315819600
 GameObject:
   m_ObjectHideFlags: 0
@@ -11839,14 +11839,14 @@ MonoBehaviour:
   id: customList
   amountToGive: 1
   ownedCount: {fileID: 0}
-  currencyCost: 500
-  isIAP: 0
-  canOwnMultiple: 0
   titleLabel: {fileID: 1026919702}
   descLabel: {fileID: 1587121609}
   iconTextLabel: {fileID: 342081693}
   priceLabel: {fileID: 253797466}
   iconImage: {fileID: 812959768}
+  currencyCost: 500
+  isIAP: 0
+  canOwnMultiple: 0
 --- !u!114 &323921153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13754,9 +13754,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  refreshDistance: 150
-  loadingAnimator: {fileID: 880493128}
   loadingAnimatorParent: {fileID: 1151274105}
+  isDragging: 0
+  loadingAnimator: {fileID: 880493128}
   onRefreshed:
     m_PersistentCalls:
       m_Calls:
@@ -13772,7 +13772,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  isDragging: 0
+  refreshDistance: 150
 --- !u!114 &384727867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14159,14 +14159,14 @@ MonoBehaviour:
   id: klbucks2500
   amountToGive: 0
   ownedCount: {fileID: 0}
-  currencyCost: 0
-  isIAP: 1
-  canOwnMultiple: 0
   titleLabel: {fileID: 1788738124}
   descLabel: {fileID: 1868011588}
   iconTextLabel: {fileID: 143764695}
   priceLabel: {fileID: 1311659056}
   iconImage: {fileID: 487585166}
+  currencyCost: 0
+  isIAP: 1
+  canOwnMultiple: 0
 --- !u!114 &410373150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15214,9 +15214,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  refreshDistance: 150
-  loadingAnimator: {fileID: 495980892}
   loadingAnimatorParent: {fileID: 730350774}
+  isDragging: 0
+  loadingAnimator: {fileID: 495980892}
   onRefreshed:
     m_PersistentCalls:
       m_Calls:
@@ -15232,7 +15232,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  isDragging: 0
+  refreshDistance: 150
 --- !u!114 &478139274
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17431,14 +17431,14 @@ MonoBehaviour:
   id: tableFlip
   amountToGive: 1
   ownedCount: {fileID: 0}
-  currencyCost: 100
-  isIAP: 0
-  canOwnMultiple: 1
   titleLabel: {fileID: 995430350}
   descLabel: {fileID: 2053333662}
   iconTextLabel: {fileID: 1333064798}
   priceLabel: {fileID: 868760156}
   iconImage: {fileID: 520640172}
+  currencyCost: 100
+  isIAP: 0
+  canOwnMultiple: 1
 --- !u!114 &556638820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18321,16 +18321,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 273ee06e3c2a62e40ae94ff08b6a286f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listEditorWindow: {fileID: 1123833862}
-  loadingIndicator: {fileID: 324788178}
-  listEntryPrefab: {fileID: 3793534990120863687, guid: f1c65fa32c699294482259caadb42b7e,
-    type: 3}
-  container: {fileID: 1025056671}
-  defaultIcon:
-    id: default
-    displayName: Unknown
-    icon: {fileID: 21300000, guid: 930495a50ab904d43ba03786c9b1a98c, type: 3}
-    hideStackCount: 0
   inventoryIcons:
   - id: browseCards
     displayName: Browse Cards
@@ -18348,6 +18338,16 @@ MonoBehaviour:
     displayName: Custom Non-Negotiable List
     icon: {fileID: 21300000, guid: 9ed0b0ed419a85440805bcdb598e528f, type: 3}
     hideStackCount: 1
+  listEditorWindow: {fileID: 1123833862}
+  loadingIndicator: {fileID: 324788178}
+  listEntryPrefab: {fileID: 3793534990120863687, guid: f1c65fa32c699294482259caadb42b7e,
+    type: 3}
+  container: {fileID: 1025056671}
+  defaultIcon:
+    id: default
+    displayName: Unknown
+    icon: {fileID: 21300000, guid: 930495a50ab904d43ba03786c9b1a98c, type: 3}
+    hideStackCount: 0
 --- !u!1 &601776222
 GameObject:
   m_ObjectHideFlags: 0
@@ -18768,7 +18768,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -18780,9 +18780,9 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 32
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
-  m_textAlignment: 516
+  m_HorizontalAlignment: 4
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -24410,7 +24410,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -24422,9 +24422,9 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
-  m_textAlignment: 514
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -25303,10 +25303,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfef2a64721c05441bf55a0cf9c79490, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  password: 
   roomToJoin:
     RemovedFromList: 0
     masterClientId: 0
+  password: 
   passwordField: {fileID: 1008266642}
   waitingWindow: {fileID: 2094321301}
 --- !u!224 &947092812
@@ -26310,6 +26310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 540ef3c93c2c015479e2fa39b1be7f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameStuff: {fileID: 0}
   storeWindow: {fileID: 1647333036}
   canvasGroup: {fileID: 976377765}
   walletLabels:
@@ -26325,7 +26326,6 @@ MonoBehaviour:
   bronzeBucksIcon: {fileID: 0}
   silverBucksIcon: {fileID: 0}
   goldBucksIcon: {fileID: 0}
-  gameStuff: {fileID: 0}
 --- !u!224 &976377770
 RectTransform:
   m_ObjectHideFlags: 0
@@ -30902,12 +30902,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e1b426be02cf4f4a8291d0fc3bb5099, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  listItems: []
   prefab: {fileID: 8542423595421843326, guid: 3497008a7b68f1745bdcc16d4f3c3fb4, type: 3}
   leftLoading: {fileID: 247155584}
   rightLoading: {fileID: 730350774}
   leftContainer: {fileID: 178874430}
   rightContainer: {fileID: 1924487191}
-  listItems: []
 --- !u!114 &1123833863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34016,12 +34016,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41beead03cd60ff49a60a60b2d4468e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitingForPlayersWindow: {fileID: 2094321301}
   wizardPanels:
   - {fileID: 1939329467}
   - {fileID: 1500283913}
   - {fileID: 805541664}
   wizardIndex: 0
+  waitingForPlayersWindow: {fileID: 2094321301}
   roomNameInputField: {fileID: 531983079}
   passwordInputField: {fileID: 1072363775}
   playerCountButtons:
@@ -34134,14 +34134,14 @@ MonoBehaviour:
   id: klbucks6000
   amountToGive: 0
   ownedCount: {fileID: 0}
-  currencyCost: 0
-  isIAP: 1
-  canOwnMultiple: 0
   titleLabel: {fileID: 1289412148}
   descLabel: {fileID: 1268326145}
   iconTextLabel: {fileID: 1229415278}
   priceLabel: {fileID: 258580719}
   iconImage: {fileID: 1576948757}
+  currencyCost: 0
+  isIAP: 1
+  canOwnMultiple: 0
 --- !u!114 &1286348760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36133,11 +36133,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5c6b01fd86fd8c4d8023293f3020bef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  email: 
   loginWindow: {fileID: 1996998341}
   codeField: {fileID: 1882874574}
   newPasswordField: {fileID: 1112441431}
   confirmPasswordField: {fileID: 1462542736}
-  email: 
 --- !u!114 &1369403096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39946,14 +39946,14 @@ MonoBehaviour:
   id: avoidSingle
   amountToGive: 1
   ownedCount: {fileID: 0}
-  currencyCost: 100
-  isIAP: 0
-  canOwnMultiple: 1
   titleLabel: {fileID: 1062042839}
   descLabel: {fileID: 1004113933}
   iconTextLabel: {fileID: 12433728}
   priceLabel: {fileID: 73555319}
   iconImage: {fileID: 1755755379}
+  currencyCost: 100
+  isIAP: 0
+  canOwnMultiple: 1
 --- !u!114 &1535094498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47249,9 +47249,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  refreshDistance: 150
-  loadingAnimator: {fileID: 848166136}
   loadingAnimatorParent: {fileID: 324788178}
+  isDragging: 0
+  loadingAnimator: {fileID: 848166136}
   onRefreshed:
     m_PersistentCalls:
       m_Calls:
@@ -47267,7 +47267,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  isDragging: 0
+  refreshDistance: 150
 --- !u!114 &1844002327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47586,9 +47586,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  refreshDistance: 150
-  loadingAnimator: {fileID: 1956583822}
   loadingAnimatorParent: {fileID: 247155584}
+  isDragging: 0
+  loadingAnimator: {fileID: 1956583822}
   onRefreshed:
     m_PersistentCalls:
       m_Calls:
@@ -47604,7 +47604,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  isDragging: 0
+  refreshDistance: 150
 --- !u!114 &1863256307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50459,14 +50459,14 @@ MonoBehaviour:
   id: klbucks15000
   amountToGive: 0
   ownedCount: {fileID: 0}
-  currencyCost: 0
-  isIAP: 1
-  canOwnMultiple: 0
   titleLabel: {fileID: 1951019194}
   descLabel: {fileID: 630657571}
   iconTextLabel: {fileID: 506126703}
   priceLabel: {fileID: 62932477}
   iconImage: {fileID: 253474226}
+  currencyCost: 0
+  isIAP: 1
+  canOwnMultiple: 0
 --- !u!114 &1962584146
 MonoBehaviour:
   m_ObjectHideFlags: 0

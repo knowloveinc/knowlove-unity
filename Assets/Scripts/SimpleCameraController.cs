@@ -49,9 +49,9 @@ namespace UnityTemplateProjects
                 t.position = new Vector3(x, y, z);
             }
         }
-        
-        CameraState m_TargetCameraState = new CameraState();
-        CameraState m_InterpolatingCameraState = new CameraState();
+
+        private CameraState m_TargetCameraState = new CameraState();
+        private CameraState m_InterpolatingCameraState = new CameraState();
 
         [Header("Movement Settings")]
         [Tooltip("Exponential boost factor on translation, controllable by mouse wheel.")]
@@ -69,42 +69,6 @@ namespace UnityTemplateProjects
 
         [Tooltip("Whether or not to invert our Y axis for mouse input to rotation.")]
         public bool invertY = false;
-
-        void OnEnable()
-        {
-            m_TargetCameraState.SetFromTransform(transform);
-            m_InterpolatingCameraState.SetFromTransform(transform);
-        }
-
-        Vector3 GetInputTranslationDirection()
-        {
-            Vector3 direction = new Vector3();
-            if (Input.GetKey(KeyCode.W))
-            {
-                direction += Vector3.forward;
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                direction += Vector3.back;
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                direction += Vector3.left;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                direction += Vector3.right;
-            }
-            if (Input.GetKey(KeyCode.Q))
-            {
-                direction += Vector3.down;
-            }
-            if (Input.GetKey(KeyCode.E))
-            {
-                direction += Vector3.up;
-            }
-            return direction;
-        }
         
         void Update()
         {
@@ -119,9 +83,7 @@ namespace UnityTemplateProjects
 
             // Hide and lock cursor when right mouse button pressed
             if (Input.GetMouseButtonDown(1))
-            {
                 Cursor.lockState = CursorLockMode.Locked;
-            }
 
             // Unlock and show cursor when right mouse button released
             if (Input.GetMouseButtonUp(1))
@@ -146,9 +108,7 @@ namespace UnityTemplateProjects
 
             // Speed up movement when shift key held
             if (Input.GetKey(KeyCode.LeftShift))
-            {
                 translation *= 10.0f;
-            }
             
             // Modify movement by a boost factor (defined in Inspector and modified in play mode through the mouse scroll wheel)
             boost += Input.mouseScrollDelta.y * 0.2f;
@@ -164,6 +124,31 @@ namespace UnityTemplateProjects
 
             m_InterpolatingCameraState.UpdateTransform(transform);
         }
-    }
 
+        private void OnEnable()
+        {
+            m_TargetCameraState.SetFromTransform(transform);
+            m_InterpolatingCameraState.SetFromTransform(transform);
+        }
+
+        private Vector3 GetInputTranslationDirection()
+        {
+            Vector3 direction = new Vector3();
+
+            if (Input.GetKey(KeyCode.W))
+                direction += Vector3.forward;
+            if (Input.GetKey(KeyCode.S))
+                direction += Vector3.back;
+            if (Input.GetKey(KeyCode.A))
+                direction += Vector3.left;
+            if (Input.GetKey(KeyCode.D))
+                direction += Vector3.right;
+            if (Input.GetKey(KeyCode.Q))
+                direction += Vector3.down;
+            if (Input.GetKey(KeyCode.E))
+                direction += Vector3.up;
+
+            return direction;
+        }
+    }
 }

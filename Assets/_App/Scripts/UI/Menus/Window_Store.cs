@@ -6,12 +6,12 @@ namespace Knowlove.UI.Menus
 {
     public class Window_Store : Window
     {
-        [SerializeField]
-        ScrollRect scrollRect;
+        [SerializeField] private ScrollRect scrollRect;
 
         public override void Show()
         {
-            if (User.current == null) return;
+            if (User.current == null) 
+                return;
 
             scrollRect.content.transform.localPosition = new Vector2(0f, 0f);
             base.Show();

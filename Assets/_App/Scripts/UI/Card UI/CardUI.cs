@@ -21,6 +21,10 @@ namespace Knowlove.UI
         [SerializeField] private Button cardUIButton;
         [SerializeField] private TextMeshProUGUI cardUIText;
 
+        private string _waitingClickFromUserNickName = null;
+
+        public System.Action onCardClicked = null;
+
         private void Start()
         {
             _pathNodeActionLogic.PickedCardScenario += ShowCard;
@@ -72,7 +76,7 @@ namespace Knowlove.UI
         }
 
         [PunRPC]
-        public void RPC_ShowCard(string cardText, Player targetPlayer, int pathIndex, bool isFancyCard)
+        private void RPC_ShowCard(string cardText, Player targetPlayer, int pathIndex, bool isFancyCard)
         {
             _bottomPanel.mapWindow.SetActive(false);
             _bottomPanel.mapButton.SetActive(false);
@@ -148,12 +152,8 @@ namespace Knowlove.UI
             HideCard();
         }
 
-        public System.Action onCardClicked = null;
-
-        private string _waitingClickFromUserNickName = null;
-
         [PunRPC]
-        public void RPC_OnCardClicked(string userNickname)
+        private void RPC_OnCardClicked(string userNickname)
         {
             Debug.Log("RPC_OnCardClicked()");
 
@@ -190,6 +190,7 @@ namespace Knowlove.UI
                 Debug.Log("Card fully hidden.");
             });
         }
+
         public PopupDialog.PopupButton[] GetPromptButtons(CardPromptButton[] cardButtons)
         {
             List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();

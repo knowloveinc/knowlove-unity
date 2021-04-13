@@ -5,9 +5,6 @@ using UnityEngine;
 
 namespace GameBrewStudios
 {
-
-
-
     /// <summary>
     /// This class represents an exact replica of the UserSchema on the server, with some added helper functions for ease of use
     /// </summary>
@@ -54,7 +51,6 @@ namespace GameBrewStudios
     {
         public static event System.Action OnUserNotLoggedIn;
 
-
         /// <summary>
         /// Represents a Mongo ObjectID from the User collection in the database
         /// </summary>
@@ -92,9 +88,7 @@ namespace GameBrewStudios
             get
             {
                 if (_current == null)
-                {
                     OnUserNotLoggedIn?.Invoke();
-                }
 
                 return _current;
             }

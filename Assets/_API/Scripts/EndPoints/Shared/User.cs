@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Newtonsoft.Json;
@@ -8,7 +7,6 @@ namespace GameBrewStudios.Networking
 {
     public partial class APIManager
     {
-
         public static void Connect(System.Action<bool> onComplete)
         {
             ServerRequest.CallAPI("/", HTTPMethod.GET, null, (response) => 
@@ -73,6 +71,7 @@ namespace GameBrewStudios.Networking
                 onComplete?.Invoke(false);
             }, false);
         }
+
         public static void Register(string username, string nickname, string password, Action<bool> onComplete)
         {
             Dictionary<string, object> body = new Dictionary<string, object>();

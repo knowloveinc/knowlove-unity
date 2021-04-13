@@ -44,9 +44,7 @@ namespace Knowlove.UI
                     photonView.RPC(nameof(RPC_ShowBottomForPlayer), NetworkManager.Instance.players[i]);
                 }
                 else
-                {
                     photonView.RPC(nameof(RPC_HideBottomForPlayer), NetworkManager.Instance.players[i]);
-                }
             }
         }
 
@@ -70,7 +68,6 @@ namespace Knowlove.UI
             int diceCount = (int)playerProps["diceCount"];
             NetworkManager.Instance.players[TurnManager.turnIndex].SetCustomProperties(playerProps);
 
-
             bottomButton.onClick.AddListener(() =>
             {
                 mapWindow.SetActive(false);
@@ -79,7 +76,6 @@ namespace Knowlove.UI
 
                 bottomButton.interactable = false;
                 bottomPanel.DOAnchorPosY(-bottomPanel.sizeDelta.y, 0.5f);
-
             });
 
             bottomButtonLabel.text = "Roll";
@@ -91,7 +87,7 @@ namespace Knowlove.UI
         }
 
         [PunRPC]
-        public void RPC_HideBottomForPlayer()
+        private void RPC_HideBottomForPlayer()
         {
             Debug.Log("HIDING BOTTOM");
             mapWindow.SetActive(false);

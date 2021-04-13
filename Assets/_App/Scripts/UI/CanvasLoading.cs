@@ -7,6 +7,14 @@ namespace Knowlove.UI
     {
         public static CanvasLoading Instance;
 
+        private static int waiterCount;
+
+        [SerializeField] private CanvasGroup canvasGroup;
+
+        [SerializeField] private Canvas popupDialogCanvas;
+
+        private Canvas canvas;
+
         private void Awake()
         {
             if (Instance != null)
@@ -23,16 +31,6 @@ namespace Knowlove.UI
             if (popupDialogCanvas == null) popupDialogCanvas = PopupDialog.Instance.gameObject.GetComponent<Canvas>();
         }
 
-        [SerializeField]
-        CanvasGroup canvasGroup;
-
-        private static int waiterCount;
-
-        [SerializeField]
-        Canvas popupDialogCanvas;
-
-        Canvas canvas;
-
         public void Show(bool forceAbovePopupMessages = false)
         {
             waiterCount++;
@@ -41,29 +39,20 @@ namespace Knowlove.UI
                 popupDialogCanvas = PopupDialog.Instance.GetComponent<Canvas>();
 
             if (popupDialogCanvas != null && canvas != null)
-            {
                 canvas.sortingOrder = forceAbovePopupMessages ? popupDialogCanvas.sortingOrder + 1 : popupDialogCanvas.sortingOrder - 1;
-            }
 
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
 
             if (DOTween.IsTweening("LoadingFadeOut"))
-            {
                 DOTween.Kill("LoadingFadeOut", true);
-            }
 
             if (canvasGroup.alpha == 1f || DOTween.IsTweening("LoadingFadeIn"))
-            {
                 return;
-            }
-
 
             canvasGroup.alpha = 0f;
             canvasGroup.DOFade(1f, 0.25f).SetId("LoadingFadeIn").SetEase(Ease.Linear);
         }
-
-
 
         public void Hide()
         {
@@ -77,14 +66,10 @@ namespace Knowlove.UI
                 canvasGroup.blocksRaycasts = false;
 
                 if (DOTween.IsTweening("LoadingFadeIn"))
-                {
                     DOTween.Kill("LoadingFadeIn", true);
-                }
 
                 if (canvasGroup.alpha == 0f || DOTween.IsTweening("LoadingFadeOut"))
-                {
                     return;
-                }
 
                 canvasGroup.alpha = 1f;
                 canvasGroup.DOFade(0f, 0.25f).SetId("LoadingFadeOut").SetEase(Ease.Linear);

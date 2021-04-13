@@ -6,7 +6,7 @@ namespace Knowlove.UI
 {
     public class PlayerWalletText : MonoBehaviour
     {
-        TextMeshProUGUI walletText;
+        private TextMeshProUGUI walletText;
 
         // Start is called before the first frame update
         void Start()

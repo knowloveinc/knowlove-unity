@@ -7,10 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Text;
 using UnityEngine.SceneManagement;
-using UnityEngine.Events;
 using System.Net;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 
 namespace GameBrewStudios.Networking
 {
@@ -115,14 +112,12 @@ namespace GameBrewStudios.Networking
         PATCH = 7
     }
 
-
     /// <summary>
     /// Construct a request to send to the server.
     /// </summary>
     [System.Serializable]
     public struct ServerRequest
     {
-
         public string endpoint;
         public HTTPMethod httpMethod;
         public Dictionary<string, object> payload;
@@ -133,13 +128,11 @@ namespace GameBrewStudios.Networking
         /// </summary>
         public Dictionary<string, string> extraHeaders;
 
-
         /// <summary>
         /// Query parameters to append to the end of the request URI
         /// <para>Example: If you include a dictionary with a key of "page" and a value of "42" (as a string) then the url would become "https: //mydomain.com/endpoint?page=42"</para>
         /// </summary>
         public Dictionary<string, string> queryParams;
-
 
         public static void CallAPI(string endPoint, HTTPMethod httpMethod, Dictionary<string, object> body = null, Action<ServerResponse> onComplete = null, bool useAuthToken = true)
         {
@@ -164,8 +157,6 @@ namespace GameBrewStudios.Networking
                 onComplete?.Invoke(response);
             });
         }
-
-        
 
         /// <summary>
         /// A one-size-fits-all Response handler for easily retrieving the desired data type from a ServerResponse
@@ -259,7 +250,6 @@ namespace GameBrewStudios.Networking
             this.queryParams = queryParams;
         }
 
-
         public ServerRequest(string endpoint, HTTPMethod httpMethod = HTTPMethod.GET, byte[] upload = null, Dictionary<string, string> extraHeaders = null, Dictionary<string, string> queryParams = null, bool useAuthToken = true)
         {
             this.endpoint = endpoint;
@@ -287,9 +277,7 @@ namespace GameBrewStudios.Networking
             bool isNonPayloadMethod = (this.httpMethod == HTTPMethod.GET || this.httpMethod == HTTPMethod.HEAD || this.httpMethod == HTTPMethod.OPTIONS);
 
             if (this.payload != null && isNonPayloadMethod)
-            {
                 Debug.LogWarning("WARNING: Payloads should not be sent in GET, HEAD, OPTIONS, requests. Attempted to send a payload to: " + this.httpMethod.ToString() + " " + this.endpoint);
-            }
         }
 
 
@@ -334,7 +322,6 @@ namespace GameBrewStudios.Networking
         /// </summary>
         public string text;
 
-
         /// <summary>
         /// A hashtable version of the server response, null if errors or unable to convert
         /// </summary>
@@ -355,7 +342,6 @@ namespace GameBrewStudios.Networking
         public Texture2D texture;
     }
 
-
     public class ServerAPI : MonoBehaviour
     {
         /// <summary>
@@ -370,14 +356,13 @@ namespace GameBrewStudios.Networking
             //StartCoroutine(LoadConfig());
 
             if(SERVER_URL == "http://localhost:5052/api")
-            {
                 Debug.LogError("USING LOCALHOST FOR TESTING, REMEMBER TO CHANGE SERVER_URL BACK BEFORE PUBLISHING");
-            }
+
             initialized = true;
         }
 
 
-        IEnumerator LoadConfig()
+        private IEnumerator LoadConfig()
         {
             Debug.LogWarning("Config file url: " + "file://" + Application.streamingAssetsPath + "/config.json");
             using (UnityWebRequest request = UnityWebRequest.Get("file://" + Application.streamingAssetsPath + "/config.json"))
@@ -409,7 +394,6 @@ namespace GameBrewStudios.Networking
             { "Access-Control-Allow-Origin", "*" }
         };
 
-
         //_instance is to store the instance, Instance is for referencing and auto-initializing an instance when needed, and returning _instance if its already initialized
         private static ServerAPI _instance;
         private static ServerAPI Instance
@@ -431,7 +415,6 @@ namespace GameBrewStudios.Networking
 
         public static event System.Action<ServerError> OnError;
 
-
         public struct ServerError
         {
             public HttpStatusCode status;
@@ -448,7 +431,6 @@ namespace GameBrewStudios.Networking
             OnError?.Invoke(error);
         }
 
-
         public static void SendRequest(ServerRequest request, System.Action<ServerResponse> OnServerResponse = null)
         {
             Instance.StartCoroutine(Instance.ProcessRequest(request, OnServerResponse));
@@ -457,7 +439,7 @@ namespace GameBrewStudios.Networking
 
         private static bool initialized = false;
 
-        IEnumerator ProcessRequest(ServerRequest request, System.Action<ServerResponse> OnServerResponse = null)
+        private IEnumerator ProcessRequest(ServerRequest request, System.Action<ServerResponse> OnServerResponse = null)
         {
             if (!initialized)
             {
@@ -506,7 +488,6 @@ namespace GameBrewStudios.Networking
                 }
             }
 
-
             Instance.StartCoroutine(Instance.DoSendAPIRequest(request, OnServerResponse));
         }
 
@@ -518,22 +499,20 @@ namespace GameBrewStudios.Networking
         protected IEnumerator DoDownloadTexture2D(string url, System.Action<Texture2D> OnComplete = null)
         {
             using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
-            {
-                
+            {            
                 www.SetRequestHeader("Access-Control-Allow-Headers", "Accept, X-Access-Token, X-Application-Name, X-Request-Sent-Time");
                 www.SetRequestHeader("Access-Control-Allow-Credentials", "true");
                 www.SetRequestHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS, HEAD");
                 www.SetRequestHeader("Access-Control-Allow-Origin", "*");
 
                 Debug.Log("Downloading Texture: " + url);
+
                 yield return www.SendWebRequest();
 
                 Texture2D texture = DownloadHandlerTexture.GetContent(www);
 
                 if (texture == null)
-                {
                     Debug.LogError("Texture download failed for: " + url);
-                }
 
                 OnComplete?.Invoke(texture);
             }
@@ -577,7 +556,6 @@ namespace GameBrewStudios.Networking
 
                 try
                 {
-
                     Debug.Log("Server Response: " + request.httpMethod + " " + request.endpoint + " completed in " + (Time.time - startTime).ToString("n4") + " secs.\nResponse Text: <color=Yellow>" + webRequest.downloadHandler.text + "</color>");
                 }
                 catch
@@ -593,6 +571,7 @@ namespace GameBrewStudios.Networking
 
                 ServerResponse response = new ServerResponse();
                 response.statusCode = (int)webRequest.responseCode;
+
                 if (webRequest.isHttpError || webRequest.isNetworkError || !string.IsNullOrEmpty(webRequest.error))
                 {
                     response.hasError = true;
@@ -699,7 +678,8 @@ namespace GameBrewStudios.Networking
             {
                 foreach (KeyValuePair<string, string> pair in baseHeaders)
                 {
-                    if (pair.Key == "Content-Type" && request.upload != null) continue;
+                    if (pair.Key == "Content-Type" && request.upload != null) 
+                        continue;
                     
                     webRequest.SetRequestHeader(pair.Key, pair.Value);
                 }
@@ -781,8 +761,5 @@ namespace GameBrewStudios.Networking
 
             return false;
         }
-
-
     }
 }
-

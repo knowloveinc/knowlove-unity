@@ -9,15 +9,11 @@ namespace Knowlove.UI.Menus
 {
     public class Window_PickMode : Window
     {
-        [SerializeField]
-        Window_Multiplayer multiplayerWindow;
+        [SerializeField] private Window_Multiplayer multiplayerWindow;
 
-        [SerializeField]
-        Window settingsWindow, myStuffWindow;
+        [SerializeField] private Window settingsWindow, myStuffWindow;
 
-        [SerializeField]
-        Window_WaitingForPlayers waitingWindow;
-
+        [SerializeField] private Window_WaitingForPlayers waitingWindow;
 
         public override void Show()
         {
@@ -29,34 +25,46 @@ namespace Knowlove.UI.Menus
             base.Hide();
         }
 
+        public void OpenStore()
+        {
+            StoreController.Show();
+        }
+
+        public void OpenMyStuff()
+        {
+            myStuffWindow.Show();
+        }
+
+        public void OpenSettings()
+        {
+            settingsWindow.Show();
+        }
+
         public void SignOut()
         {
             PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
             {
-            new PopupDialog.PopupButton()
-            {
-                text = "Sign Out",
-                onClicked = () =>
+                new PopupDialog.PopupButton()
                 {
-                    CanvasLoading.Instance.Show();
-                    User.current = null;
-                    SceneManager.LoadScene(0);
-                    DOVirtual.DelayedCall(2f, () =>
+                    text = "Sign Out",
+                    onClicked = () =>
                     {
-                        CanvasLoading.Instance.Hide();
-                    });
+                        CanvasLoading.Instance.Show();
+                        User.current = null;
+                        SceneManager.LoadScene(0);
+                        DOVirtual.DelayedCall(2f, () =>
+                        {
+                            CanvasLoading.Instance.Hide();
+                        });
+                    },
+                    buttonColor = PopupDialog.PopupButtonColor.Red
                 },
-                buttonColor = PopupDialog.PopupButtonColor.Red
-            },
-            new PopupDialog.PopupButton()
-            {
-                text = "Cancel",
-                onClicked = () =>
+                new PopupDialog.PopupButton()
                 {
-
-                },
-                buttonColor = PopupDialog.PopupButtonColor.Plain
-            }
+                    text = "Cancel",
+                    onClicked = () => { },
+                    buttonColor = PopupDialog.PopupButtonColor.Plain
+                }
             };
 
             PopupDialog.Instance.Show("Sign Out", "Are you sure you want to sign out? You will be returned to the login screen.", buttons);
@@ -94,7 +102,6 @@ namespace Knowlove.UI.Menus
                 NetworkManager.OnPhotonConnected += this.NetworkManager_OnPhotonConnectedSinglePlayer;
                 NetworkManager.Instance.Connect();
             }
-
         }
 
         public void StartMultiplayer()
@@ -112,12 +119,6 @@ namespace Knowlove.UI.Menus
                 NetworkManager.OnPhotonConnected += this.NetworkManager_OnPhotonConnected;
                 NetworkManager.Instance.Connect();
             }
-
-        }
-
-        public void OpenSettings()
-        {
-            settingsWindow.Show();
         }
 
         private void NetworkManager_OnPhotonConnected()
@@ -145,16 +146,6 @@ namespace Knowlove.UI.Menus
 
             PhotonNetwork.CreateRoom("OfflineMode" + UnityEngine.Random.Range(9, 999999), options);
             waitingWindow.Show();
-        }
-
-        public void OpenStore()
-        {
-            StoreController.Show();
-        }
-
-        public void OpenMyStuff()
-        {
-            myStuffWindow.Show();
         }
     }
 }

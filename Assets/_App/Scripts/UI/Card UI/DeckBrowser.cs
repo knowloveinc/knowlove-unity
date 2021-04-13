@@ -1,5 +1,4 @@
-﻿using GameBrewStudios;
-using Knowlove.UI.Menus;
+﻿using Knowlove.UI.Menus;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,30 +12,22 @@ namespace Knowlove.UI
     {
         public static DeckBrowser Instance;
 
-        List<DeckData> decks = new List<DeckData>();
+        private List<DeckData> decks = new List<DeckData>();
+        private DeckData currentDeck;
 
-        DeckData currentDeck;
-        int currentDeckIndex = 0;
+        [SerializeField] private TextMeshProUGUI cardTextLabel;
 
+        [SerializeField] private Image cardImage;
 
-        [SerializeField]
-        TextMeshProUGUI cardTextLabel;
+        [SerializeField] private GameObject cardSilhouetteObj;
 
-        [SerializeField]
-        Image cardImage;
+        [SerializeField] private Color normalCardColor, specialCardColor;
 
-        [SerializeField]
-        GameObject cardSilhouetteObj;
+        [SerializeField] private TextMeshProUGUI statusLabel;
 
-        [SerializeField]
-        Color normalCardColor, specialCardColor;
+        [SerializeField] private CanvasGroup canvasGroup;
 
-
-        [SerializeField]
-        TextMeshProUGUI statusLabel;
-
-        [SerializeField]
-        CanvasGroup canvasGroup;
+        private int currentDeckIndex = 0;
 
         private void Awake()
         {
@@ -51,8 +42,6 @@ namespace Knowlove.UI
             this.Hide();
             LoadCards();
         }
-
-
 
         public override void Show()
         {
@@ -97,14 +86,12 @@ namespace Knowlove.UI
             Debug.Log("LOADED DECKS FOR DECK BROWSER");
         }
 
-
         public void ChangeCard(int direction)
         {
             currentDeckIndex += direction;
+
             if (currentDeckIndex < 0)
-            {
                 currentDeckIndex = currentDeck.cards.Count - 1;
-            }
 
             if (currentDeckIndex >= currentDeck.cards.Count)
                 currentDeckIndex = 0;
@@ -129,7 +116,6 @@ namespace Knowlove.UI
             cardImage.color = isFancyCard ? specialCardColor : normalCardColor;
             cardSilhouetteObj.SetActive(isFancyCard);
             cardTextLabel.color = isFancyCard ? Color.white : Color.black;
-
         }
     }
 }

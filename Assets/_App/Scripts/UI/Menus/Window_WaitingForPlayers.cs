@@ -9,28 +9,17 @@ namespace Knowlove.UI.Menus
 {
     public class Window_WaitingForPlayers : Window
     {
-        [SerializeField]
-        Window_MatchList matchListWindow;
+        [SerializeField] private Window_MatchList matchListWindow;
 
-        [SerializeField]
-        TextMeshProUGUI statusLabel;
+        [SerializeField] private TextMeshProUGUI statusLabel;
 
-        [SerializeField]
-        Button cancelButton;
+        [SerializeField] private Button cancelButton;
 
-        public override void Show()
-        {
-            base.Show();
-            cancelButton.gameObject.SetActive(false);
-        }
-
-
-        int ellipsesCount = 0;
-        float lastEllipsesChange = 0f;
+        private int ellipsesCount = 0;
+        private float lastEllipsesChange = 0f;
 
         private void Update()
         {
-
             string status = "Please Wait..\n";
 
             if (PhotonNetwork.CurrentRoom != null)
@@ -38,6 +27,7 @@ namespace Knowlove.UI.Menus
                 if (PhotonNetwork.CurrentRoom.MaxPlayers > 1)
                 {
                     status = "Waiting for Players";
+
                     for (int i = 0; i < ellipsesCount; i++)
                     {
                         status += ".";
@@ -47,6 +37,7 @@ namespace Knowlove.UI.Menus
                     {
                         lastEllipsesChange = Time.time;
                         ellipsesCount++;
+
                         if (ellipsesCount > 3)
                             ellipsesCount = 0;
                     }
@@ -67,21 +58,23 @@ namespace Knowlove.UI.Menus
             statusLabel.text = status;
         }
 
+        public override void Show()
+        {
+            base.Show();
+            cancelButton.gameObject.SetActive(false);
+        }
+
         public override void Hide()
         {
             base.Hide();
-
-
-
         }
 
         public void CancelMatchmaking()
         {
             Hide();
+
             if (PhotonNetwork.LeaveRoom(false))
-            {
                 matchListWindow.Show();
-            }
         }
     }
 }

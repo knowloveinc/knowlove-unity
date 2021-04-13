@@ -52,6 +52,7 @@ namespace Knowlove.UI.Menus
             base.Show();
 
             winnerNameLabel.text = this.winnerName;
+
             for (int i = 0; i < groups.Length; i++)
             {
                 groups[i].alpha = 0;

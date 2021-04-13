@@ -1,5 +1,4 @@
-﻿using Knowlove.UI;
-using UnityEngine;
+﻿using UnityEngine;
 using DG.Tweening;
 using Photon.Pun;
 using System;
@@ -17,7 +16,7 @@ namespace Knowlove.FlipTheTableLogic
         [SerializeField] private float y = 1200f;
         [SerializeField] private float z = 500f;
         [SerializeField] private float speed = 1f;
-        [SerializeField] private int cameraNumber = 0;
+        [SerializeField] private int cameraNumber = 4;
 
         private bool[] _isMoveFinish;
         private bool _isMove;
@@ -78,7 +77,7 @@ namespace Knowlove.FlipTheTableLogic
 
                 for (int i = 0; i < _flipObjects.Length - 2; i++)
                 {
-                    _flipObjects[i].TakeForceOnCard();
+                    _flipObjects[i].TakeForceOnObject();
                 }
             }); 
         }

@@ -10,11 +10,11 @@ namespace Knowlove.UI.Menus
 {
     public class Window_ListEditor : Window
     {
-        [SerializeField]
-        GameObject prefab, leftLoading, rightLoading;
+        public List<string> listItems;
 
-        [SerializeField]
-        Transform leftContainer, rightContainer;
+        [SerializeField] private GameObject prefab, leftLoading, rightLoading;
+
+        [SerializeField] private Transform leftContainer, rightContainer;
 
         public override void Show()
         {
@@ -28,10 +28,10 @@ namespace Knowlove.UI.Menus
             base.Hide();
         }
 
-
         public void AddToList(string text)
         {
-            if (User.current.nonNegotiableList.Contains(text)) return;
+            if (User.current.nonNegotiableList.Contains(text)) 
+                return;
 
             if (User.current.nonNegotiableList.Count < 10)
             {
@@ -49,18 +49,12 @@ namespace Knowlove.UI.Menus
                         PopulateRightSide();
                     }
                     else
-                    {
                         PopupDialog.Instance.Show("Something went wrong.");
-                    }
                 });
             }
             else
-            {
                 PopupDialog.Instance.Show("Sorry! You already have 10 items on your list. You can remove items from your list by tapping on them.");
-            }
         }
-
-        public List<string> listItems;
 
         public void PopulateLeftSide()
         {
@@ -87,9 +81,7 @@ namespace Knowlove.UI.Menus
                 btn.onClick.RemoveAllListeners();
 
                 if (User.current.nonNegotiableList != null && User.current.nonNegotiableList.Count > 0 && User.current.nonNegotiableList.Contains(item))
-                {
                     btn.interactable = false;
-                }
                 else
                 {
                     btn.interactable = true;
@@ -125,49 +117,45 @@ namespace Knowlove.UI.Menus
                 {
                     PopupDialog.PopupButton[] btns = new PopupDialog.PopupButton[]
                     {
-                    new PopupDialog.PopupButton()
-                    {
-                        text = "Yes, Remove it",
-                        buttonColor = PopupDialog.PopupButtonColor.Red,
-                        onClicked = () =>
+                        new PopupDialog.PopupButton()
                         {
-                            User.current.nonNegotiableList.Remove(item);
-
-                            CanvasLoading.Instance.Show();
-                            APIManager.UpdateNonNegotiableList(User.current.nonNegotiableList, (response) =>
+                            text = "Yes, Remove it",
+                            buttonColor = PopupDialog.PopupButtonColor.Red,
+                            onClicked = () =>
                             {
-                                Debug.Log("UpdateNonNegotiableListResponse success = " + response.success);
-                                CanvasLoading.Instance.Hide();
-                                if(response != null && response.success)
-                                {
-                                    User.current.nonNegotiableList = response.list;
-                                    PopulateLeftSide();
-                                    PopulateRightSide();
-                                }
-                                else
-                                {
-                                    PopupDialog.Instance.Show("Something went wrong.");
-                                }
-                            });
-                        }
-                    },
-                    new PopupDialog.PopupButton()
-                    {
-                        text = "Nevermind",
-                        buttonColor = PopupDialog.PopupButtonColor.Plain,
-                        onClicked = () =>
-                        {
+                                User.current.nonNegotiableList.Remove(item);
 
+                                CanvasLoading.Instance.Show();
+                                APIManager.UpdateNonNegotiableList(User.current.nonNegotiableList, (response) =>
+                                {
+                                    Debug.Log("UpdateNonNegotiableListResponse success = " + response.success);
+                                    CanvasLoading.Instance.Hide();
+
+                                    if(response != null && response.success)
+                                    {
+                                        User.current.nonNegotiableList = response.list;
+                                        PopulateLeftSide();
+                                        PopulateRightSide();
+                                    }
+                                    else
+                                        PopupDialog.Instance.Show("Something went wrong.");
+                                });
+                            }
+                        },
+                        new PopupDialog.PopupButton()
+                        {
+                            text = "Nevermind",
+                            buttonColor = PopupDialog.PopupButtonColor.Plain,
+                            onClicked = () => { }
                         }
-                    }
                     };
+
                     PopupDialog.Instance.Show("", "Remove this item from your Non-Negotiable List?\n\"" + item + "\"", btns);
                 });
             }
 
             rightLoading.SetActive(false);
         }
-
     }
 }
 

@@ -30,7 +30,7 @@ namespace Knowlove.UI
         }
 
         [PunRPC]
-        public void RPC_ShowPlayerSelection(string[] playerNames, int notUsed)
+        private void RPC_ShowPlayerSelection(string[] playerNames, int notUsed)
         {
             Debug.Log("SHOWING SLOTS" + playerNames.Length);
 
@@ -59,9 +59,7 @@ namespace Knowlove.UI
                         j = 0;
 
                     if (i > 100)
-                    {
                         delay += 0.001f;
-                    }
 
                     yield return new WaitForSeconds(delay);
                 }

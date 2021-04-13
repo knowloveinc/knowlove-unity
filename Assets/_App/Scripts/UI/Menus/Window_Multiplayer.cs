@@ -4,12 +4,9 @@ namespace Knowlove.UI.Menus
 {
     public class Window_Multiplayer : Window
     {
-        [SerializeField]
-        Window_MatchList matchListWindow;
+        [SerializeField] private Window_MatchList matchListWindow;
 
-
-        [SerializeField]
-        Window_CreateMatchWizard createMatchWindow;
+        [SerializeField] private Window_CreateMatchWizard createMatchWindow;
 
         public override void Show()
         {

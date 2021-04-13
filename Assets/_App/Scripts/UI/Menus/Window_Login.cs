@@ -3,28 +3,28 @@ using GameBrewStudios;
 using GameBrewStudios.Networking;
 using Newtonsoft.Json;
 using Photon.Pun;
-
 using TMPro;
-
 using UnityEngine;
 
 namespace Knowlove.UI.Menus
 {
     public class Window_Login : Window
     {
-        [SerializeField]
-        TMP_InputField loginEmailField, loginPasswordField, registerEmailField, registerPasswordField1, registerPasswordField2, registerNicknameField;
+        private ServerAPI.ServerError lastError;
 
-        [SerializeField]
-        Window_MatchList matchListWindow;
+        [SerializeField] private TMP_InputField loginEmailField, loginPasswordField, registerEmailField, registerPasswordField1, registerPasswordField2, registerNicknameField;
 
-        [SerializeField]
-        Window_PickMode pickModeWindow;
+        [SerializeField] private Window_MatchList matchListWindow;
 
-        [SerializeField]
-        RectTransform loginBox, registerBox;
+        [SerializeField] private Window_PickMode pickModeWindow;
+
+        [SerializeField] private RectTransform loginBox, registerBox;
+
+        [SerializeField] private Window_ResetPassword resetPasswordWindow;
 
         private const string USERNAME_KEY = "SavedUsername", PASSWORD_KEY = "SavedPassw";
+
+        private bool isAuthenticating = false;
 
         private void Awake()
         {
@@ -34,11 +34,11 @@ namespace Knowlove.UI.Menus
 
         public void CheckForConnection()
         {
-
             CanvasLoading.Instance.Show();
             APIManager.Connect((success) =>
             {
                 CanvasLoading.Instance.Hide();
+
                 if (success)
                 {
                     loginEmailField.SetTextWithoutNotify(PlayerPrefs.GetString(USERNAME_KEY, ""));
@@ -48,15 +48,16 @@ namespace Knowlove.UI.Menus
                 {
                     PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
                     {
-                    new PopupDialog.PopupButton()
-                    {
-                        text = "Try again",
-                        onClicked = () =>
+                        new PopupDialog.PopupButton()
                         {
-                            CheckForConnection();
+                            text = "Try again",
+                            onClicked = () =>
+                            {
+                                CheckForConnection();
+                            }
                         }
-                    }
                     };
+
                     PopupDialog.Instance.Show("No Internet Connection", "Unable to connect to authentication servers. Please check your internet connection and try again.", buttons);
                 }
             });
@@ -65,7 +66,6 @@ namespace Knowlove.UI.Menus
         public override void Show()
         {
             base.Show();
-
 
             loginEmailField.text = "";
             loginPasswordField.text = "";
@@ -78,13 +78,10 @@ namespace Knowlove.UI.Menus
             CheckForConnection();
         }
 
-        bool isAuthenticating = false;
-
         public void DoLogin()
         {
             Debug.Log("Running DoLogin...");
             if (isAuthenticating) return;
-
 
             isAuthenticating = true;
 
@@ -93,13 +90,14 @@ namespace Knowlove.UI.Menus
 
             bool emailIsValid = Validation.ValidateEmail(loginEmailField.text, out emailError);
             bool passwordIsValid = Validation.ValidatePassword(loginPasswordField.text, out passwordError);
+
             if (emailIsValid && passwordIsValid)
             {
-
                 Debug.Log("Starting api call for authentication...");
                 ServerAPI.OnError += this.ServerAPI_OnError;
 
                 CanvasLoading.Instance.Show();
+
                 APIManager.Authenticate(loginEmailField.text, loginPasswordField.text, (success) =>
                 {
                     CanvasLoading.Instance.Hide();
@@ -118,9 +116,7 @@ namespace Knowlove.UI.Menus
                         pickModeWindow.Show();
                     }
                     else
-                    {
                         ShowErrorMessage();
-                    }
 
                     ServerAPI.OnError -= this.ServerAPI_OnError;
                     isAuthenticating = false;
@@ -136,15 +132,12 @@ namespace Knowlove.UI.Menus
 
                 isAuthenticating = false;
             }
-
-
         }
 
         public void DoRegister()
         {
             Debug.Log("Running DoLogin...");
             if (isAuthenticating) return;
-
 
             isAuthenticating = true;
 
@@ -153,13 +146,14 @@ namespace Knowlove.UI.Menus
 
             bool emailIsValid = Validation.ValidateEmail(registerEmailField.text, out emailError);
             bool passwordIsValid = Validation.ValidatePassword(registerPasswordField1.text, out passwordError) && registerPasswordField1.text == registerPasswordField2.text;
+
             if (emailIsValid && passwordIsValid)
             {
-
                 Debug.Log("Starting api call for authentication...");
                 ServerAPI.OnError += this.ServerAPI_OnError;
 
                 CanvasLoading.Instance.Show();
+
                 APIManager.Register(registerEmailField.text, registerNicknameField.text, registerPasswordField1.text, (success) =>
                 {
                     CanvasLoading.Instance.Hide();
@@ -177,9 +171,7 @@ namespace Knowlove.UI.Menus
                         pickModeWindow.Show();
                     }
                     else
-                    {
                         ShowErrorMessage();
-                    }
 
                     ServerAPI.OnError -= this.ServerAPI_OnError;
                     isAuthenticating = false;
@@ -198,17 +190,11 @@ namespace Knowlove.UI.Menus
                     PopupDialog.Instance.Show("Invalid Username or Password", "Passwords do not match.");
                 }
                 else
-                {
                     Debug.LogError("WHY ARE WE HERE???");
-                }
 
                 isAuthenticating = false;
             }
-
-
         }
-
-        private ServerAPI.ServerError lastError;
 
         public void ShowLoginBox()
         {
@@ -229,9 +215,6 @@ namespace Knowlove.UI.Menus
             lastError = obj;
         }
 
-        [SerializeField]
-        Window_ResetPassword resetPasswordWindow;
-
         public void ForgotPassword()
         {
             bool emailIsValid = Validation.ValidateEmail(loginEmailField.text, out string emailError);
@@ -241,50 +224,45 @@ namespace Knowlove.UI.Menus
                 ServerAPI.OnError += this.ServerAPI_OnError;
                 PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
                 {
-                new PopupDialog.PopupButton()
-                {
-                    text = "Yes",
-                    onClicked = () =>
+                    new PopupDialog.PopupButton()
                     {
-                        CanvasLoading.Instance.Show();
-
-                        APIManager.ForgotPassword(loginEmailField.text.Trim(), (result) =>
+                        text = "Yes",
+                        onClicked = () =>
                         {
-                            ServerAPI.OnError -= this.ServerAPI_OnError;
-                            CanvasLoading.Instance.Hide();
+                            CanvasLoading.Instance.Show();
 
-                            Debug.Log(JsonConvert.SerializeObject(result));
+                            APIManager.ForgotPassword(loginEmailField.text.Trim(), (result) =>
+                            {
+                                ServerAPI.OnError -= this.ServerAPI_OnError;
+                                CanvasLoading.Instance.Hide();
 
-                            if(result != null && result.ContainsKey("success") && (bool)result["success"] == true)
-                            {
-                                Debug.Log("Showing reset password screen...");
-                                resetPasswordWindow.Show(loginEmailField.text.Trim());
-                                this.Hide();
-                            }
-                            else
-                            {
-                                PopupDialog.Instance.Show("Something went wrong while processing your request. Please try again.\n" + (!string.IsNullOrEmpty(lastError.text) ? lastError.text : "") );
-                            }
-                        });
+                                Debug.Log(JsonConvert.SerializeObject(result));
+
+                                if(result != null && result.ContainsKey("success") && (bool)result["success"] == true)
+                                {
+                                    Debug.Log("Showing reset password screen...");
+                                    resetPasswordWindow.Show(loginEmailField.text.Trim());
+                                    this.Hide();
+                                }
+                                else
+                                    PopupDialog.Instance.Show("Something went wrong while processing your request. Please try again.\n" + (!string.IsNullOrEmpty(lastError.text) ? lastError.text : "") );
+                            });
+                        }
+                    },
+                    new PopupDialog.PopupButton()
+                    {
+                        text = "No",
+                        buttonColor = PopupDialog.PopupButtonColor.Plain
                     }
-                },
-                new PopupDialog.PopupButton()
-                {
-                    text = "No",
-                    buttonColor = PopupDialog.PopupButtonColor.Plain
-                }
                 };
 
                 PopupDialog.Instance.Show("Forgot Password", "Are you sure you want to reset your password? Click YES to receive an email with a 6-digit code that you can enter on the next screen to reset your password.", buttons);
             }
             else
-            {
                 PopupDialog.Instance.Show("Invalid Email", emailError + "\n\n Please try again.");
-            }
         }
 
-
-        void ShowErrorMessage()
+        private void ShowErrorMessage()
         {
             Debug.LogError("Showing login error...  " + lastError.text);
 

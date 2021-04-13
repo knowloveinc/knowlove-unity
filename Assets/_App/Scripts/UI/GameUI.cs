@@ -59,9 +59,7 @@ namespace Knowlove.UI
             TurnManager.DatingOrHomePathRing -= ForceShowListPanel;
 
             if (PhotonNetwork.IsMasterClient)
-            {
                 NetworkManager.OnReadyToStart -= ShowUserPickCard;
-            }
         }
 
         public void SetActiveObject(bool isActive)
@@ -69,8 +67,14 @@ namespace Knowlove.UI
             gameObject.SetActive(isActive);
         }
 
+        internal void ShowPickCard()
+        {
+            if (PhotonNetwork.IsMasterClient)
+                photonView.RPC(nameof(RPC_ShowPickCard), RpcTarget.All);
+        }
+
         [PunRPC]
-        public void RPC_ShowPickCard()
+        private void RPC_ShowPickCard()
         {
             CanvasLoading.Instance.ForceHide();
             selectedCard = listCards[UnityEngine.Random.Range(0, listCards.Length)];
@@ -170,14 +174,6 @@ namespace Knowlove.UI
         public void ExitGame()
         {
             PhotonNetwork.LeaveRoom();
-        }
-
-        internal void ShowPickCard()
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                photonView.RPC(nameof(RPC_ShowPickCard), RpcTarget.All);
-            }
         }
 
         internal void SetStats()

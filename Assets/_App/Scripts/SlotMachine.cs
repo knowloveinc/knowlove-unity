@@ -1,5 +1,4 @@
 ﻿using DG.Tweening;
-using GameBrewStudios;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
@@ -10,26 +9,22 @@ namespace Knowlove
 {
     public class SlotMachine : MonoBehaviourPun
     {
-        [SerializeField]
-        GameObject playerNamePrefab;
+        [SerializeField] private GameObject playerNamePrefab;
 
-        [SerializeField]
-        Transform container;
+        [SerializeField] private Transform container;
 
-        [SerializeField]
-        RectTransform containerRect;
+        [SerializeField] private RectTransform containerRect;
+
+        [SerializeField] private CanvasGroup group;
 
         public float nameHeight = 100f;
 
         public int selectedPlayerIndex = 0;
 
-        [SerializeField]
-        CanvasGroup group;
-
         public void Init()
         {
             int selectedPlayer = Random.Range(0, NetworkManager.Instance.players.Count);
-            photonView.RPC("RPC_StartSpinning", RpcTarget.All, selectedPlayer);
+            photonView.RPC(nameof(RPC_StartSpinning), RpcTarget.All, selectedPlayer);
         }
 
         [PunRPC]
@@ -53,7 +48,7 @@ namespace Knowlove
             StartCoroutine(DoStartSpinning());
         }
 
-        IEnumerator DoStartSpinning()
+        private IEnumerator DoStartSpinning()
         {
             bool finished = false;
 
@@ -70,9 +65,7 @@ namespace Knowlove
                 containerRect.anchoredPosition = Vector2.Lerp(containerRect.anchoredPosition, targetPosition, speed * Time.deltaTime);
 
                 if (finalize && speed > 6f)
-                {
                     speed -= Time.deltaTime;
-                }
 
                 if (containerRect.anchoredPosition.y % 100f == 0 && !finalize)
                 {
@@ -88,20 +81,13 @@ namespace Knowlove
                     rollCount++;
                 }
 
-                if (rollCount >= 100)
-                {
-                    if (currentIndex == selectedPlayerIndex)
-                    {
-                        finalize = true;
-                    }
-
-                }
+                if (rollCount >= 100 && currentIndex == selectedPlayerIndex)
+                    finalize = true;
 
                 yield return null;
             }
 
             group.DOFade(0f, 1f);
         }
-
     }
 }

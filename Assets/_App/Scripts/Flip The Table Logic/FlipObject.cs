@@ -61,7 +61,7 @@ namespace Knowlove.FlipTheTableLogic
                 _boxCollider.enabled = isActive;
         }
 
-        public void TakeForceOnCard()
+        public void TakeForceOnObject()
         {
             if (isRightForce)
                 _rigidbodyComponent.AddForce(-x, y, z);

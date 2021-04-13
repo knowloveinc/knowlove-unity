@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Photon.Pun;
-using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -17,16 +16,47 @@ namespace Knowlove
     {
         public static BoardManager Instance;
 
+        public BoardPiece[] pieces;
+        public Path[] paths;
+
+        [SerializeField] private Card datingCard, relationshipCard, marriageCard, avoidSingleCard, listCard;
+        [SerializeField] private List<DeckData> decks = new List<DeckData>();
+
+        [SerializeField] private Transform[] diceStartPositions;
+        [SerializeField] private Transform[] dice;
+
+        public int diceScore = -1;
+        public string diceRollLocation;
+        public bool diceFinishedRolling = false;
+
+        internal bool movingBoardPiece;
+
         private void Awake()
         {
             Instance = this;
         }
+        private void Start()
+        {
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                foreach (Transform die in dice)
+                {
+                    Rigidbody rb = die.GetComponent<Rigidbody>();
 
+                    if (rb != null)
+                    {
+                        Debug.LogWarning("<color=Red>REMOVING RIGIDBODY FROM DICE BECAUSE WE ARE NOT THE HOST</color>");
+                        Destroy(rb);
+                    }
+                }
+            }
+        }
 
         [ContextMenu("Check Word Length Of Cards")]
         public void CheckWordLengthOfCards()
         {
             List<int> wordLengths = new List<int>();
+
             for (int i = 0; i < decks.Count; i++)
             {
                 for (int j = 0; j < decks[i].cards.Count; j++)
@@ -43,6 +73,7 @@ namespace Knowlove
             for (int x = 0; x < wordLengths.Count; x++)
             {
                 wordSum += wordLengths[x];
+
                 if (wordLengths[x] > longest)
                     longest = wordLengths[x];
             }
@@ -54,10 +85,6 @@ namespace Knowlove
         }
 
         #region Board Pieces
-
-        public BoardPiece[] pieces;
-        public Path[] paths;
-        internal bool movingBoardPiece;
         public void InitializeBoardPieces(int playerCount)
         {
             for (int i = 0; i < pieces.Length; i++)
@@ -66,12 +93,12 @@ namespace Knowlove
                 {
                     pieces[i].GoHome();
 
-                    photonView.RPC("RPC_ToggleGamePiece", RpcTarget.All, i, true);
+                    photonView.RPC(nameof(RPC_ToggleGamePiece), RpcTarget.All, i, true);
                     //pieces[i].gameObject.SetActive(true);
                 }
                 else
                 {
-                    photonView.RPC("RPC_ToggleGamePiece", RpcTarget.All, i, false);
+                    photonView.RPC(nameof(RPC_ToggleGamePiece), RpcTarget.All, i, false);
                     //pieces[i].gameObject.SetActive(false);
                 }
             }
@@ -126,10 +153,7 @@ namespace Knowlove
                         NetworkManager.Instance.players[TurnManager.Instance.turnIndex].SetCustomProperties(playerProperties);
 
                         if (spaces >= 1)
-                        {
-                            photonView.RPC("RPC_MoveBoardPiece", RpcTarget.All, playerIndex, spaces - 1);
-                        }
-
+                            photonView.RPC(nameof(RPC_MoveBoardPiece), RpcTarget.All, playerIndex, spaces - 1);
                     });
 
                     return;
@@ -152,6 +176,7 @@ namespace Knowlove
 
                     j++;
                 }
+
                 Debug.Log("Jump Path contains " + spaces + " spaces");
                 Debug.Log("Jump path started with pathIndex of: " + piece.pathIndex);
 
@@ -166,15 +191,8 @@ namespace Knowlove
         #endregion
 
         #region Cards
-        [SerializeField]
-        Card datingCard, relationshipCard, marriageCard, avoidSingleCard, listCard;
-
-
-        [SerializeField]
-        List<DeckData> decks = new List<DeckData>();
-
-
-#if UNITY_EDITOR
+        
+        #if UNITY_EDITOR
         [ContextMenu("Load Card Data")]
         public void LoadCards()
         {
@@ -192,7 +210,7 @@ namespace Knowlove
             sw.Write(JsonConvert.SerializeObject(decks));
             sw.Close();
         }
-#endif
+        #endif
 
         public CardData DrawCard(string deckName)
         {
@@ -210,19 +228,13 @@ namespace Knowlove
                             Debug.Log("Card drawn: " + cardData.text);
 
                             if (deckName.ToLower() == "dating")
-                            {
                                 datingCard.DrawToCamera();
-                            }
 
                             if (deckName.ToLower() == "relationship")
-                            {
                                 relationshipCard.DrawToCamera();
-                            }
 
                             if (deckName.ToLower() == "marriage")
-                            {
                                 marriageCard.DrawToCamera();
-                            }
 
                             return cardData;
                         }
@@ -235,7 +247,6 @@ namespace Knowlove
                     return null;
                 }
 
-
                 Debug.LogError("Deck not found: " + deckName);
             }
 
@@ -244,33 +255,11 @@ namespace Knowlove
         #endregion
 
         #region Dice
-        [SerializeField]
-        Transform[] diceStartPositions;
-
-        [SerializeField]
-        Transform[] dice;
-
-
-        public int diceScore = -1;
-        public string diceRollLocation;
-        public bool diceFinishedRolling = false;
-
-
-        private void Start()
+        public void RollDice(int amount = 1, string location = "board")
         {
-            if (!PhotonNetwork.IsMasterClient)
-            {
-                foreach (Transform die in dice)
-                {
-                    Rigidbody rb = die.GetComponent<Rigidbody>();
-
-                    if (rb != null)
-                    {
-                        Debug.LogWarning("<color=Red>REMOVING RIGIDBODY FROM DICE BECAUSE WE ARE NOT THE HOST</color>");
-                        Destroy(rb);
-                    }
-                }
-            }
+            diceFinishedRolling = false;
+            Debug.Log("RollDice");
+            photonView.RPC(nameof(RPC_RollDice), RpcTarget.All, amount, location);
         }
 
         [PunRPC]
@@ -280,19 +269,12 @@ namespace Knowlove
             if (PhotonNetwork.IsMasterClient)
             {
                 diceFinishedRolling = false;
-                StopCoroutine("DoRollDice");
+                StopCoroutine(nameof(DoRollDice));
                 StartCoroutine(DoRollDice(amount, location));
             }
-        }
+        }        
 
-        public void RollDice(int amount = 1, string location = "board")
-        {
-            diceFinishedRolling = false;
-            Debug.Log("RollDice");
-            photonView.RPC("RPC_RollDice", RpcTarget.All, amount, location);
-        }
-
-        IEnumerator DoRollDice(int amount, string location)
+        private IEnumerator DoRollDice(int amount, string location)
         {
             Debug.Log("DoRollDice");
             diceFinishedRolling = false;
@@ -301,7 +283,7 @@ namespace Knowlove
 
             List<Dice> diceComponents = new List<Dice>();
 
-            photonView.RPC("RPC_ToggleDice", RpcTarget.All, true, amount);
+            photonView.RPC(nameof(RPC_ToggleDice), RpcTarget.All, true, amount);
 
             for (int i = 0; i < dice.Length; i++)
             {
@@ -331,7 +313,6 @@ namespace Knowlove
                     rigidbodies.Add(rb);
 
                     SoundManager.Instance.PlaySound("dice");
-
                 }
                 else
                 {
@@ -341,15 +322,12 @@ namespace Knowlove
             }
 
             while (rigidbodies.Any(x => x.IsSleeping() == false))
-            {
                 yield return null;
-            }
 
             int score = 0;
+
             foreach (Dice die in diceComponents)
-            {
                 score += die.number;
-            }
 
             Debug.Log($"Dice rolled {score}");
 
@@ -361,7 +339,7 @@ namespace Knowlove
             //    die.photonView.RPC("ToggleActive", RpcTarget.All, false);
             //}
 
-            photonView.RPC("RPC_ToggleDice", RpcTarget.All, false, 0);
+            photonView.RPC(nameof(RPC_ToggleDice), RpcTarget.All, false, 0);
 
             diceScore = score;
             diceRollLocation = location;

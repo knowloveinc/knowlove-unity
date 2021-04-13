@@ -103,7 +103,7 @@ namespace Knowlove.UI
         }
 
         [PunRPC]
-        public void RPC_ShowPrompt(string text, string[] buttonTexts, Player player, int bgColor = 0)
+        private void RPC_ShowPrompt(string text, string[] buttonTexts, Player player, int bgColor = 0)
         {
             List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
 
@@ -129,7 +129,7 @@ namespace Knowlove.UI
         }
 
         [PunRPC]
-        public void RPC_PromptResponse(int buttonIndex, Player player)
+        private void RPC_PromptResponse(int buttonIndex, Player player)
         {
             if (PhotonNetwork.IsMasterClient)
             {

@@ -1,5 +1,4 @@
 ﻿using DG.Tweening;
-using GameBrewStudios;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -25,11 +24,11 @@ namespace Knowlove.UI
 
         public TextMeshProUGUI playerNameLabel;
 
-        int playerIndex = -1;
+        private int _playerIndex = -1;
 
-        bool initialized = false;
+        private bool _initialized = false;
 
-        float lastUpdate = 0f;
+        private float _lastUpdate = 0f;
 
         private void Update()
         {
@@ -47,15 +46,15 @@ namespace Knowlove.UI
 
         public void Init(Player player)
         {
-            initialized = true;
+            _initialized = true;
             this.target = player;
             this.slider.SetValueWithoutNotify(0);
             playerNameLabel.text = player.NickName;
 
             int pIndex = NetworkManager.Instance.players.IndexOf(target);
-            this.playerIndex = pIndex;
-            if (playerIndex > -1)
-                pawnIcon.color = playerColors[playerIndex];
+            this._playerIndex = pIndex;
+            if (_playerIndex > -1)
+                pawnIcon.color = playerColors[_playerIndex];
             else
                 pawnIcon.color = playerColors[0];
 
@@ -79,10 +78,10 @@ namespace Knowlove.UI
 
         private void UpdateProps(Player player)
         {
-            if (!initialized)
+            if (!_initialized)
                 return;
 
-            if (playerIndex < 0 || player.ActorNumber != target.ActorNumber)
+            if (_playerIndex < 0 || player.ActorNumber != target.ActorNumber)
             {
                 Debug.LogError("WHY IS PLAYER INDEX < 0??????");
                 return;
@@ -113,12 +112,12 @@ namespace Knowlove.UI
             //slider.DOValue(Mathf.Clamp(progress, 0.1f, 1f), 0.25f);
             slider.value = Mathf.Clamp(progress, 0.1f, 1f);
             //Set the slider color based on player index so it matches their gamepiece
-            slider.fillRect.GetComponent<Image>().color = playerColors[playerIndex];
+            slider.fillRect.GetComponent<Image>().color = playerColors[_playerIndex];
 
-            pawnIcon.color = playerColors[playerIndex];
+            pawnIcon.color = playerColors[_playerIndex];
 
             //Set the scale so the current player is enlarged.
-            if (playerIndex == currentTurnIndex)
+            if (_playerIndex == currentTurnIndex)
             {
                 DOTween.Kill(transform);
                 transform.DOScale(1.2f, 0.5f);

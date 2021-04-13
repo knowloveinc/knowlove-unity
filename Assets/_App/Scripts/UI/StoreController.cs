@@ -12,31 +12,25 @@ namespace Knowlove.UI
 {
     public class StoreController : MonoBehaviour
     {
-        [SerializeField]
-        Window_Store storeWindow;
-
         public static StoreController Instance;
-
-        [SerializeField]
-        CanvasGroup canvasGroup;
-
-        [SerializeField]
-        TextMeshProUGUI[] walletLabels;
-
-        [SerializeField]
-        IAPCard[] iapCards;
-
-        [SerializeField]
-        Sprite bronzeBucksIcon, silverBucksIcon, goldBucksIcon;
-
         public GameStuff gameStuff;
+
+        [SerializeField] private Window_Store storeWindow;
+        [SerializeField] private CanvasGroup canvasGroup;
+
+        [SerializeField] private TextMeshProUGUI[] walletLabels;
+
+        [SerializeField] private IAPCard[] iapCards;
+
+        [SerializeField] private Sprite bronzeBucksIcon, silverBucksIcon, goldBucksIcon;
 
         private bool _isAction = false;
         private ProceedAction _proceedAction = ProceedAction.Nothing;
 
         private void Awake()
         {
-            if (Instance != null) Destroy(this.gameObject);
+            if (Instance != null) 
+                Destroy(this.gameObject);
 
             canvasGroup.alpha = 0f;
             canvasGroup.interactable = false;
@@ -104,20 +98,15 @@ namespace Knowlove.UI
                             PopupDialog.Instance.Show("Your new balance is: " + balance.ToString("n0") + " <sprite=0>");
                         });
                     });
-
                 }
                 else
-                {
                     throw new NotImplementedException();
-                }
             }
         }
 
         internal void BuyInventoryItem(IAPCard card)
         {
             if (card.isIAP) return;
-
-
 
             CanvasLoading.Instance.Show();
             APIManager.GetUserDetails((user) =>
@@ -129,59 +118,47 @@ namespace Knowlove.UI
                 {
                     PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
                     {
-                    new PopupDialog.PopupButton()
-                    {
-                        text = "Yes",
-                        buttonColor = PopupDialog.PopupButtonColor.Green,
-                        onClicked = () =>
+                        new PopupDialog.PopupButton()
                         {
-                            CanvasLoading.Instance.Show();
-                            APIManager.AddCurrency(-card.currencyCost, balance =>
+                            text = "Yes",
+                            buttonColor = PopupDialog.PopupButtonColor.Green,
+                            onClicked = () =>
                             {
-                                CanvasLoading.Instance.Hide();
-                                User.current.wallet = balance;
-                                UpdateFromPlayerWallet();
-
-                                if(gameStuff != null)
-                                    gameStuff.GetSpecialCard();
-
                                 CanvasLoading.Instance.Show();
-                                APIManager.AddItem(card.id, card.amountToGive, (inventory) =>
+                                APIManager.AddCurrency(-card.currencyCost, balance =>
                                 {
                                     CanvasLoading.Instance.Hide();
-                                    User.current.inventory = inventory;
-                                    UpdateFromPlayerInventory();
-                                });
+                                    User.current.wallet = balance;
+                                    UpdateFromPlayerWallet();
 
-                            });
+                                    if(gameStuff != null)
+                                        gameStuff.GetSpecialCard();
+
+                                    CanvasLoading.Instance.Show();
+                                    APIManager.AddItem(card.id, card.amountToGive, (inventory) =>
+                                    {
+                                        CanvasLoading.Instance.Hide();
+                                        User.current.inventory = inventory;
+                                        UpdateFromPlayerInventory();
+                                    });
+                                });
+                            }
+                        },
+                        new PopupDialog.PopupButton()
+                        {
+                            text = "Nevermind",
+                            buttonColor = PopupDialog.PopupButtonColor.Plain,
+                            onClicked = () =>{ }
                         }
-                    },
-                    new PopupDialog.PopupButton()
-                    {
-                        text = "Nevermind",
-                        buttonColor = PopupDialog.PopupButtonColor.Plain,
-                        onClicked = () =>{ }
-                    }
                     };
 
                     PopupDialog.Instance.Show("", "Really purchase " + card.title + " for " + card.currencyCost.ToString("n0") + " <sprite=0>?", buttons);
-
-
-
                 }
                 else if (!canPurchase)
-                {
                     PopupDialog.Instance.Show("You already own this item. Visit the My Stuff screen from the main menu to use it.");
-                }
                 else
-                {
                     PopupDialog.Instance.Show("You don't have enough <sprite=0> Know Love Bucks to purchase this item.");
-                }
             });
-
-
-
-
         }
 
 #if UNITY_EDITOR
@@ -205,8 +182,6 @@ namespace Knowlove.UI
         }
 
 #endif
-
-
         public void UpdateFromPlayerWallet()
         {
             if (walletLabels == null) return;

@@ -5121,8 +5121,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomList: []
-  readyToStart: 0
   players: []
+  readyToStart: 0
   isConnecting: 0
 --- !u!4 &1015335924
 Transform:
@@ -6515,7 +6515,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07a52c06b7dfdc14aa3137b5af66c563, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameUI: {fileID: 1363178597}
   turnState: 0
   currentOnPassed: 0
   currentOnFailed: 0
@@ -6998,36 +6997,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TurnManager: {fileID: 1299442130}
-  _rollDiceLogic: {fileID: 0}
-  topPanel: {fileID: 728819177}
-  topText: {fileID: 2065743105}
-  topTitle: {fileID: 1120126682}
-  bottomPanel: {fileID: 1194762713}
-  bottomButton: {fileID: 133850405}
-  bottomButtonLabel: {fileID: 1019331661}
+  _flipTheTable: {fileID: 0}
+  _readyPlayers: {fileID: 0}
+  _bottomPanel: {fileID: 0}
   statsPanel: {fileID: 0}
-  cardUIObj: {fileID: 2111750617}
-  cardUIButton: {fileID: 2111750619}
-  cardUIText: {fileID: 131070086}
-  playerProgressTemplate: {fileID: 1885399862}
-  playerProgressContainer: {fileID: 1968982725}
-  menuRect: {fileID: 0}
-  playerSlotText: {fileID: 0}
-  slotMachine: {fileID: 0}
+  _timerText: {fileID: 0}
+  _cardPickerPanel: {fileID: 0}
+  _listCardContainer: {fileID: 0}
+  _listCardUIObjs: []
+  _listText: {fileID: 0}
+  _listCardButton: {fileID: 0}
+  _listPanel: {fileID: 0}
   listCards: []
   selectedCard:
     text: 
-  cardPickerPanel: {fileID: 0}
-  listCardContainer: {fileID: 0}
-  listCardUIObjs: []
-  listText: {fileID: 0}
-  listCardButton: {fileID: 0}
-  listPanel: {fileID: 0}
-  timerText: {fileID: 0}
-  mapWindow: {fileID: 0}
-  mapButton: {fileID: 0}
-  avoidSingleCardSprite: {fileID: 1527491119}
-  gameOverWindow: {fileID: 0}
 --- !u!114 &1363178598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7851,9 +7834,9 @@ RectTransform:
   m_Father: {fileID: 1706297883}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 623.335, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 623.335, y: -98}
   m_SizeDelta: {x: 1182.67, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1561415544

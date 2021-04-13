@@ -8,11 +8,6 @@ namespace Knowlove.UI
 {
     public class PopupDialogWindow : Window
     {
-        private void Awake()
-        {
-            this.gameObject.SetActive(false);
-        }
-
         public static event System.Action OnPopupDialogClosed;
 
         public Image background;
@@ -23,6 +18,11 @@ namespace Knowlove.UI
         public GameObject greenButton, plainButton, redButton;
 
         public Color[] bgColors;
+
+        private void Awake()
+        {
+            this.gameObject.SetActive(false);
+        }
 
         public void SetMessage(PopupDialog.PopupDialogMessage message, int colorIndex)
         {
@@ -39,7 +39,6 @@ namespace Knowlove.UI
 
             if (message.buttons != null)
             {
-
                 foreach (PopupDialog.PopupButton button in message.buttons)
                 {
                     GameObject btnPrefab = button.buttonColor == PopupDialog.PopupButtonColor.Plain ? plainButton : (button.buttonColor == PopupDialog.PopupButtonColor.Green ? greenButton : redButton);
@@ -47,9 +46,7 @@ namespace Knowlove.UI
                     GameObject btnObj = Instantiate(btnPrefab, buttonsContainer);
 
                     if (i == 0)
-                    {
                         EventSystem.current.SetSelectedGameObject(btnObj);
-                    }
 
                     Button btn = btnObj.GetComponent<Button>();
                     btn.GetComponentInChildren<TextMeshProUGUI>().text = button.text;
@@ -62,7 +59,6 @@ namespace Knowlove.UI
                         Hide(); //This makes sure that no matter what, every button will close the popup when its clicked
                         OnPopupDialogClosed?.Invoke();
                     });
-
 
                     i++;
                 }

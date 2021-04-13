@@ -1,7 +1,4 @@
 ﻿using GameBrewStudios;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -21,11 +18,13 @@ namespace Knowlove.UI
         [Tooltip("If isIAP = true, use the IAPCatalog id for this product, else use the itemId of the item")]
         public string id;
 
-        [SerializeField]
-        public int amountToGive;
+        [SerializeField] public int amountToGive;
 
-        [SerializeField]
-        TextMeshProUGUI ownedCount;
+        [SerializeField] private TextMeshProUGUI ownedCount;
+
+        [SerializeField] private TextMeshProUGUI titleLabel, descLabel, iconTextLabel, priceLabel;
+
+        [SerializeField] private Image iconImage;
 
         /// <summary>
         /// Ignored if isIAP = true;
@@ -36,6 +35,7 @@ namespace Knowlove.UI
         /// Used to determine if its using currency to purchase or if its an IAP through the app store
         /// </summary>
         public bool isIAP;
+        public bool canOwnMultiple;
 
         public int amountOwned
         {
@@ -48,16 +48,11 @@ namespace Knowlove.UI
                 return foundItem.amount;
             }
         }
-        public bool canOwnMultiple;
 
         public bool owned
         {
-            get
-            {
-                return !canOwnMultiple && amountOwned >= 1;
-            }
+            get => !canOwnMultiple && amountOwned >= 1;
         }
-
 
         private void Start()
         {
@@ -66,7 +61,6 @@ namespace Knowlove.UI
                 IAPButton iapButton = gameObject.GetComponent<IAPButton>();
                 if (iapButton != null)
                     Destroy(iapButton);
-
 
                 Button btn = GetComponent<Button>();
                 btn.onClick.RemoveAllListeners();
@@ -78,19 +72,11 @@ namespace Knowlove.UI
             else
             {
                 Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
-
-            }
+            }               
         }
-
-        [SerializeField]
-        TextMeshProUGUI titleLabel, descLabel, iconTextLabel, priceLabel;
-
-        [SerializeField]
-        Image iconImage;
 
         internal void UpdateCard()
         {
-
             if (isIAP)
             {
                 Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
@@ -104,6 +90,7 @@ namespace Knowlove.UI
             }
 
             iconTextLabel?.SetText(iconText);
+
             if (iconSprite != null)
                 iconImage.sprite = iconSprite;
 
@@ -119,8 +106,6 @@ namespace Knowlove.UI
                 priceLabel.text = isIAP ? product.metadata.localizedPriceString + " " + product.metadata.isoCurrencyCode : currencyCost.ToString() + " <sprite=0>";
             }
         }
-
-
     }
 }
 

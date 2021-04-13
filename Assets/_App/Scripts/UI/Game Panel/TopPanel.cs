@@ -37,7 +37,7 @@ namespace Knowlove.UI
         }
 
         [PunRPC]
-        public void RPC_SetTopText(string text, string title)
+        private void RPC_SetTopText(string text, string title)
         {
             topText.text = text;
             topTitle.text = title;

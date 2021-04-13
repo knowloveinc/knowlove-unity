@@ -45,7 +45,6 @@ namespace Knowlove
                 {
                     arrow.transform.localScale = new Vector3(-1, 1, 1);
                     showHideText.text = "HIDE";
-
                 }
                 else
                 {
@@ -53,16 +52,15 @@ namespace Knowlove
                     showHideText.text = "SHOW";
                 }
             });
-
         }
 
         public void ShowForEveryone()
         {
-            photonView.RPC("RPC_Show", RpcTarget.All);
+            photonView.RPC(nameof(RPC_Show), RpcTarget.All);
         }
 
         [PunRPC]
-        public void RPC_Show()
+        private void RPC_Show()
         {
             float posX = 64f;
             DOTween.Kill(rect);

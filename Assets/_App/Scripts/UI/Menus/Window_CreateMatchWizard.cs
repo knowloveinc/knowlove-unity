@@ -9,28 +9,21 @@ namespace Knowlove.UI.Menus
 {
     public class Window_CreateMatchWizard : Window
     {
-        [SerializeField]
-        Window_WaitingForPlayers waitingForPlayersWindow;
-
-
         public GameObject[] wizardPanels;
+
         public int wizardIndex = 0;
 
+        [SerializeField] private Window_WaitingForPlayers waitingForPlayersWindow;
 
-        [SerializeField]
-        TMP_InputField roomNameInputField, passwordInputField;
+        [SerializeField] private TMP_InputField roomNameInputField, passwordInputField;
 
-        [SerializeField]
-        Button[] playerCountButtons;
+        [SerializeField] private Button[] playerCountButtons;
 
-        [SerializeField]
-        Color buttonSelectedColor, buttonNormalColor;
+        [SerializeField] private Color buttonSelectedColor, buttonNormalColor;
 
 
-        [SerializeField, Header("PROPERTIES")]
-        string roomName, password;
-        [SerializeField]
-        int playerCount = 2;
+        [SerializeField, Header("PROPERTIES")] private string roomName, password;
+        [SerializeField] private int playerCount = 2;
 
         public override void Show()
         {
@@ -47,7 +40,6 @@ namespace Knowlove.UI.Menus
             base.Show();
         }
 
-
         public void SetPlayerCount(int count)
         {
             SetPlayerCount(count, true);
@@ -60,13 +52,9 @@ namespace Knowlove.UI.Menus
             for (int i = 0; i < 3; i++)
             {
                 if (playerCount - 2 == i)
-                {
                     playerCountButtons[i].targetGraphic.color = buttonSelectedColor;
-                }
                 else
-                {
                     playerCountButtons[i].targetGraphic.color = buttonNormalColor;
-                }
             }
 
             if (nextWizard)
@@ -76,6 +64,7 @@ namespace Knowlove.UI.Menus
         public void PreviousWizard()
         {
             --wizardIndex;
+
             if (wizardIndex < 0)
                 wizardIndex = 0;
 
@@ -88,6 +77,7 @@ namespace Knowlove.UI.Menus
         public void NextWizard()
         {
             ++wizardIndex;
+
             for (int i = 0; i < wizardPanels.Length; i++)
             {
                 wizardPanels[i].SetActive(i == wizardIndex);
@@ -103,7 +93,6 @@ namespace Knowlove.UI.Menus
         {
             this.password = password;
         }
-
 
         public void DoCreateMatch()
         {
@@ -134,16 +123,13 @@ namespace Knowlove.UI.Menus
 
             TypedLobby sqlLobby = new TypedLobby("sqlLobby", LobbyType.Default);
 
-
             if (PhotonNetwork.CreateRoom(roomName, options, sqlLobby))
             {
                 this.Hide();
                 waitingForPlayersWindow.Show();
             }
             else
-            {
                 PopupDialog.Instance.Show("Create Game Failed", "An error occured while creating your game. Please try again.");
-            }
         }
     }
 }

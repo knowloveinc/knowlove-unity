@@ -13,6 +13,8 @@ namespace Knowlove.UI
 
         [SerializeField] private AudioMixer mixer;
 
+        private bool initialized = false;
+
         private void Start()
         {
             matchListWindow.Hide();
@@ -34,8 +36,8 @@ namespace Knowlove.UI
             }
 
 #if UNITY_ANDROID
-        string appId = CBSettings.getSelectAndroidAppId();
-        string appSecret = CBSettings.getSelectAndroidAppSecret();
+            string appId = CBSettings.getSelectAndroidAppId();
+            string appSecret = CBSettings.getSelectAndroidAppSecret();
 #else
             string appId = CBSettings.getIOSAppId();
             string appSecret = CBSettings.getIOSAppSecret();
@@ -48,7 +50,7 @@ namespace Knowlove.UI
             StartCoroutine(WaitForChartboost());
         }
 
-        IEnumerator WaitForChartboost()
+        private IEnumerator WaitForChartboost()
         {
             Debug.Log("Waiting for Chartboost to finish initialization...?  " + !Chartboost.isInitialized());
             yield return new WaitUntil(() => initialized);
@@ -75,25 +77,23 @@ namespace Knowlove.UI
         {
             PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
             {
-            new PopupDialog.PopupButton()
-            {
-                text = "Yes, Quit",
-                onClicked = () =>
+                new PopupDialog.PopupButton()
                 {
-                    Application.Quit();
+                    text = "Yes, Quit",
+                    onClicked = () =>
+                    {
+                        Application.Quit();
+                    },
+                    buttonColor = PopupDialog.PopupButtonColor.Red
                 },
-                buttonColor = PopupDialog.PopupButtonColor.Red
-            },
-            new PopupDialog.PopupButton()
-            {
-                text = "Cancel",
-                onClicked = () =>
+                new PopupDialog.PopupButton()
                 {
-
-                },
-                buttonColor = PopupDialog.PopupButtonColor.Plain
-            }
+                    text = "Cancel",
+                    onClicked = () => { },
+                    buttonColor = PopupDialog.PopupButtonColor.Plain
+                }
             };
+
             PopupDialog.Instance.Show("Close Know Love", "Are you sure you want to exit Know Love?", buttons);
         }
 
@@ -178,8 +178,6 @@ namespace Knowlove.UI
         {
             Debug.Log("Failed to record click");
         }
-
-        private bool initialized = false;
 
         private void didInitialize(bool initialized)
         {

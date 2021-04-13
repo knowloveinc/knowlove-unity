@@ -26,8 +26,9 @@ namespace Knowlove.UI
         {
             photonView.RPC(nameof(RPC_BuildProgressBarList), RpcTarget.All);
         }
+
         [PunRPC]
-        public void RPC_BuildProgressBarList()
+        private void RPC_BuildProgressBarList()
         {
             //Destroy everything but the template for a clean slate.
             foreach (Transform child in playerProgressContainer)

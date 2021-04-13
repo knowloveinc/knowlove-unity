@@ -6,11 +6,11 @@ namespace Knowlove
 {
     public class Card : MonoBehaviourPun
     {
-        Vector3 startPosition;
+        private Vector3 _startPosition;
 
         private void Awake()
         {
-            startPosition = transform.position;
+            _startPosition = transform.position;
         }
 
         [ContextMenu("RPC DrawCard")]
@@ -22,15 +22,12 @@ namespace Knowlove
         [PunRPC]
         public void RPC_DrawToCamera()
         {
-            transform.position = startPosition;
-            Vector3 targetPosition = new Vector3(Camera.main.transform.position.x, startPosition.y, Camera.main.transform.position.z);
+            transform.position = _startPosition;
+            Vector3 targetPosition = new Vector3(Camera.main.transform.position.x, _startPosition.y, Camera.main.transform.position.z);
             transform.DOMove(targetPosition, 1f).OnComplete(() => 
             {
-                transform.position = startPosition;
-            });
-
-            
-        }
-        
+                transform.position = _startPosition;
+            });  
+        }  
     }
 }

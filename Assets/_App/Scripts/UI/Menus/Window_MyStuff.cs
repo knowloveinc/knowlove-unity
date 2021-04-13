@@ -17,25 +17,21 @@ namespace Knowlove.UI.Menus
 
     public class Window_MyStuff : Window
     {
-        [SerializeField]
-        Window_ListEditor listEditorWindow;
-
-        [SerializeField]
-        GameObject loadingIndicator;
-
-        [SerializeField]
-        GameObject listEntryPrefab;
-
-        [SerializeField]
-        Transform container;
-
-        [SerializeField]
-        InventoryItemIconDefinition defaultIcon;
+        public static Window_MyStuff Instance;
 
         public List<InventoryItemIconDefinition> inventoryIcons;
 
-        public static Window_MyStuff Instance;
+        [SerializeField] private Window_ListEditor listEditorWindow;
 
+        [SerializeField] private GameObject loadingIndicator;
+
+        [SerializeField] private GameObject listEntryPrefab;
+
+        [SerializeField] private Transform container;
+
+        [SerializeField] private InventoryItemIconDefinition defaultIcon;
+
+        private int index = 0;
 
         private void Awake()
         {
@@ -50,7 +46,6 @@ namespace Knowlove.UI.Menus
             {
                 Populate();
             });
-
         }
 
         public override void Hide()
@@ -58,7 +53,10 @@ namespace Knowlove.UI.Menus
             base.Hide();
         }
 
-        private int index = 0;
+        public void OpenListEditor()
+        {
+            listEditorWindow.Show();
+        }
 
         public void Populate()
         {
@@ -71,7 +69,6 @@ namespace Knowlove.UI.Menus
             loadingIndicator.SetActive(true);
             APIManager.GetUserDetails((user) =>
             {
-
                 index = 0;
                 //Add the Browse Cards entry
                 CreateEntry("browseCards", 1);
@@ -83,12 +80,10 @@ namespace Knowlove.UI.Menus
                 }
 
                 loadingIndicator.SetActive(false);
-
             });
         }
 
-
-        MyStuffEntry CreateEntry(string id, int count)
+        private MyStuffEntry CreateEntry(string id, int count)
         {
             //Find the definition for the icon
             InventoryItemIconDefinition browseItem = inventoryIcons.FirstOrDefault(x => x.id.ToLower() == id.ToLower());
@@ -109,13 +104,6 @@ namespace Knowlove.UI.Menus
             entry.Init(browseItem, count, this);
 
             return entry;
-        }
-
-
-
-        public void OpenListEditor()
-        {
-            listEditorWindow.Show();
         }
     }
 }

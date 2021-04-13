@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -90,9 +88,7 @@ public class Validation : MonoBehaviour
         //Debug.Log("Is password valid? = " + isValidPassword);
 
         if (!isValidPassword)
-        {
             error = "Your password must contain at least 1 number, and be at least 6 characters in length.";
-        }
 
         return isValidPassword;
     }

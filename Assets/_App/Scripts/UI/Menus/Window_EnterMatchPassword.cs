@@ -8,15 +8,13 @@ namespace Knowlove.UI.Menus
 {
     public class Window_EnterMatchPassword : Window
     {
-        public string password;
-
         public RoomInfo roomToJoin;
 
-        [SerializeField]
-        TMP_InputField passwordField;
+        public string password;
 
-        [SerializeField]
-        Window_WaitingForPlayers waitingWindow;
+        [SerializeField] private TMP_InputField passwordField;
+
+        [SerializeField] private Window_WaitingForPlayers waitingWindow;
 
         public override void Show()
         {
@@ -39,11 +37,8 @@ namespace Knowlove.UI.Menus
                 PhotonNetwork.JoinRoom(this.roomToJoin.Name);
             }
             else
-            {
                 PopupDialog.Instance.Show("Incorrect password. Try again.");
-            }
         }
-
 
         private void NetworkManager_OnJoinedRoomFinished()
         {

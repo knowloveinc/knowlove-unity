@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Knowlove
 {
-
     [System.Serializable]
     public class CardPromptButton
     {
@@ -42,6 +41,7 @@ namespace Knowlove
 
             CardData returnCard = cards[index];
             index++;
+
             if (index >= cards.Count)
             {
                 Shuffle();

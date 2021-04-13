@@ -21,24 +21,18 @@ namespace Knowlove
         public void PlaySound(string audioClipName, Player player = null)
         {
             if (player == null)
-            {
-                photonView.RPC("RPC_PlaySound", RpcTarget.All, audioClipName);
-            }
+                photonView.RPC(nameof(RPC_PlaySound), RpcTarget.All, audioClipName);
             else
-            {
-                photonView.RPC("RPC_PlaySound", player, audioClipName);
-            }
+                photonView.RPC(nameof(RPC_PlaySound), player, audioClipName);
         }
 
         [PunRPC]
-        void RPC_PlaySound(string audioClipName)
+        private void RPC_PlaySound(string audioClipName)
         {
             for (int i = 0; i < clips.Length; i++)
             {
                 if (clips[i].name.ToLower() == audioClipName.ToLower())
-                {
                     source.PlayOneShot(clips[i]);
-                }
             }
         }
     }

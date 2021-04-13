@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using Knowlove.ActionAndPathLogic;
 using Knowlove.MyStuffInGame;
-using Knowlove.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -230,64 +229,6 @@ namespace Knowlove
             PlayerWonName?.Invoke(playerName);
         }
 
-        [ContextMenu("Make Current Player Win")]
-        public void MakeCurrentPlayerWin()
-        {
-            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
-
-            _proceedActionLogic.ExecuteProceedAction(ProceedAction.GoToKNOWLOVE, () => { });
-        }
-
-        [ContextMenu("SendToRelationship")]
-        public void SendToRelationship()
-        {
-            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
-
-            _proceedActionLogic.ExecuteProceedAction(ProceedAction.GoToRelationship, () => { });
-        }
-
-        [ContextMenu("SendToMarriage")]
-        public void SendToMarriage()
-        {
-            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
-
-            _proceedActionLogic.ExecuteProceedAction(ProceedAction.GoToMarriage, () => { });
-        }
-
-        [ContextMenu("Back to Single")]
-        public void SendToSingle()
-        {
-            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
-
-            _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
-        }
-
-        [ContextMenu("AdvanceToNextPath")]
-        public void SendToAdvance()
-        {
-            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
-
-            _pathNodeActionLogic.HandlePathNodeAction(PathNodeAction.AdvanceToNextPath, "Advanced by Debug Code");
-        }
-
-        [ContextMenu("AdvanceToNextPath And Get Card")]
-        public void SendToAdvanceWithCard()
-        {
-            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
-
-            _pathNodeActionLogic.HandlePathNodeAction(PathNodeAction.AdvanceAndGetAvoidCard, "Advanced by Debug Code and you got an avoid card");
-        }
-
-        [ContextMenu("Give Two Dice")]
-        public void GiveTwoDice()
-        {
-            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
-
-            ExitGames.Client.Photon.Hashtable props = NetworkManager.Instance.players[turnIndex].CustomProperties;
-            props["diceCount"] = 2;
-            NetworkManager.Instance.players[turnIndex].SetCustomProperties(props);
-        }
-
         public void CallAction(ProceedAction action, bool isProceedAction)
         {
             photonView.RPC(nameof(RPC_CallAction), RpcTarget.MasterClient, action, isProceedAction);
@@ -375,6 +316,64 @@ namespace Knowlove
                 turnTimer = (float)stream.ReceiveNext();
                 turnState = (TurnState)(int)stream.ReceiveNext();
             }
+        }
+
+        [ContextMenu("Make Current Player Win")]
+        public void MakeCurrentPlayerWin()
+        {
+            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
+
+            _proceedActionLogic.ExecuteProceedAction(ProceedAction.GoToKNOWLOVE, () => { });
+        }
+
+        [ContextMenu("SendToRelationship")]
+        public void SendToRelationship()
+        {
+            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
+
+            _proceedActionLogic.ExecuteProceedAction(ProceedAction.GoToRelationship, () => { });
+        }
+
+        [ContextMenu("SendToMarriage")]
+        public void SendToMarriage()
+        {
+            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
+
+            _proceedActionLogic.ExecuteProceedAction(ProceedAction.GoToMarriage, () => { });
+        }
+
+        [ContextMenu("Back to Single")]
+        public void SendToSingle()
+        {
+            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
+
+            _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+        }
+
+        [ContextMenu("AdvanceToNextPath")]
+        public void SendToAdvance()
+        {
+            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
+
+            _pathNodeActionLogic.HandlePathNodeAction(PathNodeAction.AdvanceToNextPath, "Advanced by Debug Code");
+        }
+
+        [ContextMenu("AdvanceToNextPath And Get Card")]
+        public void SendToAdvanceWithCard()
+        {
+            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
+
+            _pathNodeActionLogic.HandlePathNodeAction(PathNodeAction.AdvanceAndGetAvoidCard, "Advanced by Debug Code and you got an avoid card");
+        }
+
+        [ContextMenu("Give Two Dice")]
+        public void GiveTwoDice()
+        {
+            if (!Application.isEditor || !PhotonNetwork.IsMasterClient) return;
+
+            ExitGames.Client.Photon.Hashtable props = NetworkManager.Instance.players[turnIndex].CustomProperties;
+            props["diceCount"] = 2;
+            NetworkManager.Instance.players[turnIndex].SetCustomProperties(props);
         }
     }
 }

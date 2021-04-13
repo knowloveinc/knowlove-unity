@@ -8,6 +8,8 @@ namespace Knowlove.UI
     {
         public static PopupDialog Instance;
 
+        private static List<PopupDialogMessage> messages = new List<PopupDialogMessage>();
+
         public enum PopupButtonColor
         {
             Plain,
@@ -33,13 +35,11 @@ namespace Knowlove.UI
 
         public PopupDialogWindow dialogWindow;
 
+        private float stuckTime = 0f;
 
         public static bool isShowing
         {
-            get
-            {
-                return Instance.dialogWindow.gameObject.activeSelf;
-            }
+            get => Instance.dialogWindow.gameObject.activeSelf;
         }
 
         private void Awake()
@@ -57,6 +57,18 @@ namespace Knowlove.UI
             PopupDialogWindow.OnPopupDialogClosed += this.OnPopupDialogClosed;
         }
 
+        private void Update()
+        {
+            if (!this.dialogWindow.gameObject.activeSelf && canvasGroup.alpha > 0f)
+                stuckTime += Time.deltaTime;
+
+            if (stuckTime > 1f)
+            {
+                Close();
+                stuckTime = 0f;
+            }
+        }
+
         private void OnPopupDialogClosed()
         {
             if (messages != null && messages.Count > 0)
@@ -66,9 +78,24 @@ namespace Knowlove.UI
                 ShowMessage(message);
             }
             else
-            {
                 Close();
-            }
+        }
+        public void Close()
+        {
+            this.canvasGroup.alpha = 0f;
+            this.canvasGroup.interactable = false;
+            this.canvasGroup.blocksRaycasts = false;
+        }
+
+        public void ToggleCanvasGroup(bool active)
+        {
+            canvasGroup.interactable = active;
+            canvasGroup.blocksRaycasts = active;
+
+            if (active)
+                canvasGroup.DOFade(1f, 0.25f);
+            else
+                canvasGroup.DOFade(0f, 0.25f);
         }
 
         public void Show(string body)
@@ -92,7 +119,7 @@ namespace Knowlove.UI
             {
                 buttons = new PopupButton[]
                 {
-                new PopupButton() { text = "Okay", buttonColor = PopupButtonColor.Plain }
+                    new PopupButton() { text = "Okay", buttonColor = PopupButtonColor.Plain }
                 };
             }
 
@@ -109,58 +136,18 @@ namespace Knowlove.UI
         }
 
 
-        void QueueMessage(PopupDialogMessage message)
+        private void QueueMessage(PopupDialogMessage message)
         {
             messages.Add(message);
         }
 
-        void ShowMessage(PopupDialogMessage message, int bgColor = 0)
+        private void ShowMessage(PopupDialogMessage message, int bgColor = 0)
         {
             this.canvasGroup.alpha = 1f;
             this.canvasGroup.interactable = true;
             this.canvasGroup.blocksRaycasts = true;
             dialogWindow.SetMessage(message, bgColor);
             dialogWindow.Show();
-        }
-
-        static List<PopupDialogMessage> messages = new List<PopupDialogMessage>();
-
-
-        float stuckTime = 0f;
-
-        private void Update()
-        {
-            if (!this.dialogWindow.gameObject.activeSelf && canvasGroup.alpha > 0f)
-            {
-                stuckTime += Time.deltaTime;
-            }
-
-            if (stuckTime > 1f)
-            {
-                Close();
-                stuckTime = 0f;
-            }
-        }
-
-        public void Close()
-        {
-            this.canvasGroup.alpha = 0f;
-            this.canvasGroup.interactable = false;
-            this.canvasGroup.blocksRaycasts = false;
-        }
-
-        public void ToggleCanvasGroup(bool active)
-        {
-            canvasGroup.interactable = active;
-            canvasGroup.blocksRaycasts = active;
-            if (active)
-            {
-                canvasGroup.DOFade(1f, 0.25f);
-            }
-            else
-            {
-                canvasGroup.DOFade(0f, 0.25f);
-            }
         }
     }
 }
