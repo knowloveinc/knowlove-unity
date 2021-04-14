@@ -75,8 +75,8 @@ namespace Knowlove.UI.Menus
         {
             Debug.Log("StartSinglePlayer()");
 
-            //if(PhotonNetwork.IsConnectedAndReady)
-            //    PhotonNetwork.Disconnect();
+            if(PhotonNetwork.IsConnectedAndReady)
+                PhotonNetwork.Disconnect();
 
             //PhotonNetwork.OfflineMode = true;
 
@@ -92,17 +92,8 @@ namespace Knowlove.UI.Menus
             //PhotonNetwork.CreateRoom("OfflineMode", options);
             CanvasLoading.Instance.Show();
 
-            if (PhotonNetwork.IsConnectedAndReady && PhotonNetwork.CurrentLobby != null)
-            {
-                CanvasLoading.Instance.Hide();
-                Hide();
-                multiplayerWindow.Show();
-            }
-            else
-            {
-                NetworkManager.OnPhotonConnected += this.NetworkManager_OnPhotonConnectedSinglePlayer;
-                NetworkManager.Instance.Connect();
-            }
+            NetworkManager.OnPhotonConnected += this.NetworkManager_OnPhotonConnectedSinglePlayer;
+            NetworkManager.Instance.Connect();
         }
 
         public void StartMultiplayer()

@@ -36,7 +36,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -250.00012, y: 160.8}
+  m_AnchoredPosition: {x: -250.00012, y: 150}
   m_SizeDelta: {x: 90, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7122434898063149944
@@ -1952,7 +1952,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -147.70117, y: 160.7998}
+  m_AnchoredPosition: {x: -147.70117, y: 150}
   m_SizeDelta: {x: 80.5, y: 111.04001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4592793374730706741
@@ -8618,6 +8618,7 @@ MonoBehaviour:
   bottomPanel: {fileID: 4592793376064156032}
   bottomButton: {fileID: 4592793375003833724}
   bottomButtonLabel: {fileID: 4592793374551266324}
+  _flipTheTableButton: {fileID: 2155163201834374833}
 --- !u!114 &4592793375008395360
 MonoBehaviour:
   m_ObjectHideFlags: 0

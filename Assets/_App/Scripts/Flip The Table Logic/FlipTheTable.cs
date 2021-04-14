@@ -12,7 +12,6 @@ namespace Knowlove.FlipTheTableLogic
         private Vector3 _startPosition;
 
         [SerializeField] private CardUI _cardUI;
-        [SerializeField] private GameObject _flipTheTableUI;
         [SerializeField] private FlipObject[] _flipObjects;
 
         [SerializeField] private float x = 0f;
@@ -59,7 +58,7 @@ namespace Knowlove.FlipTheTableLogic
             {
                 photonView.RPC(nameof(RPC_FlipTable), RpcTarget.AllBufferedViaServer);
 
-                DOVirtual.DelayedCall(4f, () =>
+                DOVirtual.DelayedCall(5f, () =>
                 {
                     CollectTable();
                 });
@@ -75,7 +74,6 @@ namespace Knowlove.FlipTheTableLogic
         [PunRPC]
         private void RPC_FlipTable()
         {
-            _flipTheTableUI.gameObject.SetActive(false);
             CheckSomeAction();
             StartedFlipTable?.Invoke(false);
             CameraManager.Instance.SetCamera(cameraNumber);
@@ -182,7 +180,6 @@ namespace Knowlove.FlipTheTableLogic
             }
 
             ReturnAction();
-            _flipTheTableUI.gameObject.SetActive(true);
             StartedFlipTable?.Invoke(true);
             _isMove = false;
             Physics.IgnoreLayerCollision(10, 10, false);

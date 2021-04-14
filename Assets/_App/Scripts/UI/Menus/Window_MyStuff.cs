@@ -76,6 +76,9 @@ namespace Knowlove.UI.Menus
                 //Cycle through purchased items in the players inventory
                 for (int i = 0; i < user.inventory.Length; i++)
                 {
+                    if (user.inventory[i].itemId.ToLower() == "tableFlip".ToLower())
+                        continue;
+
                     _ = CreateEntry(user.inventory[i].itemId, user.inventory[i].amount);
                 }
 

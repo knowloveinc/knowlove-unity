@@ -1,4 +1,5 @@
 ﻿using GameBrewStudios;
+using GameBrewStudios.Networking;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -87,6 +88,7 @@ namespace Knowlove.UI
             {
                 titleLabel?.SetText(title);
                 descLabel?.SetText(description);
+                ShowCountCard();
             }
 
             iconTextLabel?.SetText(iconText);
@@ -104,6 +106,29 @@ namespace Knowlove.UI
                 Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
                 Debug.Log("IAP COST IS: " + product.metadata.localizedPriceString);
                 priceLabel.text = isIAP ? product.metadata.localizedPriceString + " " + product.metadata.isoCurrencyCode : currencyCost.ToString() + " <sprite=0>";
+            }
+        }
+
+        private void ShowCountCard()
+        {
+            if (ownedCount != null)
+            {
+                APIManager.GetUserDetails((user) =>
+                {
+                    for (int i = 0; i < user.inventory.Length; i++)
+                    {
+                        if (user.inventory[i].itemId.ToLower() == "avoidSingle".ToLower())
+                        {
+                            if(user.inventory[i].amount > 0)
+                            {
+                                ownedCount.text = "Owned: " + user.inventory[i].amount;
+                                ownedCount.gameObject.SetActive(true);
+                            }
+                            else
+                                ownedCount.gameObject.SetActive(false);
+                        }  
+                    }
+                });
             }
         }
     }

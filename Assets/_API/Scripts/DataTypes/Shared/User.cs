@@ -44,6 +44,7 @@ namespace GameBrewStudios
     {
         public string itemId;
         public int amount;
+        public string name;
     }
 
     [System.Serializable]
