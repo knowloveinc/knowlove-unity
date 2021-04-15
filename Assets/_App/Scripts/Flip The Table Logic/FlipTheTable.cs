@@ -8,6 +8,8 @@ namespace Knowlove.FlipTheTableLogic
 {
     public class FlipTheTable : MonoBehaviourPunCallbacks
     {
+        private static FlipTheTable _instance;
+
         private Rigidbody _rigidbody;
         private Vector3 _startPosition;
 
@@ -25,6 +27,11 @@ namespace Knowlove.FlipTheTableLogic
         private bool _isPopup;
 
         public Action<bool> StartedFlipTable;
+
+        public static FlipTheTable Instance
+        {
+            get => _instance;
+        }
 
         public bool IsMove
         {

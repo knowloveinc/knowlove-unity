@@ -188,9 +188,7 @@ namespace Knowlove.UI
             int marriageCount = (int)PhotonNetwork.LocalPlayer.CustomProperties["marriageCount"];
             int yearsElapsed = (int)PhotonNetwork.LocalPlayer.CustomProperties["yearsElapsed"];
 
-            text = $"# Dates: {dateCount}\n# Relationships: {relationshipCount}\n # Marriages: {marriageCount}\n # Years Elapsed: {yearsElapsed}";
-
-            statsPanel.SetText(text);
+            statsPanel.SetText(dateCount.ToString(), relationshipCount.ToString(), marriageCount.ToString(), yearsElapsed.ToString());
         }
 
         private void UpdateTimerText()

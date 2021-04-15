@@ -15,7 +15,7 @@ namespace Knowlove
 
         [SerializeField] private AudioClip tapSound;
 
-        [SerializeField] private AudioSource source;
+        [SerializeField] private AudioSource source;        
 
         public bool isMoving = false;
 

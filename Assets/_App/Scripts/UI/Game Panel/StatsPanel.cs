@@ -9,7 +9,10 @@ namespace Knowlove
     public class StatsPanel : MonoBehaviourPun
     {
         [SerializeField] private TurnManager TurnManager;
-        [SerializeField] private TextMeshProUGUI label;
+        [SerializeField] private TextMeshProUGUI _dating;
+        [SerializeField] private TextMeshProUGUI _relationships;
+        [SerializeField] private TextMeshProUGUI _marriages;
+        [SerializeField] private TextMeshProUGUI _years;
 
         [SerializeField] private RectTransform rect;
 
@@ -29,14 +32,17 @@ namespace Knowlove
             TurnManager.ShowedStatsForAll -= ShowForEveryone;
         }
 
-        public void SetText(string text)
+        public void SetText(string dating, string relationships, string marriages, string years)
         {
-            label.text = text;
+            _dating.text = dating;
+            _relationships.text = relationships;
+            _marriages.text = marriages;
+            _years.text = years;
         }
 
         public void ToggleVisibility()
         {
-            float posX = rect.anchoredPosition.x > 0f ? -300f : 64f;
+            float posX = rect.anchoredPosition.x > 0f ? -175f : 64f;
             isVisible = posX > 0;
             DOTween.Kill(rect);
             rect.DOAnchorPosX(posX, 0.5f).OnComplete(() =>

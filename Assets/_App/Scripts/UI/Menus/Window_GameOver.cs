@@ -16,9 +16,10 @@ namespace Knowlove.UI.Menus
 
         [SerializeField] private GameObject hud;
 
-        private void Start()
+        private void Awake()
         {
             TurnManager.PlayerWonName += ShowGameOver;
+            gameObject.SetActive(false);
         }
         private void OnEnable()
         {
@@ -31,7 +32,7 @@ namespace Knowlove.UI.Menus
         }
         private void OnDestroy()
         {
-            TurnManager.PlayerWonName += ShowGameOver;
+            TurnManager.PlayerWonName -= ShowGameOver;
         }
         public void Init(string winnerName)
         {

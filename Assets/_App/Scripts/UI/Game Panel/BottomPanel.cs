@@ -18,12 +18,9 @@ namespace Knowlove.UI
         [SerializeField] private Button bottomButton;
         [SerializeField] private TextMeshProUGUI bottomButtonLabel;
 
-        [SerializeField] private GameObject _flipTheTableButton;
-
         private void Start()
         {
             RPC_HideBottomForPlayer();
-            _flipTheTableButton.gameObject.SetActive(false);
 
             TurnManager.StartedTurn += ShowBottomForPlayer;
             TurnManager.GameOvered += HideBottomForEveryone;
@@ -59,8 +56,6 @@ namespace Knowlove.UI
         [PunRPC]
         public void RPC_ShowBottomForPlayer()
         {
-            photonView.RPC(nameof(RPC_SetActiveFlipTheTableButton), RpcTarget.All, true);
-
             mapWindow.SetActive(false);
             mapButton.SetActive(true);
 
@@ -75,8 +70,6 @@ namespace Knowlove.UI
 
             bottomButton.onClick.AddListener(() =>
             {
-                photonView.RPC(nameof(RPC_SetActiveFlipTheTableButton), RpcTarget.All, false);
-
                 mapWindow.SetActive(false);
                 mapButton.SetActive(false);
                 _rollDiceLogic.RollDice(diceCount, "board");
@@ -100,12 +93,6 @@ namespace Knowlove.UI
             mapWindow.SetActive(false);
             mapButton.SetActive(true);
             bottomPanel.DOAnchorPosY(-bottomPanel.sizeDelta.y, 0.5f);
-        }
-
-        [PunRPC]
-        private void RPC_SetActiveFlipTheTableButton(bool isActive)
-        {
-            _flipTheTableButton.gameObject.SetActive(isActive);
         }
     }
 }
