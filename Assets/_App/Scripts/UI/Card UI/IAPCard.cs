@@ -81,7 +81,7 @@ namespace Knowlove.UI
             if (isIAP)
             {
                 Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
-                titleLabel?.SetText(product.metadata.localizedTitle);
+                titleLabel?.SetText(title);
                 descLabel?.SetText("Get it now!");
             }
             else
