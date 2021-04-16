@@ -31,6 +31,11 @@ namespace Knowlove.ActionAndPathLogic
             get => _turnManager.turnIndex;
         }
 
+        private bool IsDaring
+        {
+            get => !(BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Dating || BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Home);
+        }
+
         public void ExecuteProceedAction(ProceedAction action, System.Action OnFinished)
         {
             Player currentPlayer = NetworkManager.Instance.players[TurnIndex];
@@ -129,14 +134,14 @@ namespace Knowlove.ActionAndPathLogic
         {
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
 
-            if (_avoidSingleCards > 0)
+            if (_avoidSingleCards > 0 && IsDaring)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
                     ShowAvoidCardPrompts(_diceCount, playerBoardPiece, currentPlayer);
                 });
             }
-            else if (_wallet > 0 && _avoidSingleCards == 0)
+            else if (_wallet > 0 && _avoidSingleCards == 0 && IsDaring)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
@@ -158,14 +163,14 @@ namespace Knowlove.ActionAndPathLogic
         {
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
 
-            if (_avoidSingleCards > 0)
+            if (_avoidSingleCards > 0 && IsDaring)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
                     ShowAvoidCardPrompts(_diceCount, playerBoardPiece, currentPlayer);
                 });
             }
-            else if (_wallet > 0 && _avoidSingleCards == 0)
+            else if (_wallet > 0 && _avoidSingleCards == 0 && IsDaring)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {

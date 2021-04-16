@@ -8,6 +8,7 @@ namespace Knowlove.UI
     public class CardResetter : MonoBehaviour
     {
         [SerializeField] private CardUI _cardUI;
+        [SerializeField] private GameObject _maps;
 
         private void Start()
         {
@@ -31,7 +32,7 @@ namespace Knowlove.UI
                     else if(_cardUI.IsShowCard && !(transform is RectTransform))
                         transform.DOLocalMove(Vector3.zero, 0.1f).SetId(gameObject);
 
-                    if(!_cardUI.IsShowCard)
+                    if(!_cardUI.IsShowCard && !_maps.gameObject.activeSelf)
                         ReturnStartPos();
 
                     CheckMaxMinScale();

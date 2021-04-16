@@ -38,6 +38,11 @@ namespace Knowlove.ActionAndPathLogic
             get => _turnManager.turnIndex;
         }
 
+        private bool IsDaring
+        {
+            get => !(BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Dating || BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Home);
+        }
+
         public void HandlePathNodeAction(PathNodeAction action, string text, int rollCheck = 0, ProceedAction onPassed = ProceedAction.Nothing, ProceedAction onFailed = ProceedAction.Nothing, bool skipPrompt = false)
         {
             if (!PhotonNetwork.IsMasterClient)
@@ -202,7 +207,7 @@ namespace Knowlove.ActionAndPathLogic
         {
             List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
 
-            if (_avoidSingleCards > 0)
+            if (_avoidSingleCards > 0 && IsDaring)
             {
                 if (!skipPrompt)
                 {
@@ -257,7 +262,7 @@ namespace Knowlove.ActionAndPathLogic
 
                     buttons.Add(btn);
 
-                    if (_wallet > 0)
+                    if (_wallet > 0 && IsDaring)
                     {
                         PopupDialog.PopupButton openStoreBtn = new PopupDialog.PopupButton()
                         {
@@ -278,7 +283,7 @@ namespace Knowlove.ActionAndPathLogic
                 }
                 else
                 {
-                    if (_wallet > 0)
+                    if (_wallet > 0 && IsDaring)
                     {
                         DOVirtual.DelayedCall(0.25f, () =>
                         {
@@ -294,7 +299,7 @@ namespace Knowlove.ActionAndPathLogic
                 ChoicedOfPlayer?.Invoke(text, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
             else
             {
-                if (_avoidSingleCards == 0 && _wallet == 0)
+                if (_avoidSingleCards == 0 && _wallet == 0 && !IsDaring)
                     DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
             }
         }
@@ -333,7 +338,7 @@ namespace Knowlove.ActionAndPathLogic
                 PopupDialog.PopupButton btn;
                 string dialogText = "You settled for someone who didnt meet your non-negotiable list requirements. (Back to single.)";
 
-                if (!_protectedFromSingleInRelationship && _avoidSingleCards < 1 && _wallet > 0)
+                if (!_protectedFromSingleInRelationship && _avoidSingleCards < 1 && _wallet > 0 && IsDaring)
                 {
                     btn = new PopupDialog.PopupButton()
                     {
@@ -362,7 +367,7 @@ namespace Knowlove.ActionAndPathLogic
                     _diceCount = 1;
                     ChoicedOfPlayer?.Invoke(dialogText, new PopupDialog.PopupButton[] { btn, openStoreBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
                 }
-                else if (!_protectedFromSingleInRelationship && _avoidSingleCards < 1)
+                else if (!_protectedFromSingleInRelationship && _avoidSingleCards < 1 && IsDaring)
                 {
                     btn = new PopupDialog.PopupButton()
                     {
@@ -387,7 +392,7 @@ namespace Knowlove.ActionAndPathLogic
 
                     ChoicedOfPlayer?.Invoke(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
                 }
-                else if (_avoidSingleCards > 0)
+                else if (_avoidSingleCards > 0 && IsDaring)
                 {
 
                     _avoidSingleCards--;
@@ -418,7 +423,7 @@ namespace Knowlove.ActionAndPathLogic
             }
             else
             {
-                if (_avoidSingleCards > 0 && _wallet > 0)
+                if (_avoidSingleCards > 0 && _wallet > 0 && IsDaring)
                 {
                     DOVirtual.DelayedCall(0.25f, () =>
                     {

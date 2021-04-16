@@ -82,7 +82,7 @@ namespace Knowlove.UI
             {
                 Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
                 titleLabel?.SetText(product.metadata.localizedTitle);
-                descLabel?.SetText(product.metadata.localizedDescription);
+                descLabel?.SetText("Get it now!");
             }
             else
             {
