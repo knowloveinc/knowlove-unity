@@ -40,6 +40,8 @@ namespace Knowlove.FlipTheTableLogic
 
         private void Start()
         {
+            _instance = this;
+
             _isPopup = false;
             _rigidbody = GetComponent<Rigidbody>();
             _startPosition = transform.position;

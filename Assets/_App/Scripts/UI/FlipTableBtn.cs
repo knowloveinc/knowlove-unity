@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using Knowlove.FlipTheTableLogic;
 
 namespace Knowlove.UI
 {
@@ -9,12 +11,19 @@ namespace Knowlove.UI
 
         private void OnEnable()
         {
-            if (SceneManager.GetActiveScene().buildIndex == 0)
-                _flipButton.gameObject.SetActive(false);
-            else
+            if(StoreController.Instance != null)
             {
-                _flipButton.gameObject.SetActive(true);
-            }                
+                if (SceneManager.GetActiveScene().buildIndex == 0 && StoreController.Instance.IsOpenStore)
+                    _flipButton.gameObject.SetActive(false);
+                else
+                    _flipButton.gameObject.SetActive(true);
+            }                  
+        }
+
+        public void ActiveButton()
+        {
+            if(FlipTheTable.Instance != null)
+                FlipTheTable.Instance.FlipTable();
         }
     }
 }

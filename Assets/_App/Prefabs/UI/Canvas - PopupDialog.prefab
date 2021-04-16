@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 790.8185, y: 0}
-  m_SizeDelta: {x: 1517.637, y: 0}
+  m_AnchoredPosition: {x: 800.0178, y: 0}
+  m_SizeDelta: {x: 1536.0356, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2565008001706170087
 CanvasRenderer:
@@ -523,7 +523,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2565008003449628836}
   m_Direction: 0
   m_Value: 1
-  m_Size: 0.99999994
+  m_Size: 0.9999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1527,6 +1527,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2565008002351938021}
     m_Modifications:
+    - target: {fileID: 2065827078179893013, guid: 3dca4c093f9b7bb4481ac0a8a6ab0327,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 77793435}
+    - target: {fileID: 2065827078179893013, guid: 3dca4c093f9b7bb4481ac0a8a6ab0327,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Knowlove.UI.FlipTableBtn, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2065827078179893013, guid: 3dca4c093f9b7bb4481ac0a8a6ab0327,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ActiveButton
+      objectReference: {fileID: 0}
     - target: {fileID: 2515286213157387589, guid: 3dca4c093f9b7bb4481ac0a8a6ab0327,
         type: 3}
       propertyPath: m_Name
