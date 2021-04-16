@@ -1594,7 +1594,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 346753130}
-  m_LocalRotation: {x: -0.0016175902, y: 0.99286526, z: -0.118457645, w: -0.013557999}
+  m_LocalRotation: {x: -0.0015595517, y: 0.99287176, z: -0.11845843, w: -0.013071543}
   m_LocalPosition: {x: -0.013649441, y: 0.020612478, z: 1.8675314}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3208,7 +3208,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 75
+  field of view: 50
   orthographic: 0
   orthographic size: 5
   m_Depth: 2.07
@@ -3233,8 +3233,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 810013319}
-  m_LocalRotation: {x: 0.057856075, y: -0.33545357, z: 0.020645753, w: 0.9400518}
-  m_LocalPosition: {x: 1.39, y: 0.059999943, z: -1.31}
+  m_LocalRotation: {x: -0.0015595517, y: 0.99287176, z: -0.11845843, w: -0.013071543}
+  m_LocalPosition: {x: -0.013649441, y: 0.020612478, z: 1.8675314}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2114741604}
@@ -6916,7 +6916,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1883161131}
-  m_LocalRotation: {x: 0.057856075, y: -0.33545357, z: 0.020645753, w: 0.9400518}
+  m_LocalRotation: {x: 0.05783944, y: -0.3362104, z: 0.020692335, w: 0.93978137}
   m_LocalPosition: {x: 1.39, y: 0.06, z: -1.31}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -10121,6 +10121,16 @@ PrefabInstance:
       propertyPath: _rollDiceLogic
       value: 
       objectReference: {fileID: 1227550408}
+    - target: {fileID: 4592793375416686898, guid: a56dda01eebcfa1428b04c110e2e759f,
+        type: 3}
+      propertyPath: _cardUI
+      value: 
+      objectReference: {fileID: 4592793375008395355}
+    - target: {fileID: 4592793375416686899, guid: a56dda01eebcfa1428b04c110e2e759f,
+        type: 3}
+      propertyPath: Relative
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4592793375643160960, guid: a56dda01eebcfa1428b04c110e2e759f,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -10201,6 +10211,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4592793376287871862, guid: a56dda01eebcfa1428b04c110e2e759f,
+        type: 3}
+      propertyPath: _cardUI
+      value: 
+      objectReference: {fileID: 4592793375008395355}
     - target: {fileID: 4592793376371565625, guid: a56dda01eebcfa1428b04c110e2e759f,
         type: 3}
       propertyPath: m_Name

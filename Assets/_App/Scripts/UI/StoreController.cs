@@ -194,7 +194,7 @@ namespace Knowlove.UI
                 UpdateFromPlayerInventory();
             });
         }
-
+        
 #endif
         public void UpdateFromPlayerWallet()
         {

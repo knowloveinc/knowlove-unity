@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using Knowlove.FlipTheTableLogic;
 
 namespace Knowlove.UI
@@ -13,7 +12,7 @@ namespace Knowlove.UI
         {
             if(StoreController.Instance != null)
             {
-                if (SceneManager.GetActiveScene().buildIndex == 0 && StoreController.Instance.IsOpenStore)
+                if (SceneManager.GetActiveScene().buildIndex == 0 || StoreController.Instance.IsOpenStore)
                     _flipButton.gameObject.SetActive(false);
                 else
                     _flipButton.gameObject.SetActive(true);
