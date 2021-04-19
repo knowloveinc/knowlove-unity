@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using Knowlove.ActionAndPathLogic;
+using Knowlove.XPSystem;
 using Lean.Touch;
 using Photon.Pun;
 using Photon.Realtime;
@@ -92,12 +93,13 @@ namespace Knowlove.UI
 
             bool isFancyCard = card.action == PathNodeAction.AdvanceToRelationshipWithProtectionFromSingle;
 
-            photonView.RPC(nameof(RPC_ShowCard), RpcTarget.All, card.text + "(" + card.parentheses + ")", NetworkManager.Instance.players[TurnManager.turnIndex], (int)BoardManager.Instance.pieces[TurnManager.turnIndex].pathRing, isFancyCard);
+            photonView.RPC(nameof(RPC_ShowCard), RpcTarget.All, card.text + "(" + card.parentheses + ")", NetworkManager.Instance.players[TurnManager.turnIndex], (int)BoardManager.Instance.pieces[TurnManager.turnIndex].pathRing, isFancyCard, card.id);
         }
 
         [PunRPC]
-        private void RPC_ShowCard(string cardText, Player targetPlayer, int pathIndex, bool isFancyCard)
+        private void RPC_ShowCard(string cardText, Player targetPlayer, int pathIndex, bool isFancyCard, int idCard)
         {
+            InfoPlayer.Instance.MarkCard(idCard);
             _isShowCard = true;
 
             _bottomPanel.mapWindow.SetActive(false);

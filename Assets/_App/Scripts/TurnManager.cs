@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using Knowlove.ActionAndPathLogic;
 using Knowlove.MyStuffInGame;
+using Knowlove.XPSystem;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -113,6 +114,7 @@ namespace Knowlove
                 //turnIndex = 0;
                 NextTurn();
                 _gameStuff.GetSpecialCard();
+                InfoPlayer.Instance.CheckPlayWithThisPlayers();
             }
             else
                 Debug.LogError("Current Room == null ????");
@@ -220,6 +222,7 @@ namespace Knowlove
         public void GameOver(string playerName)
         {
             GameOvered?.Invoke();
+            InfoPlayer.Instance.PlayerWin();
             photonView.RPC(nameof(RPC_GameOver), RpcTarget.All, playerName);
         }
 

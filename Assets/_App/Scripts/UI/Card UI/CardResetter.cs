@@ -36,7 +36,7 @@ namespace Knowlove.UI
                         ReturnStartPos();
 
                     CheckMaxMinScale();
-                }
+                }             
             }
         }
 
@@ -52,11 +52,15 @@ namespace Knowlove.UI
 
         private void CheckMaxMinScale()
         {
-            if (transform.localScale.x > 2.5f || transform.localScale.y > 2.5f || transform.localScale.z > 2.5f)
-                transform.DOScale(2.5f, 0.1f).SetId(gameObject);
+            if (transform.localScale.x > 3f || transform.localScale.y > 3f || transform.localScale.z > 3f)
+            {                
+                transform.DOScale(3f, 0.1f).SetId(gameObject);
+                ReturnStartPos();
+            }
+
 
             if (transform.localScale.x < 0.5f || transform.localScale.y < 0.5f || transform.localScale.z < 0.5f)
-                transform.DOScale(0.5f, 0.1f).SetId(gameObject);
+                ReturnStartPos();
         }
 
         private void ReturnStartPos()

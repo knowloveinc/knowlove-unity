@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using GameBrewStudios;
+using Knowlove.XPSystem;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -18,6 +19,8 @@ namespace Knowlove.UI.Menus
         public override void Show()
         {
             base.Show();
+
+            InfoPlayer.Instance.СheckAvailabilityPlayer();
         }
 
         public override void Hide()

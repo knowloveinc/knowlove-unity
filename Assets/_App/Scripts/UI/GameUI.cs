@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using GameBrewStudios.Networking;
 using Knowlove.FlipTheTableLogic;
 using Photon.Pun;
 using Photon.Realtime;
@@ -77,9 +78,27 @@ namespace Knowlove.UI
         private void RPC_ShowPickCard()
         {
             CanvasLoading.Instance.ForceHide();
-            selectedCard = listCards[UnityEngine.Random.Range(0, listCards.Length)];
 
-            ShowCardPickerPanel();
+            APIManager.GetUserDetails((user) =>
+            {
+                if (user.nonNegotiableList.Count > 0)
+                {
+                    _listCardUIObjs[0].gameObject.SetActive(false);
+                    _listCardUIObjs[1].gameObject.SetActive(false);
+
+                    selectedCard.text = "He or She... \n";
+
+                    for (int i = 0; i < user.nonNegotiableList.Count; i++)
+                        selectedCard.text += ("- " + user.nonNegotiableList[i] + "\n");
+
+                    ShowCardPickerPanel();
+                }
+                else
+                {
+                    selectedCard = listCards[UnityEngine.Random.Range(0, listCards.Length)];
+                    ShowCardPickerPanel();
+                }
+            });     
         }
 
         public void ShowCardPickerPanel()
@@ -180,8 +199,6 @@ namespace Knowlove.UI
         {
             if (PhotonNetwork.LocalPlayer == null || PhotonNetwork.LocalPlayer.CustomProperties == null || PhotonNetwork.LocalPlayer.CustomProperties.Count < 1)
                 return;
-
-            string text = "";
 
             int dateCount = (int)PhotonNetwork.LocalPlayer.CustomProperties["dateCount"];
             int relationshipCount = (int)PhotonNetwork.LocalPlayer.CustomProperties["relationshipCount"];

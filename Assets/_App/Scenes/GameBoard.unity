@@ -1594,7 +1594,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 346753130}
-  m_LocalRotation: {x: -0.0016059064, y: 0.9928666, z: -0.11845781, w: -0.013460069}
+  m_LocalRotation: {x: -0.0015595517, y: 0.99287176, z: -0.11845843, w: -0.013071543}
   m_LocalPosition: {x: -0.013649441, y: 0.020612478, z: 1.8675314}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3233,7 +3233,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 810013319}
-  m_LocalRotation: {x: -0.0016059064, y: 0.9928666, z: -0.11845781, w: -0.013460069}
+  m_LocalRotation: {x: -0.0015595517, y: 0.99287176, z: -0.11845843, w: -0.013071543}
   m_LocalPosition: {x: -0.013649441, y: 0.020612478, z: 1.8675314}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -6916,7 +6916,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1883161131}
-  m_LocalRotation: {x: 0.057852723, y: -0.33560592, z: 0.020655125, w: 0.93999743}
+  m_LocalRotation: {x: 0.057839435, y: -0.3362104, z: 0.020692332, w: 0.9397814}
   m_LocalPosition: {x: 1.39, y: 0.06, z: -1.31}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -22234,7 +22234,7 @@ MonoBehaviour:
       parentheses: "Lose a turn. Having a \u201Cplan B\u201D prevents you from giving
         your plan A of a relationship your all, which is what it needs to make it
         work."
-      id: 35
+      id: 36
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22254,7 +22254,7 @@ MonoBehaviour:
         to the conclusion that you came to.  It\u2019s also an indicator that you
         need to ask, with an opened mind and the intent to try to better understand,
         how he or she came to his or her conclusion on the matter."
-      id: 36
+      id: 37
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22270,7 +22270,7 @@ MonoBehaviour:
         stressed about it as you; if you\u2019re only complaining about the problem
         and never contributing a solution, you\u2019re an addition to the problem
         and the stress."
-      id: 37
+      id: 38
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22285,7 +22285,7 @@ MonoBehaviour:
         in aggression."
       parentheses: Click YES to Advance to marriage with this person, or Click NO
         to go back to single before life gets worse.
-      id: 38
+      id: 39
       isPrompt: 1
       promptMessage: Click YES to Advance to marriage with this person, or Click
         NO to go back to single before life gets worse.
@@ -22304,7 +22304,7 @@ MonoBehaviour:
         you notice patterns or lessons you may have missed an opportunity to learn
         from so that you can prevent yourself from repeating the same mistakes in
         your future relationships.
-      id: 39
+      id: 40
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22319,7 +22319,7 @@ MonoBehaviour:
         and advance to marriage by Clicking YES, or stay in a relationship to see
         if the person is willing to work on improving his or her spending habits
         and priorities by clicking NO.
-      id: 40
+      id: 41
       isPrompt: 1
       promptMessage: You can combine your incomes, adopt his or her spending habits,
         and advance to marriage by Clicking YES, or stay in a relationship to see
@@ -22345,7 +22345,7 @@ MonoBehaviour:
         level that the mature mate was on at the time of the breakup, which leaves
         the two of you still not compatible if the mature mate continued to mature
         since the breakup."
-      id: 41
+      id: 42
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22361,7 +22361,7 @@ MonoBehaviour:
       parentheses: "Lose a turn. Your selfish act got you in this predicament, and
         it\u2019s going to take selflessness and patience to help your mate get through
         their healing process."
-      id: 42
+      id: 43
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22375,7 +22375,7 @@ MonoBehaviour:
       parentheses: Lose a turn. Your selfish act got you in this predicament; and
         now, if you think he or she is worth it, you have to be patient and wait
         for him or her to forgive you and heal, or leave you.
-      id: 43
+      id: 44
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22389,7 +22389,7 @@ MonoBehaviour:
         sure to share this realization with your mate and stress how valuable he
         or she is to you."
       parentheses: Take another roll.
-      id: 44
+      id: 45
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22407,7 +22407,7 @@ MonoBehaviour:
         Shift your perspective; your mate chose YOU though he or she clearly had
         other options. Don\u2019t get upset that someone finds YOUR mate attractive,
         don\u2019t you?"
-      id: 45
+      id: 46
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22421,7 +22421,7 @@ MonoBehaviour:
         them with positive ones. It worked, and now your eyes and desires are matching
         your consciously influenced positive thoughts about your mate!
       parentheses: Take another roll.
-      id: 46
+      id: 47
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22435,7 +22435,7 @@ MonoBehaviour:
         with your mate."
       parentheses: "Back to single.  You\u2019ll never experience a happy and successful
         relationship if you are the only one being treated respectfully."
-      id: 47
+      id: 48
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22452,7 +22452,7 @@ MonoBehaviour:
         about your mate\u2019s hobbies and passions enough to be able to have intellectual
         dialogue or healthy debates about them with your mate will add success and
         happiness to your relationship."
-      id: 48
+      id: 49
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22469,7 +22469,7 @@ MonoBehaviour:
         if you don\u2019t make sure that your mate can do those things themself,
         it will drastically hinder him or her in the future if you become ill, leave,
         or suddenly pass away."
-      id: 49
+      id: 50
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22483,7 +22483,7 @@ MonoBehaviour:
       parentheses: Back to single. Choose a person because of who the person is,
         not who you hope he or she might become in the future.  When people show
         you who they are, believe them.
-      id: 50
+      id: 51
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22497,7 +22497,7 @@ MonoBehaviour:
         rejected; it\u2019s how you made it. Try a different approach before giving
         up on what you want from your mate. Also, make sure to share why what you\u2019re
         requesting of your mate means so much to you."
-      id: 51
+      id: 52
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22509,7 +22509,7 @@ MonoBehaviour:
         were being yourself, so maintaining the affection of your mate\u2019s heart
         is simple because it takes no effort to be yourself."
       parentheses: Advance to marriage.
-      id: 52
+      id: 53
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22523,7 +22523,7 @@ MonoBehaviour:
       parentheses: Lose a turn. Your closed-mindedness is causing your mate to resent
         you and will eventually cause your mate to shut down, lash out at you, or
         leave.
-      id: 53
+      id: 54
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22538,7 +22538,7 @@ MonoBehaviour:
         is the beginning of more distant acts and responses toward you."
       parentheses: Lose a turn. Realize how important it is to help your mate feel
         heard and important.
-      id: 54
+      id: 55
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22551,7 +22551,7 @@ MonoBehaviour:
       parentheses: Lose a turn.  The only person you should be seeking relationship
         advice from about a particular problem that you are having in your relationship
         with your mate is your mate, unless there is an abuse issue.
-      id: 55
+      id: 56
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22564,7 +22564,7 @@ MonoBehaviour:
         equal or more time, effort, focus, energy, and passion into your mate, which
         keeps harmony, happiness, respect, sexiness, and success in your relationship."
       parentheses: Have an extra roll.
-      id: 56
+      id: 57
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22577,7 +22577,7 @@ MonoBehaviour:
       parentheses: "Lose a turn. Build the confidence to speak up for yourself, because
         your mate doesn\u2019t know what to fix if there is no indication that something
         is broken.  You\u2019re not keeping the peace if you have a war within."
-      id: 57
+      id: 58
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22592,7 +22592,7 @@ MonoBehaviour:
         what you expect\u201D by politely asking your partner to say back to you
         in his or her own words what you requested to see if you are actually communicating
         effectively."
-      id: 58
+      id: 59
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22611,7 +22611,7 @@ MonoBehaviour:
         intentionally do or say things to hurt, harm, or disrespect you.  This will
         help you to begin clarifying your mate\u2019s intent before inappropriately
         responding or reacting."
-      id: 59
+      id: 60
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22630,7 +22630,7 @@ MonoBehaviour:
         and right doing. This way when you confront your partner about what\u2019s
         wrong, he or she won\u2019t have ammunition that you provided to shoot back
         at you."
-      id: 60
+      id: 61
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22647,7 +22647,7 @@ MonoBehaviour:
         In the future, after your mate finishes sharing, ask if he or she just needed
         to get the situation off of their chest or if they are looking for feedback. 
         After his or her reply to your question, respond accordingly..."
-      id: 61
+      id: 62
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22666,7 +22666,7 @@ MonoBehaviour:
         but if they do, just share with your mate what you want him or her to start
         or stop doing.  Try to avoid using words that suggests that there are no
         exceptions."
-      id: 62
+      id: 63
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22677,7 +22677,7 @@ MonoBehaviour:
     - text: "You waited until both you and your mate\u2019s minds and hearts agreed
         that you two should advance to the next level."
       parentheses: Advance to marriage.
-      id: 63
+      id: 64
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22690,7 +22690,7 @@ MonoBehaviour:
         attributes and you two have nothing to sustain the relationship."
       parentheses: Back to single. A relationship built on a foundation of physical
         attributes will eventually be ruined by time itself.
-      id: 64
+      id: 65
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22703,7 +22703,7 @@ MonoBehaviour:
         can\u2019t keep your cellphone on, yet you always have the latest expensive
         shoes and apparel."
       parentheses: Lose a turn. Work on your spending habits and priorities.
-      id: 65
+      id: 66
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22719,7 +22719,7 @@ MonoBehaviour:
         you have to be willing to sometimes make a sacrifice, especially when it\u2019s
         for the betterment of you and the union because your actions and decision-making
         will no longer impact just you."
-      id: 66
+      id: 67
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22734,7 +22734,7 @@ MonoBehaviour:
         arguments and blow-ups, not to mention it has helped you to better understand
         your mate\u2019s way of thinking."
       parentheses: Take another roll.
-      id: 67
+      id: 68
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22748,7 +22748,7 @@ MonoBehaviour:
         makes your mate more receptive when you try to help him or her understand,
         not adopt, your views and conclusions."
       parentheses: Take another roll.
-      id: 68
+      id: 69
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22761,7 +22761,7 @@ MonoBehaviour:
       parentheses: "Click YES to stay in this relationship with the hopes that his
         or her actions will eventually catch up to their words, or Click NO and go
         BACK TO SINGLE after accepting your mate\u2019s actions as their truth."
-      id: 69
+      id: 70
       isPrompt: 1
       promptMessage: "Click YES to stay in this relationship with the hopes that
         his or her actions will eventually catch up to their words, or Click NO and
@@ -22781,7 +22781,7 @@ MonoBehaviour:
         cake that reads \u201Ccelebrating you just because.\u201D Your mate appreciates
         a reminder that he or she is not far from your thoughts."
       parentheses: Roll with 2 dice
-      id: 70
+      id: 71
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22797,7 +22797,7 @@ MonoBehaviour:
         from someone, that the person has what you aspire to have; and even then,
         make your own relationship decisions because you\u2019re the one that has
         to live with the results."
-      id: 71
+      id: 72
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22812,7 +22812,7 @@ MonoBehaviour:
         way things are; and your silence will cause you frustration and resentment
         toward a mate who can\u2019t fix what\u2019s wrong because you have not shared
         with him or her that something is wrong."
-      id: 72
+      id: 73
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22824,7 +22824,7 @@ MonoBehaviour:
         that you began to nourish it."
       parentheses: Back to single. Hopefully now you know that in order to keep a
         relationship alive, you must consistently nourish and nurture it.
-      id: 73
+      id: 74
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22840,7 +22840,7 @@ MonoBehaviour:
         with the intent of understanding your mate makes your responses to the other
         person\u2019s viewpoint more compassionate and may influence you to agree
         with or adopt his or her point of view."
-      id: 74
+      id: 75
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22856,7 +22856,7 @@ MonoBehaviour:
         appreciated and respected. Also, when you bring forward any issues that you
         have, there is not much push back; you two just begin working on them together."
       parentheses: Take another roll.
-      id: 75
+      id: 76
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22871,7 +22871,7 @@ MonoBehaviour:
         dating to yourself results in you bringing those issues with you into the
         relationship. Be honest about your dislikes from the start to avoid them
         leading to your relationship\u2019s end."
-      id: 76
+      id: 77
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22885,7 +22885,7 @@ MonoBehaviour:
         in him or her.
       parentheses: Back to single. Understand that your level of interest plays a
         huge impact on how a person thinks you feel about him or her.
-      id: 77
+      id: 78
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22900,7 +22900,7 @@ MonoBehaviour:
         contributing.  If you honestly look within yourself first before deciding
         your mate is at fault and adjust the role you may be playing in the conflict
         at hand, this will resolve the conflict faster.
-      id: 78
+      id: 79
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22914,7 +22914,7 @@ MonoBehaviour:
         will be catastrophic for him or her if you were to become ill, leave, or
         die."
       parentheses: Take another roll.
-      id: 79
+      id: 80
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22927,7 +22927,7 @@ MonoBehaviour:
         is a direct reflection of the things you often do yourself."
       parentheses: Lose a turn. You need to first be the change that you want in
         your mate if you ever want to inspire him or her to change.
-      id: 80
+      id: 81
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22942,7 +22942,7 @@ MonoBehaviour:
         the relationship and figure out what caused it to go from a life that you
         were happy to pursue to an obligatory job that you don\u2019t really want
         to do, but must do."
-      id: 81
+      id: 82
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22958,7 +22958,7 @@ MonoBehaviour:
         is how you were viewed in THAT situation, not in general. Interpret your
         mate\u2019s feedback exactly the way it\u2019s given to you; don\u2019t add
         or subtract to what\u2019s being discussed."
-      id: 82
+      id: 83
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22971,7 +22971,7 @@ MonoBehaviour:
         sex because your mate doesn\u2019t initiate it."
       parentheses: Lose a turn. Everyone wants to feel desired, and sometimes you
         need to be the one to initiate intimacy.
-      id: 83
+      id: 84
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -22984,7 +22984,7 @@ MonoBehaviour:
       parentheses: "Back to single. Your lack of self-examination is the reason you
         keep failing the tests that prevent you from advancing to marriage not the
         sex of the people you\u2019re in a relationship with."
-      id: 84
+      id: 85
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23001,7 +23001,7 @@ MonoBehaviour:
         and overall view of you as a person. Your mate feels that you\u2019re so
         easy to talk to."
       parentheses: Take another roll.
-      id: 85
+      id: 86
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23015,7 +23015,7 @@ MonoBehaviour:
         to fruition."
       parentheses: "Advance to marriage. Take 1 \u201CAvoid going to single\u201D
         card"
-      id: 86
+      id: 87
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23032,7 +23032,7 @@ MonoBehaviour:
         your feelings about how they treated you, forgive them, and then work on
         becoming who you wish they would have been to you by taking ownership of
         your actions and changing your ways.
-      id: 87
+      id: 88
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23045,7 +23045,7 @@ MonoBehaviour:
         wants, and desires."
       parentheses: Lose 2 turns. To understand and succeed at anything, even your
         mate and or relationship, you must first study and become a student of it.
-      id: 88
+      id: 89
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23060,7 +23060,7 @@ MonoBehaviour:
         of low self-esteem or feeling that the way that you are is not good enough
         for someone to like you. Work on your self-esteem before you begin working
         on being with someone else.
-      id: 89
+      id: 90
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23073,7 +23073,7 @@ MonoBehaviour:
         this, you two progressively work toward what shall be instead of being stuck
         in the current negative state."
       parentheses: Roll again.
-      id: 90
+      id: 91
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23086,7 +23086,7 @@ MonoBehaviour:
         relationship.
       parentheses: Lose a turn. One of the worst things that you can do in a relationship
         is treat your mate like he or she is incompetent or a failure.
-      id: 91
+      id: 92
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23099,7 +23099,7 @@ MonoBehaviour:
         relationship, you compromise; because you take this approach, your mate is
         also willing to compromise with you when it benefits the relationship.
       parentheses: Take another roll.
-      id: 92
+      id: 93
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23112,7 +23112,7 @@ MonoBehaviour:
         health."
       parentheses: "Lose a turn. Don\u2019t get mad at your mate because you put
         up a fa\xE7ade. The way you got your mate is the way to keep your mate."
-      id: 93
+      id: 94
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23128,7 +23128,7 @@ MonoBehaviour:
         treat your mate the way you want to be treated; you should treat your mate
         the way your mate wants to be treated, and teach your mate how to treat you
         the way you want to be treated."
-      id: 94
+      id: 95
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23143,7 +23143,7 @@ MonoBehaviour:
       parentheses: "Lose a turn. Try doing some of the things your mate does for
         you. This will help you realize your mate\u2019s value and hopefully motivate
         you to begin expressing newfound appreciation of your mate."
-      id: 95
+      id: 96
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23158,7 +23158,7 @@ MonoBehaviour:
       parentheses: "Take another roll for realizing that sometimes it\u2019s not
         what you\u2019re requesting that\u2019s rejected; it\u2019s how you request
         it."
-      id: 96
+      id: 97
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23172,7 +23172,7 @@ MonoBehaviour:
       parentheses: Lose a turn. Realize that they are a package deal; you must love
         both of them to have and enjoy a successful romantic relationship with one
         of them.
-      id: 97
+      id: 98
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23188,7 +23188,7 @@ MonoBehaviour:
         get the same joy out of what you like doesn\u2019t make the other person
         wrong or ungrateful. Stop trying to make your mate happy by thinking only
         about yourself."
-      id: 98
+      id: 99
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23204,7 +23204,7 @@ MonoBehaviour:
       parentheses: "Lose a turn. You\u2019re the reason you\u2019re frustrated and
         unhappy. You\u2019re not in a relationship with a mind-reader; stop expecting
         your mate to cure a diagnosis that only you know about."
-      id: 99
+      id: 100
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23221,7 +23221,7 @@ MonoBehaviour:
         focus, and energy into your mate and the relationship, or get rid of the
         things that are causing your stamina to run out by the time you get around
         your mate.
-      id: 100
+      id: 101
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23233,7 +23233,7 @@ MonoBehaviour:
         in your relationship, whether from a movie, an outing, or just your sense
         of humor contributes to your relationship\u2019s success."
       parentheses: Take another roll.
-      id: 101
+      id: 102
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23252,7 +23252,7 @@ MonoBehaviour:
         of marriage, and when you bring up the issue you have with their spending
         habits and priorities, he or she shows no signs of a willingness to work
         on them. "
-      id: 102
+      id: 103
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23264,7 +23264,7 @@ MonoBehaviour:
         reassurance robs others of the power or influence to win over him or her
         with their compliments.
       parentheses: Have another roll.
-      id: 103
+      id: 104
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23284,7 +23284,7 @@ MonoBehaviour:
         does things for you has played a huge role in why it only took a couple of
         compliments and a few words of appreciation for your mate to become attracted
         to someone else. '
-      id: 104
+      id: 105
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23298,7 +23298,7 @@ MonoBehaviour:
         habit so that it is no longer an act, or behave like your normal self on
         dates so that you wind up with someone who really wants to be with your authentic
         self.
-      id: 105
+      id: 106
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23313,7 +23313,7 @@ MonoBehaviour:
         what needs to be worked on and fixed, which is you and your current weaknesses.You
         keep complaining to others about how poorly the people you end up with treat
         you. '
-      id: 106
+      id: 107
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23330,7 +23330,7 @@ MonoBehaviour:
         mate so much love that you forgot to leave any for yourself. This resulted
         in you allowing him or her to disrespect, isolate, degrade, and sometimes
         abuse you. Ultimately, it led to him or her leaving you for someone else. "
-      id: 107
+      id: 108
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23343,7 +23343,7 @@ MonoBehaviour:
         or plan outings for the both of you revolving around their hobbies as a love
         gesture."
       parentheses: Take 1 more role.
-      id: 108
+      id: 109
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23358,7 +23358,7 @@ MonoBehaviour:
         because there is now someone else who does consider your mate\u2019s requests,
         complaints, and concerns."
       parentheses: You can either work it out and lose two turns, or go back to single.
-      id: 109
+      id: 110
       isPrompt: 1
       promptMessage: You can either work it out and lose two turns, or go back to
         single.
@@ -23377,7 +23377,7 @@ MonoBehaviour:
       parentheses: (Lose a turn. Accept the fact that conflict is inevitable in relationships.
         Use conflict as an opportunity to help you and your mate learn more about
         yourselves and one another in order to grow together.
-      id: 110
+      id: 111
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23397,7 +23397,7 @@ MonoBehaviour:
         spouse\u2019s actions make it obvious that he or she wants to have sex, but
         you two keep going without sex because your spouse doesn\u2019t initiate
         it. "
-      id: 110
+      id: 112
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23413,7 +23413,7 @@ MonoBehaviour:
         you felt that your spouse did or said something to harm or disrespect you,
         you expressed how you took what he or she did or said and asked if the way
         that you took it is the way the he or she meant for you to receive it. "
-      id: 111
+      id: 113
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23432,7 +23432,7 @@ MonoBehaviour:
       parentheses: "Take Another roll.Because you do things for your spouse out of
         love as opposed to manipulated expectations, your spouse\u2019s responses
         or lack of responses to your actions never leave you disappointed or frustrated. "
-      id: 112
+      id: 114
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23446,7 +23446,7 @@ MonoBehaviour:
         as a love gesture.  Your spouse really appreciates the sacrifices that you
         make for him or her."
       parentheses: Take an extra roll.
-      id: 113
+      id: 115
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23464,7 +23464,7 @@ MonoBehaviour:
       parentheses: "Take another roll.It\u2019s hard for anyone, including your spouse,
         to identify who or what your priorities are, because you treat everyone and
         everything equally important. "
-      id: 114
+      id: 116
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23478,7 +23478,7 @@ MonoBehaviour:
       parentheses: Lose a turn. Practice giving what you want to receive in order
         to help you believe that it can be genuinely be given to you by someone else. 
         This will help you receive it when it happens
-      id: 115
+      id: 117
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23492,7 +23492,7 @@ MonoBehaviour:
         them with positive ones. It worked, and now your eyes and desires are matching
         your consciously influenced positive thoughts about your spouse!
       parentheses: Roll with two dice.
-      id: 116
+      id: 118
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23506,7 +23506,7 @@ MonoBehaviour:
       parentheses: Lose a turn. Evolving, also known as self-improving, is a must
         because it makes you a better you, not to mention it keeps you interesting
         and attractive and works wonders for your sex life.
-      id: 117
+      id: 119
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23523,7 +23523,7 @@ MonoBehaviour:
         your spouse gives you constructive feedback about the way you responded to
         or handled a particular situation, you flip the words around and make what
         was said into a personal attack on your character and turn it into a debate. "
-      id: 118
+      id: 120
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23541,7 +23541,7 @@ MonoBehaviour:
         way.   After you forgive them, decide to live your life in a manner that
         you will never be the one intentionally contributing to other people, especially
         your spouse, feeling like you did in the past
-      id: 119
+      id: 121
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23559,7 +23559,7 @@ MonoBehaviour:
         vent or if they were looking for feedback before deciding to share your opinion
         on the matter.You don\u2019t speak up for yourself in order to keep peace
         in your marriage. Because of this, you now resent your spouse. "
-      id: 120
+      id: 122
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23578,7 +23578,7 @@ MonoBehaviour:
         yourself back into being attracted to your spouse by catching yourself talking
         negatively to yourself about him or her and immediately replacing the negative
         talk with positive talk until your words, eyes, and heart match again.
-      id: 121
+      id: 123
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23590,7 +23590,7 @@ MonoBehaviour:
         were being yourself, so maintaining the affection of your spouse\u2019s heart
         is simple because it takes no effort to be yourself."
       parentheses: Collect an avoid going to single card
-      id: 122
+      id: 124
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23602,7 +23602,7 @@ MonoBehaviour:
         spouse can or will do whatever it is that you want or the marriage needs.
       parentheses: Lose a turn. One of the worst things that you can do in a marriage
         is treat your spouse like he or she is incompetent or a failure.
-      id: 123
+      id: 125
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23616,7 +23616,7 @@ MonoBehaviour:
         your spouse and children, which keeps harmony, happiness, respect, sexiness,
         and success in your marriage."
       parentheses: Have an extra roll.
-      id: 124
+      id: 126
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23631,7 +23631,7 @@ MonoBehaviour:
         you and it\u2019s your job to help your spouse understand, not adopt, your
         views and conclusions as well as to do everything you can to understand and
         try to empathize with his or hers in return."
-      id: 125
+      id: 127
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23645,7 +23645,7 @@ MonoBehaviour:
         that reads \u201Ccelebrating you just because.\u201D Your spouse appreciates
         the reminder that he or she is not far from your thoughts."
       parentheses: Take another roll.
-      id: 126
+      id: 128
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23660,7 +23660,7 @@ MonoBehaviour:
         things are; and your silence will cause you frustration and resentment toward
         a spouse who can\u2019t fix what\u2019s wrong because you haven\u2019t shared
         that something is wrong."
-      id: 127
+      id: 129
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23673,7 +23673,7 @@ MonoBehaviour:
         you more attractive in your spouse\u2019s eyes. Sex has been great by the
         way\u2026"
       parentheses: Roll again.
-      id: 128
+      id: 130
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23687,7 +23687,7 @@ MonoBehaviour:
       parentheses: "Lose a turn. This is a critical sign that you need to assess
         your marriage and figure out why you don\u2019t trust your spouse.  It doesn\u2019t
         matter how they are if you really trust your spouse"
-      id: 129
+      id: 131
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23699,7 +23699,7 @@ MonoBehaviour:
         marriage, whether from a movie, an outing, or just your sense of humor, has
         been such a contributing factor to the health and success of your marriage.
       parentheses: Take another roll.
-      id: 130
+      id: 132
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23712,7 +23712,7 @@ MonoBehaviour:
         is a direct reflection of the things you often do yourself."
       parentheses: Lose a turn. You need to first be the change that you want in
         your spouse if you ever want to inspire him or her to change.
-      id: 131
+      id: 133
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23735,7 +23735,7 @@ MonoBehaviour:
         because you end up having to defend what you really meant the minute your
         spouse gives you an example of the exceptional time that contradicts what
         you accused your spouse of \u201Cnever\u201D or \u201Calways\u201D doing. "
-      id: 132
+      id: 134
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23748,7 +23748,7 @@ MonoBehaviour:
         together."
       parentheses: Lose a turn. Your presents are often WANTED in the marriage, but
         your presence is always NEEDED in the marriage.
-      id: 133
+      id: 135
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23765,7 +23765,7 @@ MonoBehaviour:
         treat you with respect, your voice will always matter and be considered,
         and you will always be treated as an equal, yet you don\u2019t put your values
         into practice when you respond to your spouse. "
-      id: 134
+      id: 136
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23778,7 +23778,7 @@ MonoBehaviour:
         health."
       parentheses: "Lose a turn. Don\u2019t get mad at your spouse because you put
         up a fa\xE7ade. The way you got your spouse is the way to keep your spouse."
-      id: 135
+      id: 137
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23793,7 +23793,7 @@ MonoBehaviour:
       parentheses: "Lose 2 turns. At minimum, being knowledgeable enough about your
         spouse\u2019s passionate interest to have an intellectual dialogue or even
         a debate about it will add time and health to your marriage."
-      id: 136
+      id: 138
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23809,7 +23809,7 @@ MonoBehaviour:
         want to be treated, you should treat your spouse the way that your spouse
         wants to be treated and teach him or her how to treat you the way you want
         to be treated.  You are opposites\u2026"
-      id: 137
+      id: 139
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23822,7 +23822,7 @@ MonoBehaviour:
         same vision in mind, and put in the necessary work to bring that ONE vision
         to fruition."
       parentheses: 'It worked. Advance to Know Love! '
-      id: 138
+      id: 140
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23837,7 +23837,7 @@ MonoBehaviour:
       parentheses: "Lose a turn. Your spouse is aware of the situation and just as
         stressed about it as you; but if you\u2019re only complaining and never contributing
         a solution, you\u2019re adding to the problem."
-      id: 139
+      id: 141
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23850,7 +23850,7 @@ MonoBehaviour:
         to your marriage, you compromise; because you take this approach, your spouse
         is also willing to compromise with you when it benefits the marriage.
       parentheses: Take another roll.
-      id: 140
+      id: 142
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23862,7 +23862,7 @@ MonoBehaviour:
         reassurance has robbed others of the power or influence to win over him or
         her if and when others do it.
       parentheses: Have another roll.
-      id: 141
+      id: 143
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23878,7 +23878,7 @@ MonoBehaviour:
         get the same joy out of what you like doesn\u2019t make the person wrong
         or ungrateful.  Stop trying to make your spouse happy by thinking only about
         yourself."
-      id: 142
+      id: 144
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23893,7 +23893,7 @@ MonoBehaviour:
         why he or she chose the approach used to see if it\u2019s an approach that
         you would consider adopting."
       parentheses: Take an extra roll.
-      id: 143
+      id: 145
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23909,7 +23909,7 @@ MonoBehaviour:
         for you. This should help you realize your spouse\u2019s value, and hopefully
         motivate you to begin expressing some newfound appreciation for him or her
         before the divorce forces you to."
-      id: 144
+      id: 146
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23925,7 +23925,7 @@ MonoBehaviour:
         want to get married in order to be clear about both of your visions for the
         future so that you two can make sure that you both are saying \u201CI do\u201D
         for the same reason."
-      id: 145
+      id: 147
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23940,7 +23940,7 @@ MonoBehaviour:
       parentheses: Lose a turn. Your selfish act got you in this predicament; if
         you feel he or she is worth it, it will take consistency, selflessness, and
         patience to help him or her through their healing process.
-      id: 146
+      id: 148
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23955,7 +23955,7 @@ MonoBehaviour:
         in harmony as individuals, not in unison as Identical twins.  If you married
         your spouse for who you thought he or she would turn to, the marriage won\u2019t
         work and you got married for the wrong reason."
-      id: 147
+      id: 149
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23969,7 +23969,7 @@ MonoBehaviour:
         If you honestly look within yourself first before deciding your spouse is
         at fault and adjust the role you may be playing in the conflict, this will
         resolve the conflict faster than playing the blame game...
-      id: 148
+      id: 150
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23983,7 +23983,7 @@ MonoBehaviour:
         make sure to tell your spouse about this new found revelation as much as
         you can, while stressing how valuable he or she is to you and the marriage."
       parentheses: Take another roll.
-      id: 149
+      id: 151
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -23998,7 +23998,7 @@ MonoBehaviour:
         you don\u2019t like something he or she did out of habit or reflex. Take
         the extra and necessary steps to break the habit by sharing the story or
         emotional reasons behind why you don\u2019t like it."
-      id: 150
+      id: 152
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24018,7 +24018,7 @@ MonoBehaviour:
         tolerance toward your spouse, ridiculous arguments, no effort toward the
         betterment of your marriage, suspicion, distance, and dislike for the person
         you love and who also loves you. '
-      id: 151
+      id: 153
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24036,7 +24036,7 @@ MonoBehaviour:
         listening with the intent of understanding your spouse to help make your
         responses to his or her viewpoint more empathetic.  You might begin to adopt
         his or her perspective on a lot of things..."
-      id: 152
+      id: 154
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24050,7 +24050,7 @@ MonoBehaviour:
         to change your approach to your marriage. Your decision to change has positively
         impacted your marriage.
       parentheses: Take Another roll.
-      id: 153
+      id: 155
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24065,7 +24065,7 @@ MonoBehaviour:
         adjustments, which resolves the problem faster and makes your spouse willing
         to take the same approach when conflict presents itself."
       parentheses: Take 1 more roll.
-      id: 154
+      id: 156
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24078,7 +24078,7 @@ MonoBehaviour:
         it to be a surprise when you do it. Your spouse loves it and loves you for
         doing it for him or her.
       parentheses: Take an extra roll.
-      id: 155
+      id: 157
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24097,7 +24097,7 @@ MonoBehaviour:
         that that is the time to share with him or her how you came up with the perspective
         you have and ask, with the intent of learning and understanding, how he or
         she came up with his or her perspective on the matter."
-      id: 156
+      id: 158
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24110,7 +24110,7 @@ MonoBehaviour:
         she did to help him or her remember to stop doing the thing that is more
         than likely out of habit or reflex in the future."
       parentheses: Roll again.
-      id: 157
+      id: 159
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24122,7 +24122,7 @@ MonoBehaviour:
         about him or herself is why your spouse tells you everything and likes being
         around you.
       parentheses: Take another roll.
-      id: 158
+      id: 160
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24137,7 +24137,7 @@ MonoBehaviour:
         of manipulated expectations, you wouldn\u2019t have the frustration and disappointment
         that you feel when he or she doesn\u2019t respond to your gesture the way
         you envisioned them to."
-      id: 159
+      id: 161
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24151,7 +24151,7 @@ MonoBehaviour:
         package. Your newfound attributes have drawn your spouse closer, which has
         worked wonders for your sex life."
       parentheses: Take another roll.
-      id: 160
+      id: 162
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24167,7 +24167,7 @@ MonoBehaviour:
       parentheses: "Take another roll.You\u2019re getting frustrated and impatient
         because you\u2019ve finally changed, but your spouse is treating you like
         you\u2019re still the same person that caused hurt in the past. "
-      id: 161
+      id: 163
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24181,7 +24181,7 @@ MonoBehaviour:
         has taken the things he or she contributed to the marriage away, you see
         how valuable he or she was. '
       parentheses: Lose 2 turns.
-      id: 162
+      id: 164
       isPrompt: 0
       promptMessage: 
       promptButtons: []
@@ -24198,7 +24198,7 @@ MonoBehaviour:
         but if you don't make sure that your spouse can do those same things themself,
         it will drastically hinder him or her in the future if you become ill, leave,
         or die.
-      id: 163
+      id: 165
       isPrompt: 0
       promptMessage: 
       promptButtons: []
