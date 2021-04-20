@@ -8,6 +8,7 @@ using Knowlove.UI;
 using static Knowlove.TurnManager;
 using Knowlove.MyStuffInGame;
 using System;
+using Knowlove.XPSystem;
 
 namespace Knowlove.ActionAndPathLogic
 {
@@ -26,6 +27,8 @@ namespace Knowlove.ActionAndPathLogic
         private int _dateCount;
         private int _wallet;
         private bool _protectedFromSingleInRelationship;
+        private bool _protectedFromSingleInMarriage;
+        private bool _protectedFromSingleAllGame;
 
         public Action<Player> UsedAvoidSingleCard;
         public Action<string, string> WentToKnowLove;
@@ -62,6 +65,9 @@ namespace Knowlove.ActionAndPathLogic
             _dateCount = (int)playerProperties["dateCount"];
             _wallet = (int)playerProperties["wallet"];
             _protectedFromSingleInRelationship = (bool)playerProperties["protectedFromSingleInRelationship"];
+
+            _protectedFromSingleInMarriage = InfoPlayer.Instance.PlayerState.ProtectedFromBackToSingleInMarriagePerGame;
+            _protectedFromSingleAllGame = InfoPlayer.Instance.PlayerState.ProtectedFromBackToSinglePerGame;
 
             switch (action)
             {
@@ -207,7 +213,55 @@ namespace Knowlove.ActionAndPathLogic
         {
             List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
 
-            if (_avoidSingleCards > 0 && IsDaring)
+            if (_protectedFromSingleAllGame)
+            {
+                if (!skipPrompt)
+                {
+                    text += " [ You have protected all game ]";
+                    PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
+                    {
+                        text = "Okay",
+                        onClicked = () =>
+                        {
+                            DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
+                        }
+                    };
+
+                    buttons.Add(yesBtn);
+                }
+                else
+                {
+                    DOVirtual.DelayedCall(0.25f, () =>
+                    {
+                        _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                    });
+                }
+            }
+            else if (_protectedFromSingleInMarriage && BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Marriage)
+            {
+                if (!skipPrompt)
+                {
+                    text += " [ You have protected in marriage game ]";
+                    PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
+                    {
+                        text = "Okay",
+                        onClicked = () =>
+                        {
+                            DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
+                        }
+                    };
+
+                    buttons.Add(yesBtn);
+                }
+                else
+                {
+                    DOVirtual.DelayedCall(0.25f, () =>
+                    {
+                        _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                    });
+                }
+            }
+            else if (_avoidSingleCards > 0 && IsDaring)
             {
                 if (!skipPrompt)
                 {
@@ -333,6 +387,55 @@ namespace Knowlove.ActionAndPathLogic
 
         private void BackToSingleOrDisregardBecauseList(string text, bool skipPrompt, BoardPiece piece, Player currentPlayer)
         {
+            if (_protectedFromSingleAllGame)
+            {
+                if (!skipPrompt)
+                {
+                    text += " [ You have protected all game ]";
+                    PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
+                    {
+                        text = "Okay",
+                        onClicked = () =>
+                        {
+                            DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
+                        }
+                    };
+
+                    ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
+                }
+                else
+                {
+                    DOVirtual.DelayedCall(0.25f, () =>
+                    {
+                        _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                    });
+                }
+            }
+            else if (_protectedFromSingleInMarriage && BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Marriage)
+            {
+                if (!skipPrompt)
+                {
+                    text += " [ You have protected in marriage game ]";
+
+                    PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
+                    {
+                        text = "Okay",
+                        onClicked = () =>
+                        {
+                            DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
+                        }
+                    };
+
+                    ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
+                }
+                else
+                {
+                    DOVirtual.DelayedCall(0.25f, () =>
+                    {
+                        _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                    });
+                }
+            }
             if (!skipPrompt)
             {
                 PopupDialog.PopupButton btn;

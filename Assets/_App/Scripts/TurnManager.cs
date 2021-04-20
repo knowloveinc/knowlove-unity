@@ -222,7 +222,6 @@ namespace Knowlove
         public void GameOver(string playerName)
         {
             GameOvered?.Invoke();
-            InfoPlayer.Instance.PlayerWin();
             photonView.RPC(nameof(RPC_GameOver), RpcTarget.All, playerName);
         }
 

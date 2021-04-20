@@ -8,15 +8,19 @@ namespace Knowlove.XPSystem
     {
         public static InfoPlayer Instance;
 
+        private const string _playersStatePrefsName = "PlayersState";
+
         [SerializeField] private PlayersState _playersState;
+        [SerializeField] private StatusPlayer _statusPlayer;
 
         private int _currentPlayer;
 
-        private bool _isHaveUser = false;
+        private bool _isHaveUser;
 
         public PlayerXP PlayerState
         {
             get => _playersState.playerXPs[_currentPlayer];
+            set => _playersState.playerXPs[_currentPlayer] = value;
         }
 
         private void Awake()
@@ -27,8 +31,25 @@ namespace Knowlove.XPSystem
             if (Instance == null)
                 Instance = this;
 
+            gameObject.AddComponent<PhotonView>();
+
+            if(!PlayerPrefs.HasKey("IsSaveDate"))
+                FromJSONPlayerInfo();
+
             DontDestroyOnLoad(this.gameObject);
         }
+
+        private void OnApplicationPause(bool pause)
+        {
+            JSONPlayerInfo();
+        }
+
+        private void OnApplicationQuit()
+        {
+            JSONPlayerInfo();
+            PlayerPrefs.DeleteKey("IsSaveDate");
+        }
+
 
         public void СheckAvailabilityPlayer()
         {
@@ -78,6 +99,8 @@ namespace Knowlove.XPSystem
                 _playersState.playerXPs[_currentPlayer].datingCard[idCard - 36] = true;
             else if(idCard >= 112)
                 _playersState.playerXPs[_currentPlayer].datingCard[idCard - 112] = true;
+
+            _statusPlayer.CheckPlayerStatus();
         }
 
         public void MarkAllCard()
@@ -90,18 +113,30 @@ namespace Knowlove.XPSystem
 
             for (int i = 0; i < _playersState.playerXPs[_currentPlayer].marriagepCard.Length; i++)
                 _playersState.playerXPs[_currentPlayer].marriagepCard[i] = true;
+
+            _statusPlayer.CheckPlayerStatus();
         }
 
         public void PlayerWin()
         {
             _playersState.playerXPs[_currentPlayer].winGame += 1;
+            _playersState.playerXPs[_currentPlayer].completedGame += 1;
+
+            _statusPlayer.CheckPlayerStatus();
+        }
+
+        public void PlayerEndGame()
+        {
+            _playersState.playerXPs[_currentPlayer].completedGame += 1;
+
+            _statusPlayer.CheckPlayerStatus();
         }
 
         public void CheckPlayWithThisPlayers()
         {
             photonView.RPC(nameof(RPC_CheckPlayWithThisPlayers), RpcTarget.AllViaServer);
         }
-
+        
         [PunRPC]
         private void RPC_CheckPlayWithThisPlayers()
         {
@@ -119,8 +154,28 @@ namespace Knowlove.XPSystem
                 {
                     _playersState.playerXPs[_currentPlayer].nameDifferentPlayers[_playersState.playerXPs[_currentPlayer].countDifferentPlayers] = NetworkManager.Instance.players[i].NickName;
                     _playersState.playerXPs[_currentPlayer].countDifferentPlayers += 1;
+                    _statusPlayer.CheckPlayerStatus();
                 }
             }
+        }
+
+        private void JSONPlayerInfo()
+        {
+            string info = JsonUtility.ToJson(_playersState);
+
+            PlayerPrefs.SetString(_playersStatePrefsName, info);
+        }
+
+        private void FromJSONPlayerInfo()
+        {
+            PlayerPrefs.SetInt("IsSaveDate", 0);
+
+            if (PlayerPrefs.HasKey(_playersStatePrefsName))
+            {
+                Debug.Log(PlayerPrefs.GetString(_playersStatePrefsName));
+                string info = PlayerPrefs.GetString(_playersStatePrefsName);
+                JsonUtility.FromJsonOverwrite(info, _playersState);
+            }           
         }
     }
 }

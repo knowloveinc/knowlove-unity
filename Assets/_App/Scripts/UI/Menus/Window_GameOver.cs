@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using DG.Tweening;
 using TMPro;
+using Knowlove.XPSystem;
 
 namespace Knowlove.UI.Menus
 {
@@ -41,6 +42,11 @@ namespace Knowlove.UI.Menus
 
         public void ShowGameOver(string winnerName)
         {
+            if (winnerName.ToLower() == InfoPlayer.Instance.PlayerState.playerName.ToLower())
+                InfoPlayer.Instance.PlayerWin();
+            else
+                InfoPlayer.Instance.PlayerEndGame();
+
             Init(winnerName);
             Show();
         }

@@ -10,6 +10,11 @@ namespace Knowlove.XPSystem
         public int completedGame;
         public int shareGame;
         public int countDifferentPlayers;
+        public bool isBronzeStatus;
+        public bool isSilverStatus;
+        public bool isGoldStatus;
+        public bool ProtectedFromBackToSinglePerGame;
+        public bool ProtectedFromBackToSingleInMarriagePerGame;
         public string[] nameDifferentPlayers = new string[15];
         public bool[] datingCard = new bool[36];
         public bool[] relationshipCard = new bool[76];
