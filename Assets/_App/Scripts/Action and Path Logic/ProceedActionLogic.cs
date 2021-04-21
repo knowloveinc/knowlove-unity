@@ -185,7 +185,11 @@ namespace Knowlove.ActionAndPathLogic
             {
                 _diceCount = 1;
                 playerBoardPiece.GoHome(currentPlayer);
-                _turnManager.EndTurn();
+
+                DOVirtual.DelayedCall(1f, () =>
+                {
+                    _turnManager.EndTurn();
+                });
             }
 
             playerProperties["diceCount"] = _diceCount;
@@ -242,7 +246,11 @@ namespace Knowlove.ActionAndPathLogic
             {
                 _diceCount = 1;
                 playerBoardPiece.GoHome(currentPlayer);
-                _turnManager.EndTurn();
+
+                DOVirtual.DelayedCall(1f, () =>
+                {
+                    _turnManager.EndTurn();
+                });
             }
 
             if (_turnBank > 0) 
@@ -256,7 +264,7 @@ namespace Knowlove.ActionAndPathLogic
 
         private void ShowOfferToBuyCard(int diceCount, BoardPiece playerBoardPiece, Player currentPlayer, ProceedAction action)
         {
-            string textPromps = "Do you want to buy the card Avoid To Single?";
+            string textPromps = "Do you want to save the relationship by investing in self-improvement unstead?";
 
             PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
             {

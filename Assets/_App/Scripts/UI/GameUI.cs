@@ -26,6 +26,7 @@ namespace Knowlove.UI
         [SerializeField] private TextMeshProUGUI _listText;
         [SerializeField] private GameObject _listCardButton;
         [SerializeField] private GameObject _listPanel;
+        [SerializeField] private GameObject _listPanelHelper;
 
         public ListCard[] listCards;
         public ListCard selectedCard;
@@ -166,7 +167,7 @@ namespace Knowlove.UI
         public void ShowListPanel(bool showHelper = false)
         {
             _listPanel.gameObject.SetActive(true);
-            _listPanel.transform.Find("helper").gameObject.SetActive(showHelper);
+            _listPanelHelper.gameObject.SetActive(showHelper);
         }
 
         public void HideListPanel()

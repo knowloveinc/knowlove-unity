@@ -1953,7 +1953,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4592793374754643042
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2204,10 +2204,10 @@ RectTransform:
   m_Father: {fileID: 4592793376164178148}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -307}
-  m_SizeDelta: {x: 456, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4592793374785653709
 CanvasRenderer:
@@ -5146,8 +5146,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e451e6ab9c044ef46ae0ec6df91dd58b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardUI: {fileID: 0}
-  _maps: {fileID: 0}
+  _cardUI: {fileID: 4592793375008395355}
+  _maps: {fileID: 4592793376287871860}
 --- !u!114 &4592793375416686897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6055,7 +6055,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -1080}
-  m_SizeDelta: {x: 500, y: 500}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4592793375643160964
 CanvasRenderer:
@@ -6078,7 +6078,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8742,7 +8742,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4592793376164178148
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10020,8 +10020,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e451e6ab9c044ef46ae0ec6df91dd58b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardUI: {fileID: 0}
-  _maps: {fileID: 0}
+  _cardUI: {fileID: 4592793375008395355}
+  _maps: {fileID: 4592793376287871860}
 --- !u!114 &4592793376287871852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10476,6 +10476,7 @@ MonoBehaviour:
   _listText: {fileID: 4592793375330888436}
   _listCardButton: {fileID: 4592793374730706750}
   _listPanel: {fileID: 4592793375471678581}
+  _listPanelHelper: {fileID: 4592793374977147432}
   listCards:
   - text: "He or She...\\n- Must believe in a Higher Power\\n- Must be spiritual\\n-
       Must be naturally satisfied with being his or her authentic self\\n- Must have

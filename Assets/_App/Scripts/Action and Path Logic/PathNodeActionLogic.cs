@@ -320,7 +320,7 @@ namespace Knowlove.ActionAndPathLogic
                     {
                         PopupDialog.PopupButton openStoreBtn = new PopupDialog.PopupButton()
                         {
-                            text = "No, i want to buy the Avoid To Single card",
+                            text = "Or, invest in making it work.",
                             onClicked = () =>
                             {
                                 string actionJson = JsonUtility.ToJson(ProceedAction.Nothing);
@@ -344,8 +344,16 @@ namespace Knowlove.ActionAndPathLogic
                             _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
                         });
                     }
-                    else
+                    else 
+                    {
                         piece.GoHome(currentPlayer);
+
+                        DOVirtual.DelayedCall(1f, () =>
+                        {
+                            _turnManager.EndTurn();
+                        });
+                    }
+                        
                 }
             }
 
@@ -455,7 +463,7 @@ namespace Knowlove.ActionAndPathLogic
 
                     PopupDialog.PopupButton openStoreBtn = new PopupDialog.PopupButton()
                     {
-                        text = "No, i want to buy the Avoid To Single card",
+                        text = "Or, invest in making it work.",
                         onClicked = () =>
                         {
                             string actionJson = JsonUtility.ToJson(ProceedAction.Nothing);
@@ -538,7 +546,10 @@ namespace Knowlove.ActionAndPathLogic
                 {
                     piece.GoHome(currentPlayer);
                     _diceCount = 1;
-                    _turnManager.EndTurn();
+                    DOVirtual.DelayedCall(1f, () =>
+                    {
+                        _turnManager.EndTurn();
+                    });
                 }
             }
         }
