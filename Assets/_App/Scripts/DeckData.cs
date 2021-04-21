@@ -71,6 +71,8 @@ namespace Knowlove
                     available[b] = card1;
                     available[a] = limbo;
                 }
+
+                cards = available;
             }         
         }
     }

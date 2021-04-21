@@ -1,7 +1,7 @@
 ﻿using GameBrewStudios;
 using GameBrewStudios.Networking;
 using Knowlove.UI;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace Knowlove.XPSystem
@@ -9,6 +9,8 @@ namespace Knowlove.XPSystem
     public class StatusPlayer : MonoBehaviour
     {
         private const string idAvoidSingleCard = "avoidSingle";
+
+        public Action ChangedPlayerStatus;
 
         public void CheckPlayerStatus()
         {
@@ -24,7 +26,7 @@ namespace Knowlove.XPSystem
             if (playerXP.isBronzeStatus)
                 return;
 
-            if (playerXP.countDifferentPlayers <= 5 || playerXP.winGame <= 3 || playerXP.shareGame <= 3)
+            if (playerXP.countDifferentPlayers < 5 || playerXP.winGame < 3 || playerXP.shareGame < 3)
                 return;
 
             for (int i = 0; i < playerXP.datingCard.Length; i++)
@@ -45,7 +47,7 @@ namespace Knowlove.XPSystem
             if (playerXP.isSilverStatus)
                 return;
 
-            if (playerXP.countDifferentPlayers <= 10 || playerXP.winGame <= 7 || playerXP.shareGame <= 5)
+            if (playerXP.countDifferentPlayers < 10 || playerXP.winGame < 7 || playerXP.shareGame < 5)
                 return;
 
 
@@ -70,7 +72,7 @@ namespace Knowlove.XPSystem
             if (playerXP.isSilverStatus)
                 return;
 
-            if (playerXP.countDifferentPlayers <= 15 || playerXP.winGame <= 10 || playerXP.shareGame <= 7)
+            if (playerXP.countDifferentPlayers < 15 || playerXP.winGame < 10 || playerXP.shareGame < 7)
                 return;
 
             if (!playerXP.isBronzeStatus && !playerXP.isSilverStatus)
@@ -108,16 +110,19 @@ namespace Knowlove.XPSystem
                     AddCardFromServer(1);
                     title += " You get Bronze status";
                     text += "You have reached Bronze status and received one \"Avoid To Single\" card.";
+                    InfoPlayer.Instance.PlayerState.isBronzeStatus = true;
                     break;
                 case "silver":
                     AddCardFromServer(2);
                     InfoPlayer.Instance.PlayerState.ProtectedFromBackToSingleInMarriagePerGame = true;
+                    InfoPlayer.Instance.PlayerState.isSilverStatus = true;
                     title += " You get Silver status";
                     text += "You have reached Silver status and received two \"Avoid To Single\" card. \n Cheating Landing spaces in Marriage Phase deactivated per game.";
                     break;
                 case "gold":
                     AddCardFromServer(3);
                     InfoPlayer.Instance.PlayerState.ProtectedFromBackToSinglePerGame = true;
+                    InfoPlayer.Instance.PlayerState.isGoldStatus = true;
                     title += " You get Gold status";
                     text += "You have reached Silver status and received three \"Avoid To Single\" card. \n All Cheating Landing spaces deactivated per game.";
                     break;
@@ -126,6 +131,7 @@ namespace Knowlove.XPSystem
             }
 
             PopupDialog.Instance.Show(title, text, buttons);
+            ChangedPlayerStatus?.Invoke();
         }
 
         private void AddCardFromServer(int amound)
@@ -137,6 +143,18 @@ namespace Knowlove.XPSystem
                     User.current.inventory = inventory;
                 });
             });
+        }
+
+        [ContextMenu("Do Bronze")]
+        private void DoBronze()
+        {
+            GetReward("bronze");
+        }
+
+        [ContextMenu("Do Gold")]
+        private void DoGold()
+        {
+            GetReward("gold");
         }
     }
 }

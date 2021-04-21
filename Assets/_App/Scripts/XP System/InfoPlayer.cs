@@ -10,8 +10,9 @@ namespace Knowlove.XPSystem
 
         private const string _playersStatePrefsName = "PlayersState";
 
+        [SerializeField] public StatusPlayer statusPlayer;
+
         [SerializeField] private PlayersState _playersState;
-        [SerializeField] private StatusPlayer _statusPlayer;
 
         private int _currentPlayer;
 
@@ -25,18 +26,17 @@ namespace Knowlove.XPSystem
 
         private void Awake()
         {
-            if (Instance != null)
-                Destroy(this.gameObject);
-
-            if (Instance == null)
-                Instance = this;
+            Instance = this;
 
             gameObject.AddComponent<PhotonView>();
 
             if(!PlayerPrefs.HasKey("IsSaveDate"))
                 FromJSONPlayerInfo();
+        }
 
-            DontDestroyOnLoad(this.gameObject);
+        private void OnDestroy()
+        {
+            JSONPlayerInfo();
         }
 
         private void OnApplicationPause(bool pause)
@@ -100,7 +100,7 @@ namespace Knowlove.XPSystem
             else if(idCard >= 112)
                 _playersState.playerXPs[_currentPlayer].datingCard[idCard - 112] = true;
 
-            _statusPlayer.CheckPlayerStatus();
+            statusPlayer.CheckPlayerStatus();
         }
 
         public void MarkAllCard()
@@ -114,7 +114,7 @@ namespace Knowlove.XPSystem
             for (int i = 0; i < _playersState.playerXPs[_currentPlayer].marriagepCard.Length; i++)
                 _playersState.playerXPs[_currentPlayer].marriagepCard[i] = true;
 
-            _statusPlayer.CheckPlayerStatus();
+            statusPlayer.CheckPlayerStatus();
         }
 
         public void PlayerWin()
@@ -122,14 +122,14 @@ namespace Knowlove.XPSystem
             _playersState.playerXPs[_currentPlayer].winGame += 1;
             _playersState.playerXPs[_currentPlayer].completedGame += 1;
 
-            _statusPlayer.CheckPlayerStatus();
+            statusPlayer.CheckPlayerStatus();
         }
 
         public void PlayerEndGame()
         {
             _playersState.playerXPs[_currentPlayer].completedGame += 1;
 
-            _statusPlayer.CheckPlayerStatus();
+            statusPlayer.CheckPlayerStatus();
         }
 
         public void CheckPlayWithThisPlayers()
@@ -154,7 +154,7 @@ namespace Knowlove.XPSystem
                 {
                     _playersState.playerXPs[_currentPlayer].nameDifferentPlayers[_playersState.playerXPs[_currentPlayer].countDifferentPlayers] = NetworkManager.Instance.players[i].NickName;
                     _playersState.playerXPs[_currentPlayer].countDifferentPlayers += 1;
-                    _statusPlayer.CheckPlayerStatus();
+                    statusPlayer.CheckPlayerStatus();
                 }
             }
         }

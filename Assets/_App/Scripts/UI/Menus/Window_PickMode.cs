@@ -16,11 +16,17 @@ namespace Knowlove.UI.Menus
 
         [SerializeField] private Window_WaitingForPlayers waitingWindow;
 
+        [SerializeField] private RankImage _rankImage;
+
         public override void Show()
         {
             base.Show();
 
             InfoPlayer.Instance.СheckAvailabilityPlayer();
+            DOVirtual.DelayedCall(0.5f, () =>
+            {
+                _rankImage.ChangeRank();
+            });   
         }
 
         public override void Hide()

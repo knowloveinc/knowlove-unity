@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4907306775541008103}
   - component: {fileID: 4907306775541008102}
+  - component: {fileID: 7438418282458277784}
   m_Layer: 0
   m_Name: Player State
   m_TagString: Untagged
@@ -44,8 +45,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b24bb8d77ab5da4090041ee9c275b9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  statusPlayer: {fileID: 4907306776079502589}
   _playersState: {fileID: 11400000, guid: 1a6de92c7d2be484cac1aa27afee499e, type: 2}
-  _statusPlayer: {fileID: 4907306776079502589}
+--- !u!114 &7438418282458277784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4907306775541008100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4907306776079502586
 GameObject:
   m_ObjectHideFlags: 0
