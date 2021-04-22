@@ -74,7 +74,7 @@ namespace Knowlove.UI.Menus
             foreach (string item in listItems)
             {
                 GameObject obj = Instantiate(prefab, leftContainer, false);
-                TextMeshProUGUI label = obj.transform.Find("Label").GetComponent<TextMeshProUGUI>();
+                TextMeshProUGUI label = obj.transform.GetComponentInChildren<TextMeshProUGUI>();
                 label.text = item;
 
                 Button btn = obj.GetComponent<Button>();
@@ -108,7 +108,7 @@ namespace Knowlove.UI.Menus
             foreach (string item in User.current.nonNegotiableList)
             {
                 GameObject obj = Instantiate(prefab, rightContainer, false);
-                TextMeshProUGUI label = obj.transform.Find("Label").GetComponent<TextMeshProUGUI>();
+                TextMeshProUGUI label = obj.transform.GetComponentInChildren<TextMeshProUGUI>();
                 label.text = item;
 
                 Button btn = obj.GetComponent<Button>();

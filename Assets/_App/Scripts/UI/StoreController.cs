@@ -3,6 +3,7 @@ using GameBrewStudios;
 using GameBrewStudios.Networking;
 using Knowlove.MyStuffInGame;
 using Knowlove.UI.Menus;
+using Knowlove.XPSystem;
 using System;
 using TMPro;
 using UnityEngine;
@@ -130,43 +131,79 @@ namespace Knowlove.UI
 
                 if (user.wallet >= card.currencyCost && canPurchase)
                 {
-                    PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+                    if (card.id.ToLower() == "cards".ToLower())
                     {
-                        new PopupDialog.PopupButton()
+                        PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
                         {
-                            text = "Yes",
-                            buttonColor = PopupDialog.PopupButtonColor.Green,
-                            onClicked = () =>
+                            new PopupDialog.PopupButton()
                             {
-                                CanvasLoading.Instance.Show();
-                                APIManager.AddCurrency(-card.currencyCost, balance =>
+                                text = "Yes",
+                                buttonColor = PopupDialog.PopupButtonColor.Green,
+                                onClicked = () =>
                                 {
-                                    CanvasLoading.Instance.Hide();
-                                    User.current.wallet = balance;
-                                    UpdateFromPlayerWallet();
-
-                                    if(gameStuff != null)
-                                        gameStuff.GetSpecialCard();
-
                                     CanvasLoading.Instance.Show();
-                                    APIManager.AddItem(card.id, card.amountToGive, (inventory) =>
+                                    APIManager.AddCurrency(-card.currencyCost, balance =>
                                     {
                                         CanvasLoading.Instance.Hide();
-                                        User.current.inventory = inventory;
-                                        UpdateFromPlayerInventory();
-                                    });
-                                });
-                            }
-                        },
-                        new PopupDialog.PopupButton()
-                        {
-                            text = "Nevermind",
-                            buttonColor = PopupDialog.PopupButtonColor.Plain,
-                            onClicked = () =>{ }
-                        }
-                    };
+                                        User.current.wallet = balance;
+                                        UpdateFromPlayerWallet();
 
-                    PopupDialog.Instance.Show("", "Really purchase " + card.title + " for " + card.currencyCost.ToString("n0") + " <sprite=0>?", buttons);
+                                        InfoPlayer.Instance.MarkAllCard();
+
+                                        UpdateFromPlayerInventory();
+                                    });    
+                                }
+                            },
+                            new PopupDialog.PopupButton()
+                            {
+                                text = "Nevermind",
+                                buttonColor = PopupDialog.PopupButtonColor.Plain,
+                                onClicked = () =>{ }
+                            }
+                        };
+
+                        PopupDialog.Instance.Show("", "Really purchase " + card.title + " for " + card.currencyCost.ToString("n0") + " <sprite=0>?", buttons);
+                    }
+                    else
+                    {
+                        PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+                        {
+                            new PopupDialog.PopupButton()
+                            {
+                                text = "Yes",
+                                buttonColor = PopupDialog.PopupButtonColor.Green,
+                                onClicked = () =>
+                                {
+                                    CanvasLoading.Instance.Show();
+                                    APIManager.AddCurrency(-card.currencyCost, balance =>
+                                    {
+                                        CanvasLoading.Instance.Hide();
+                                        User.current.wallet = balance;
+                                        UpdateFromPlayerWallet();
+                                            
+                                        if(gameStuff != null)
+                                            gameStuff.GetSpecialCard();
+                                            
+                                        CanvasLoading.Instance.Show();
+                                        APIManager.AddItem(card.id, card.amountToGive, (inventory) =>
+                                        {
+                                            CanvasLoading.Instance.Hide();
+                                            User.current.inventory = inventory;
+                                            UpdateFromPlayerInventory();
+                                        });
+                                    });
+                                }
+                            },
+                            new PopupDialog.PopupButton()
+                            {
+                                text = "Nevermind",
+                                buttonColor = PopupDialog.PopupButtonColor.Plain,
+                                onClicked = () =>{ }
+                            }
+                        };
+
+                        PopupDialog.Instance.Show("", "Really purchase " + card.title + " for " + card.currencyCost.ToString("n0") + " <sprite=0>?", buttons);
+                    }                    
                 }
                 else if (!canPurchase)
                     PopupDialog.Instance.Show("You already own this item. Visit the My Stuff screen from the main menu to use it.");

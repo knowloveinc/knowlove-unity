@@ -203,6 +203,7 @@ namespace Knowlove.UI
                                     User.current.wallet = balance;
                                     ShowCard();
                                     UpdateText();
+                                    InfoPlayer.Instance.JSONPlayerInfo();
                                     StoreController.Instance.UpdateFromPlayerWallet();
                                 });
                             }

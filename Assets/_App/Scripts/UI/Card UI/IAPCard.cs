@@ -5,6 +5,7 @@ using UnityEngine.Purchasing;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Knowlove.XPSystem;
 
 namespace Knowlove.UI
 {
@@ -42,6 +43,9 @@ namespace Knowlove.UI
         {
             get
             {
+                if(id == "cards" && isHasAllCards)
+                    return 1;
+
                 InventoryItem foundItem = User.current.inventory.FirstOrDefault(x => x.itemId == this.id);
                 if (foundItem == null)
                     return 0;
@@ -53,6 +57,11 @@ namespace Knowlove.UI
         public bool owned
         {
             get => !canOwnMultiple && amountOwned >= 1;
+        }
+
+        public bool isHasAllCards
+        {
+            get => InfoPlayer.Instance.CheckMarkAllCard();
         }
 
         private void Start()
@@ -99,7 +108,11 @@ namespace Knowlove.UI
             if (!isIAP)
             {
                 Debug.Log("Setting price text: isOwned? " + owned.ToString());
-                priceLabel.text = owned ? "OWNED" : currencyCost.ToString("n0") + " <sprite=0>";
+
+                if(id == "cards")
+                    priceLabel.text = isHasAllCards ? "OWNED" : currencyCost.ToString("n0") + " <sprite=0>";
+                else
+                    priceLabel.text = owned ? "OWNED" : currencyCost.ToString("n0") + " <sprite=0>";
             }
             else
             {

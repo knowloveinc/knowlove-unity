@@ -21,12 +21,21 @@ namespace Knowlove.UI.Menus
         public override void Show()
         {
             base.Show();
-
-            InfoPlayer.Instance.СheckAvailabilityPlayer();
-            DOVirtual.DelayedCall(0.5f, () =>
+            
+            DOVirtual.DelayedCall(0.75f, () =>
             {
+                InfoPlayer.Instance.СheckAvailabilityPlayer();
+
                 _rankImage.ChangeRank();
-            });   
+            });
+
+            if (!PlayerPrefs.HasKey("IsSaveDate") && User.current != null)
+            {
+                DOVirtual.DelayedCall(2f, () =>
+                {
+                    InfoPlayer.Instance.FromJSONPlayerInfo();
+                });
+            }
         }
 
         public override void Hide()
@@ -34,7 +43,6 @@ namespace Knowlove.UI.Menus
             base.Hide();
         }
 
-        [ContextMenu("OpenStore")]
         public void OpenStore()
         {
             StoreController.Show();

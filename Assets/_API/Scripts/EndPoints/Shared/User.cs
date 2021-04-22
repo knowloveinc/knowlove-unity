@@ -160,7 +160,7 @@ namespace GameBrewStudios.Networking
             Dictionary<string, object> body = new Dictionary<string, object>()
             {
                 {"itemId", itemId },
-                {"amount", amount},
+                {"amount", amount}
             };
 
             ServerRequest.CallAPI("/inventory", HTTPMethod.POST, body, (r) => { ServerRequest.ResponseHandler(r, "inventory", onComplete); }, true);

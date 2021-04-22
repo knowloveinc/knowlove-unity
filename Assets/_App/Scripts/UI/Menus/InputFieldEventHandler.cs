@@ -16,6 +16,13 @@ namespace Knowlove.UI
 
         private static InputFieldEventHandler current;
 
+        private InputFieldEventHandler _inputFieldEventHandler;
+
+        private void Awake()
+        {
+            _inputFieldEventHandler = selectOnTabKeyPressed.GetComponent<InputFieldEventHandler>();
+        }
+
         public void Update()
         {
             if (PopupDialog.isShowing) return;
@@ -48,7 +55,7 @@ namespace Knowlove.UI
         private IEnumerator SetCurrentInput()
         {
             yield return new WaitForEndOfFrame();
-            current = selectOnTabKeyPressed.GetComponent<InputFieldEventHandler>();
+            current = _inputFieldEventHandler;
             EventSystem.current.SetSelectedGameObject(selectOnTabKeyPressed);
         }
     }

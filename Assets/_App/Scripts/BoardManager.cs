@@ -25,6 +25,9 @@ namespace Knowlove
         [SerializeField] private Transform[] diceStartPositions;
         [SerializeField] private Transform[] dice;
 
+        private Dice[] _diceScripts;
+        private Rigidbody[] _diceRb;
+
         public int diceScore = -1;
         public string diceRollLocation;
         public bool diceFinishedRolling = false;
@@ -37,6 +40,15 @@ namespace Knowlove
         }
         private void Start()
         {
+            _diceRb = new Rigidbody[dice.Length];
+            _diceScripts = new Dice[dice.Length];
+
+            for(int i = 0; i < dice.Length; i++)
+            {
+                _diceScripts[i] = dice[i].GetComponent<Dice>();
+                _diceRb[i] = dice[i].GetComponent<Rigidbody>();
+            }
+
             if (!PhotonNetwork.IsMasterClient)
             {
                 foreach (Transform die in dice)
@@ -287,7 +299,7 @@ namespace Knowlove
 
             for (int i = 0; i < dice.Length; i++)
             {
-                Dice diceObj = dice[i].GetComponent<Dice>();
+                Dice diceObj = _diceScripts[i];
 
                 if (i < amount)
                 {
@@ -302,7 +314,7 @@ namespace Knowlove
 
                     diceComponents.Add(diceObj);
 
-                    Rigidbody rb = diceObj.GetComponent<Rigidbody>();
+                    Rigidbody rb = _diceRb[i];
                     rb.velocity = Vector3.zero;
                     rb.angularVelocity = Vector3.zero;
                     rb.ResetCenterOfMass();

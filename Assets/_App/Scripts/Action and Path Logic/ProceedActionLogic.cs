@@ -335,7 +335,7 @@ namespace Knowlove.ActionAndPathLogic
             if (_turnBank > 0) _turnBank = 0;
             _turnBank -= count;
 
-            _turnManager.EndTurn();
+            DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });            
         }
     }
 }

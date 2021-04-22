@@ -6838,7 +6838,7 @@ GameObject:
   - component: {fileID: 4592793375768894097}
   - component: {fileID: 4592793375768894110}
   - component: {fileID: 4592793375768894111}
-  - component: {fileID: 4592793375008395356}
+  - component: {fileID: 5999242349473391486}
   - component: {fileID: 6140458998922343477}
   m_Layer: 5
   m_Name: Panel - Players Progress
@@ -6931,7 +6931,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &4592793375008395356
+--- !u!114 &5999242349473391486
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6944,6 +6944,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _readyPlayers: {fileID: 0}
+  _avoidSingleCard: {fileID: 3259302697878684667}
   playerProgressTemplate: {fileID: 4592793375815793519}
   playerProgressContainer: {fileID: 4592793375768894108}
 --- !u!114 &6140458998922343477
@@ -10354,7 +10355,7 @@ GameObject:
   - component: {fileID: 4592793376371565627}
   - component: {fileID: 4592793376371565624}
   - component: {fileID: 4592793376371565628}
-  - component: {fileID: 2671829163638109473}
+  - component: {fileID: 5619912008672923727}
   m_Layer: 5
   m_Name: Canvas - GameUI
   m_TagString: Untagged
@@ -10461,22 +10462,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4abce67fbbb5bbb4b8f1a99b8f0b486b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TurnManager: {fileID: 0}
-  _flipTheTable: {fileID: 0}
-  _readyPlayers: {fileID: 0}
-  _bottomPanel: {fileID: 4592793375008395361}
-  statsPanel: {fileID: 4592793374872587080}
-  _timerText: {fileID: 4592793375175611767}
-  _cardPickerPanel: {fileID: 4592793376130107657}
-  _listCardContainer: {fileID: 4592793375873282906}
-  _listCardUIObjs:
-  - {fileID: 4592793376326247357}
-  - {fileID: 4592793376101453554}
-  - {fileID: 4592793375723699678}
-  _listText: {fileID: 4592793375330888436}
-  _listCardButton: {fileID: 4592793374730706750}
-  _listPanel: {fileID: 4592793375471678581}
-  _listPanelHelper: {fileID: 4592793374977147432}
   listCards:
   - text: "He or She...\\n- Must believe in a Higher Power\\n- Must be spiritual\\n-
       Must be naturally satisfied with being his or her authentic self\\n- Must have
@@ -10546,7 +10531,23 @@ MonoBehaviour:
       who communi-cates\n- Must be non judgmental '
   selectedCard:
     text: 
---- !u!114 &2671829163638109473
+  TurnManager: {fileID: 0}
+  _flipTheTable: {fileID: 0}
+  _readyPlayers: {fileID: 0}
+  _bottomPanel: {fileID: 4592793375008395361}
+  statsPanel: {fileID: 4592793374872587080}
+  _timerText: {fileID: 4592793375175611767}
+  _cardPickerPanel: {fileID: 4592793376130107657}
+  _listCardContainer: {fileID: 4592793375873282906}
+  _listCardUIObjs:
+  - {fileID: 4592793376326247357}
+  - {fileID: 4592793376101453554}
+  - {fileID: 4592793375723699678}
+  _listText: {fileID: 4592793375330888436}
+  _listCardButton: {fileID: 4592793374730706750}
+  _listPanel: {fileID: 4592793375471678581}
+  _listPanelHelper: {fileID: 4592793374977147432}
+--- !u!114 &5619912008672923727
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

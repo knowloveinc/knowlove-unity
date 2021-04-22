@@ -10,6 +10,14 @@ namespace Knowlove.UI
         [SerializeField] private CardUI _cardUI;
         [SerializeField] private GameObject _maps;
 
+        private RectTransform _rectTransform;
+
+        private void Awake()
+        {
+            if(transform is RectTransform)
+                _rectTransform = GetComponent<RectTransform>();
+        }
+
         private void Start()
         {
             LeanTouch.OnFingerDown += this.LeanTouch_OnFingerDown;
@@ -25,10 +33,7 @@ namespace Knowlove.UI
                 {
                     Debug.LogWarning("Starting return to origin process for card");
                     if (transform is RectTransform && _cardUI.IsShowCard)
-                    {
-                        RectTransform rt = GetComponent<RectTransform>();
-                        rt.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
-                    }
+                        _rectTransform.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
                     else if(_cardUI.IsShowCard && !(transform is RectTransform))
                         transform.DOLocalMove(Vector3.zero, 0.1f).SetId(gameObject);
 
@@ -58,20 +63,19 @@ namespace Knowlove.UI
                 ReturnStartPos();
             }
 
-
             if (transform.localScale.x < 0.5f || transform.localScale.y < 0.5f || transform.localScale.z < 0.5f)
                 ReturnStartPos();
         }
 
         private void ReturnStartPos()
         {
+            if (transform == null)
+                return;
+
             transform.DOScale(1f, 0.1f).SetId(gameObject);
 
             if (transform is RectTransform)
-            {
-                RectTransform rt = GetComponent<RectTransform>();
-                rt.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
-            }
+                _rectTransform.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
             else
                 transform.DOLocalMove(Vector3.zero, 0.1f).SetId(gameObject);
         }

@@ -7,6 +7,7 @@ namespace Knowlove.UI
     public class ProgressBar : MonoBehaviourPunCallbacks
     {
         [SerializeField] private ReadyPlayers _readyPlayers;
+        [SerializeField] private AvoidSingleCard _avoidSingleCard;
 
         [SerializeField] private GameObject playerProgressTemplate;
         [SerializeField] private Transform playerProgressContainer;
@@ -46,6 +47,8 @@ namespace Knowlove.UI
                 PlayerProgress p = obj.GetComponent<PlayerProgress>();
                 p.Init(NetworkManager.Instance.players[i]);
             }
+
+            _avoidSingleCard.SetPlayerBar();
         }
     }
 }

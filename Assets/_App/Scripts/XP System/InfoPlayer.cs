@@ -1,5 +1,7 @@
-﻿using GameBrewStudios.Networking;
+﻿using GameBrewStudios;
+using GameBrewStudios.Networking;
 using Photon.Pun;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Knowlove.XPSystem 
@@ -15,7 +17,6 @@ namespace Knowlove.XPSystem
         [SerializeField] private PlayersState _playersState;
 
         private int _currentPlayer;
-
         private bool _isHaveUser;
 
         public PlayerXP PlayerState
@@ -30,8 +31,13 @@ namespace Knowlove.XPSystem
 
             gameObject.AddComponent<PhotonView>();
 
-            if(!PlayerPrefs.HasKey("IsSaveDate"))
-                FromJSONPlayerInfo();
+            if (!PlayerPrefs.HasKey("IsSaveDate") && User.current != null)
+            {
+                DOVirtual.DelayedCall(2f, () =>
+                {
+                    FromJSONPlayerInfo();
+                });
+            }              
         }
 
         private void OnDestroy()
@@ -42,6 +48,10 @@ namespace Knowlove.XPSystem
         private void OnApplicationPause(bool pause)
         {
             JSONPlayerInfo();
+
+            if(Application.platform == RuntimePlatform.IPhonePlayer)
+                PlayerPrefs.DeleteKey("IsSaveDate");
+                
         }
 
         private void OnApplicationQuit()
@@ -75,7 +85,9 @@ namespace Knowlove.XPSystem
 
                     CreateNewPlayer();
                 });
-            }                
+            }
+
+            PlayerPrefs.SetInt("IsHaveUser", 0);
         }
 
         public void CreateNewPlayer()
@@ -89,6 +101,7 @@ namespace Knowlove.XPSystem
 
                 _currentPlayer = _playersState.playerXPs.Count - 1;
             });
+            JSONPlayerInfo();
         }
 
         public void MarkCard(int idCard)
@@ -96,11 +109,12 @@ namespace Knowlove.XPSystem
             if(idCard <= 35)
                 _playersState.playerXPs[_currentPlayer].datingCard[idCard] = true;
             else if(idCard > 35 && idCard < 112)
-                _playersState.playerXPs[_currentPlayer].datingCard[idCard - 36] = true;
+                _playersState.playerXPs[_currentPlayer].relationshipCard[idCard - 36] = true;
             else if(idCard >= 112)
-                _playersState.playerXPs[_currentPlayer].datingCard[idCard - 112] = true;
+                _playersState.playerXPs[_currentPlayer].marriagepCard[idCard - 112] = true;
 
             statusPlayer.CheckPlayerStatus();
+            JSONPlayerInfo();
         }
 
         public void MarkAllCard()
@@ -115,6 +129,32 @@ namespace Knowlove.XPSystem
                 _playersState.playerXPs[_currentPlayer].marriagepCard[i] = true;
 
             statusPlayer.CheckPlayerStatus();
+            JSONPlayerInfo();
+        }
+
+        public bool CheckMarkAllCard()
+        {
+            for (int i = 0; i < _playersState.playerXPs[_currentPlayer].datingCard.Length; i++)
+            {
+                if (_playersState.playerXPs[_currentPlayer].datingCard[i] != true)
+                    return false;
+            }
+                
+
+            for (int i = 0; i < _playersState.playerXPs[_currentPlayer].relationshipCard.Length; i++)
+            {
+                if (_playersState.playerXPs[_currentPlayer].relationshipCard[i] != true)
+                    return false;
+            }
+                
+
+            for (int i = 0; i < _playersState.playerXPs[_currentPlayer].marriagepCard.Length; i++)
+            {
+                if (_playersState.playerXPs[_currentPlayer].marriagepCard[i] != true)
+                    return false;
+            }
+
+            return true;
         }
 
         public void PlayerWin()
@@ -123,6 +163,7 @@ namespace Knowlove.XPSystem
             _playersState.playerXPs[_currentPlayer].completedGame += 1;
 
             statusPlayer.CheckPlayerStatus();
+            JSONPlayerInfo();
         }
 
         public void PlayerEndGame()
@@ -130,6 +171,7 @@ namespace Knowlove.XPSystem
             _playersState.playerXPs[_currentPlayer].completedGame += 1;
 
             statusPlayer.CheckPlayerStatus();
+            JSONPlayerInfo();
         }
 
         public void CheckPlayWithThisPlayers()
@@ -157,16 +199,18 @@ namespace Knowlove.XPSystem
                     statusPlayer.CheckPlayerStatus();
                 }
             }
+
+            JSONPlayerInfo();
         }
 
-        private void JSONPlayerInfo()
+        public void JSONPlayerInfo()
         {
             string info = JsonUtility.ToJson(_playersState);
 
             PlayerPrefs.SetString(_playersStatePrefsName, info);
         }
 
-        private void FromJSONPlayerInfo()
+        public void FromJSONPlayerInfo()
         {
             PlayerPrefs.SetInt("IsSaveDate", 0);
 
@@ -175,7 +219,7 @@ namespace Knowlove.XPSystem
                 Debug.Log(PlayerPrefs.GetString(_playersStatePrefsName));
                 string info = PlayerPrefs.GetString(_playersStatePrefsName);
                 JsonUtility.FromJsonOverwrite(info, _playersState);
-            }           
+            }
         }
     }
 }

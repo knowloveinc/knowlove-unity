@@ -134,15 +134,15 @@ namespace Knowlove.UI.Menus
                     Debug.Log($"Room Data: {JsonConvert.SerializeObject(ri)}");
 
                     GameObject obj = Instantiate(listPrefab, scrollRect.content);
-                    TextMeshProUGUI roomTitle = obj.transform.Find("Label - Name").GetComponent<TextMeshProUGUI>();
+                    TextMeshProUGUI roomTitle = obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
                     string pass = ri.CustomProperties.ContainsKey("password") ? "(" + ri.CustomProperties["password"] + ")" : "";
                     roomTitle.text = $"{ri.Name}";
 
-                    TextMeshProUGUI playerCountLabel = obj.transform.Find("Label - PlayerCount").GetComponent<TextMeshProUGUI>();
+                    TextMeshProUGUI playerCountLabel = obj.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
                     playerCountLabel.text = ri.PlayerCount + " / " + ri.MaxPlayers;// + " (password: " + (ri.CustomProperties.ContainsKey("password") ? ri.CustomProperties["password"] : "n/a") + ")";
 
                     //Show the lock icon if the room is password protected
-                    Transform lockIcon = obj.transform.Find("Lock");
+                    Transform lockIcon = obj.transform.GetChild(0);
                     lockIcon.gameObject.SetActive(!string.IsNullOrEmpty(pass));
 
                     Button btn = obj.GetComponent<Button>();

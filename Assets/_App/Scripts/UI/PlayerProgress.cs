@@ -24,11 +24,19 @@ namespace Knowlove.UI
 
         public TextMeshProUGUI playerNameLabel;
 
+        private Image _sliderImage;
+        private RectTransform _restSlider;
+
+
         private int _playerIndex = -1;
 
         private bool _initialized = false;
 
-        private float _lastUpdate = 0f;
+        private void Awake()
+        {
+            _sliderImage = slider.fillRect.GetComponent<Image>();
+            _restSlider = slider.GetComponent<RectTransform>();
+        }
 
         private void Update()
         {
@@ -112,7 +120,7 @@ namespace Knowlove.UI
             //slider.DOValue(Mathf.Clamp(progress, 0.1f, 1f), 0.25f);
             slider.value = Mathf.Clamp(progress, 0.1f, 1f);
             //Set the slider color based on player index so it matches their gamepiece
-            slider.fillRect.GetComponent<Image>().color = playerColors[_playerIndex];
+            _sliderImage.color = playerColors[_playerIndex];
 
             pawnIcon.color = playerColors[_playerIndex];
 
@@ -121,13 +129,13 @@ namespace Knowlove.UI
             {
                 DOTween.Kill(transform);
                 transform.DOScale(1.2f, 0.5f);
-                slider.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 48f);
+                _restSlider.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 48f);
             }
             else
             {
                 DOTween.Kill(transform);
                 transform.DOScale(1f, 0.35f);
-                slider.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 24f);
+                _restSlider.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 24f);
             }
         }
     }

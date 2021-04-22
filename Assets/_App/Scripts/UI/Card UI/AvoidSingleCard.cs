@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using GameBrewStudios;
 using Knowlove.ActionAndPathLogic;
 using Photon.Pun;
 using Photon.Realtime;
@@ -15,10 +16,16 @@ namespace Knowlove.UI
         [SerializeField] private PathNodeActionLogic _pathNodeActionLogic;
         [SerializeField] private ProceedActionLogic _proceedActionLogic;
 
+        private Transform _targetPlayerBar;
+        private TextMeshProUGUI _textPlayerBar;
+        private RectTransform _rectPlayerBar;
+
         private void Start()
         {
             _pathNodeActionLogic.UsedAvoidSingleCard += AvoidSingleCardAnimation;
             _proceedActionLogic.UsedAvoidSingleCard += AvoidSingleCardAnimation;
+
+            
         }
 
         private void OnDestroy()
@@ -27,29 +34,33 @@ namespace Knowlove.UI
             _proceedActionLogic.UsedAvoidSingleCard -= AvoidSingleCardAnimation;
         }
 
-        internal void AvoidSingleCardAnimation(Player player)
+        public void SetPlayerBar()
         {
-            if (player == null) return;
-
-            photonView.RPC(nameof(RPC_AvoidSingleCardAnimation), RpcTarget.All, player);
-        }
-
-        [PunRPC]
-        public void RPC_AvoidSingleCardAnimation(Player player)
-        {
-            Transform targetPlayerBar = null;
             foreach (Transform child in playerProgressContainer)
             {
-                TextMeshProUGUI text = child.GetComponentInChildren<TextMeshProUGUI>();
-                if (text.text.ToLower() == player.NickName.ToLower())
+                _textPlayerBar = child.GetComponentInChildren<TextMeshProUGUI>();
+                if (_textPlayerBar.text.ToLower() == User.current.displayName.ToLower())
                 {
-                    targetPlayerBar = child;
+                    _targetPlayerBar = child;
+                    _rectPlayerBar = _targetPlayerBar.GetComponent<RectTransform>();
+
                     Debug.Log("FOUND TARGET PLAYER BAR");
                     break;
                 }
             }
+        }
 
-            if (targetPlayerBar == null)
+        internal void AvoidSingleCardAnimation(Player player)
+        {
+            if (player == null) return;
+
+            photonView.RPC(nameof(RPC_AvoidSingleCardAnimation), RpcTarget.All);
+        }
+
+        [PunRPC]
+        public void RPC_AvoidSingleCardAnimation()
+        {
+            if (_textPlayerBar.text.ToLower() != User.current.displayName.ToLower())
                 return;
 
             _avoidSingleCardSprite.anchoredPosition = new Vector2(0f, -1080f);
@@ -62,7 +73,7 @@ namespace Knowlove.UI
             });
             _avoidSingleCardSprite.DOAnchorPos(Vector2.zero, 0.25f).OnComplete(() =>
             {
-                Vector2 targetPos = targetPlayerBar != null ? targetPlayerBar.GetComponent<RectTransform>().anchoredPosition : Vector2.zero;
+                Vector2 targetPos = _targetPlayerBar != null ? _rectPlayerBar.anchoredPosition : Vector2.zero;
                 _avoidSingleCardSprite.DOAnchorPos(targetPos, 0.5f).SetDelay(1f);
                 _avoidSingleCardSprite.DOScale(Vector3.zero, 0.5f).SetDelay(1f).OnComplete(() =>
                 {

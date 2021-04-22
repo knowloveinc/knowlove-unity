@@ -11,8 +11,15 @@ namespace Knowlove.UI
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private LeanSelectable _leanSelectable;
 
-        private void Start()
+        private RectTransform _rectTransform;
+
+        private void Awake()
         {
+            _rectTransform = GetComponent<RectTransform>();
+        }
+
+        private void Start()
+        {        
             LeanTouch.OnFingerDown += this.LeanTouch_OnFingerDown;
         }
 
@@ -31,8 +38,7 @@ namespace Knowlove.UI
                 {
                     Debug.LogWarning("Starting return to origin process for card");
 
-                    RectTransform rt = GetComponent<RectTransform>();
-                    rt.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
+                    _rectTransform.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
 
                     if (_canvasGroup.alpha == 0)
                         ReturnStartPos();
@@ -64,15 +70,12 @@ namespace Knowlove.UI
 
         private void ReturnStartPos()
         {
+            if (transform == null)
+                return;
+
             transform.DOScale(1f, 0.1f).SetId(gameObject);
 
-            if (transform is RectTransform)
-            {
-                RectTransform rt = GetComponent<RectTransform>();
-                rt.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
-            }
-            else
-                transform.DOLocalMove(Vector3.zero, 0.1f).SetId(gameObject);
+            _rectTransform.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
         }
 
         private void LeanTouch_OnFingerDown(LeanFinger finger)

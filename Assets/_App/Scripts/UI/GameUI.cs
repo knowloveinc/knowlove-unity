@@ -10,6 +10,9 @@ namespace Knowlove.UI
 {
     public class GameUI : MonoBehaviourPunCallbacks
     {
+        public ListCard[] listCards;
+        public ListCard selectedCard;
+
         [SerializeField] private TurnManager TurnManager;
         [SerializeField] private FlipTheTable _flipTheTable;
         [SerializeField] private ReadyPlayers _readyPlayers;
@@ -28,11 +31,18 @@ namespace Knowlove.UI
         [SerializeField] private GameObject _listPanel;
         [SerializeField] private GameObject _listPanelHelper;
 
-        public ListCard[] listCards;
-        public ListCard selectedCard;
+        private CanvasGroup[] _listCardUICanvasGroup;
 
         private bool _didReadyUp = false;
         private bool _showBottomAfterClosingListPanel = false;
+
+        private void Awake()
+        {
+            _listCardUICanvasGroup = new CanvasGroup[_listCardUIObjs.Length];
+
+            for (int i = 0; i < _listCardUICanvasGroup.Length; i++)
+                _listCardUICanvasGroup[i] = _listCardUIObjs[i].GetComponent<CanvasGroup>();
+        }
 
         private void Start()
         {
@@ -110,9 +120,9 @@ namespace Knowlove.UI
 
             _cardPickerPanel.gameObject.SetActive(true);
 
-            for (int i = 0; i < _listCardUIObjs.Length; i++)
+            for (int i = 0; i < _listCardUICanvasGroup.Length; i++)
             {
-                _listCardUIObjs[i].GetComponent<CanvasGroup>().alpha = 1f;
+                _listCardUICanvasGroup[i].alpha = 1f;
             }
         }
 
@@ -132,7 +142,7 @@ namespace Knowlove.UI
                     _listCardUIObjs[i].DOAnchorPos(new Vector2(0f, 0f), 0.2f);
                     _listCardUIObjs[i].DORotate(new Vector3(0f, 0f, 0f), 0.2f);
                     _listCardUIObjs[i].DOScale(1.5f, 0.2f);
-                    _listCardUIObjs[i].GetComponent<CanvasGroup>().DOFade(0f, 0.5f).SetDelay(1f).OnComplete(() =>
+                    _listCardUICanvasGroup[i].DOFade(0f, 0.5f).SetDelay(1f).OnComplete(() =>
                     {
                         _listCardButton.SetActive(true);
 

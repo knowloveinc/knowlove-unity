@@ -31,6 +31,8 @@ namespace Knowlove.UI
 
         [SerializeField] private CanvasGroup _scenarioCanvasGroup;
 
+        private TextMeshProUGUI _scenarioText;
+
         private string _waitingClickFromUserNickName = null;
         private bool _isShowCard;
 
@@ -44,6 +46,11 @@ namespace Knowlove.UI
         public LeanSelectable LeanSelectable
         {
             get => _leanSelectable;
+        }
+
+        private void Awake()
+        {
+            _scenarioText = _scenarioCanvasGroup.GetComponent<TextMeshProUGUI>();
         }
 
         private void Start()
@@ -146,7 +153,7 @@ namespace Knowlove.UI
             }
 
             CanvasGroup scenarioTextGroup = _scenarioCanvasGroup;
-            TextMeshProUGUI scenarioText = scenarioTextGroup.GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI scenarioText = _scenarioText;
             string scenarioTextStr = PhotonNetwork.LocalPlayer.NickName.ToLower() != targetPlayer.NickName.ToLower() ? $"<size=30>{targetPlayer.NickName.Replace("[host]", "").Trim()} Got A</size>\n" : "<size=30>You Got A</size>\n";
 
             scenarioTextStr += (pathIndex == 0 ? "DATING" : (pathIndex == 1 ? "RELATIONSHIP" : (pathIndex == 2 ? "MARRIAGE" : ""))) + " SCENARIO";
