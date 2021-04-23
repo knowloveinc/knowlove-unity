@@ -9,6 +9,8 @@ using static Knowlove.TurnManager;
 using Knowlove.MyStuffInGame;
 using System;
 using Knowlove.XPSystem;
+using GameBrewStudios.Networking;
+using GameBrewStudios;
 
 namespace Knowlove.ActionAndPathLogic
 {
@@ -41,9 +43,19 @@ namespace Knowlove.ActionAndPathLogic
             get => _turnManager.turnIndex;
         }
 
-        private bool IsDaring
+        private bool IsNotDaring
         {
             get => !(BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Dating || BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Home);
+        }
+
+        private bool IsMarriage
+        {
+            get => BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Marriage;
+        }
+
+        private bool IsRelationship
+        {
+            get => BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Relationship;
         }
 
         public void HandlePathNodeAction(PathNodeAction action, string text, int rollCheck = 0, ProceedAction onPassed = ProceedAction.Nothing, ProceedAction onFailed = ProceedAction.Nothing, bool skipPrompt = false)
@@ -94,15 +106,9 @@ namespace Knowlove.ActionAndPathLogic
                     break;
                 case PathNodeAction.AdvanceToNextPath:
                     if (piece.pathRing == PathRing.Dating)
-                    {
-                        _protectedFromSingleInRelationship = false;
                         piece.GoToRelationship(currentPlayer);
-                    }
                     else if (piece.pathRing == PathRing.Relationship)
-                    {
-                        _protectedFromSingleInRelationship = false;
                         piece.GoToMarriage(currentPlayer);
-                    }
                     DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
 
                     break;
@@ -237,7 +243,31 @@ namespace Knowlove.ActionAndPathLogic
                     });
                 }
             }
-            else if (_protectedFromSingleInMarriage && BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Marriage)
+            else if (_protectedFromSingleInRelationship && IsRelationship)
+            {
+                if (!skipPrompt)
+                {
+                    text += " [ You have protected in relationship. ]";
+                    PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
+                    {
+                        text = "Okay",
+                        onClicked = () =>
+                        {
+                            DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
+                        }
+                    };
+
+                    buttons.Add(yesBtn);
+                }
+                else
+                {
+                    DOVirtual.DelayedCall(0.25f, () =>
+                    {
+                        _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                    });
+                }
+            }
+            else if (_protectedFromSingleInMarriage && IsMarriage)
             {
                 if (!skipPrompt)
                 {
@@ -261,7 +291,7 @@ namespace Knowlove.ActionAndPathLogic
                     });
                 }
             }
-            else if (_avoidSingleCards > 0 && IsDaring)
+            else if (_avoidSingleCards > 0)
             {
                 if (!skipPrompt)
                 {
@@ -272,7 +302,7 @@ namespace Knowlove.ActionAndPathLogic
                         onClicked = () =>
                         {
                             UsedAvoidSingleCard?.Invoke(currentPlayer);
-                            _gameStuff.DeleteCardFromInventory(0, TurnIndex);
+                            _gameStuff.DeleteCardFromInventory(TurnIndex);
                             
                             DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
                         }
@@ -283,6 +313,7 @@ namespace Knowlove.ActionAndPathLogic
                         text = "No, back to single",
                         onClicked = () =>
                         {
+                            _protectedFromSingleInRelationship = false;
                             piece.GoHome(currentPlayer);
                             _turnManager.EndTurn();
                         }
@@ -316,7 +347,7 @@ namespace Knowlove.ActionAndPathLogic
 
                     buttons.Add(btn);
 
-                    if (_wallet > 0 && IsDaring)
+                    if (_wallet > 0 && IsNotDaring)
                     {
                         PopupDialog.PopupButton openStoreBtn = new PopupDialog.PopupButton()
                         {
@@ -337,7 +368,7 @@ namespace Knowlove.ActionAndPathLogic
                 }
                 else
                 {
-                    if (_wallet > 0 && IsDaring)
+                    if (_avoidSingleCards > 0 || (_wallet > 0 && IsNotDaring) || _protectedFromSingleAllGame || (IsMarriage && _protectedFromSingleInMarriage) || (_protectedFromSingleInRelationship && IsRelationship))
                     {
                         DOVirtual.DelayedCall(0.25f, () =>
                         {
@@ -346,6 +377,7 @@ namespace Knowlove.ActionAndPathLogic
                     }
                     else 
                     {
+                        _protectedFromSingleInRelationship = false;
                         piece.GoHome(currentPlayer);
 
                         DOVirtual.DelayedCall(1f, () =>
@@ -361,7 +393,7 @@ namespace Knowlove.ActionAndPathLogic
                 ChoicedOfPlayer?.Invoke(text, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
             else
             {
-                if (_avoidSingleCards == 0 && _wallet == 0 && !IsDaring)
+                if (_avoidSingleCards == 0 && _wallet == 0 && !IsNotDaring && !_protectedFromSingleAllGame && !(IsMarriage && _protectedFromSingleInMarriage) && !(_protectedFromSingleInRelationship && IsRelationship))
                     DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
             }
         }
@@ -419,7 +451,7 @@ namespace Knowlove.ActionAndPathLogic
                     });
                 }
             }
-            else if (_protectedFromSingleInMarriage && BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Marriage)
+            else if (_protectedFromSingleInMarriage && IsMarriage)
             {
                 if (!skipPrompt)
                 {
@@ -449,7 +481,7 @@ namespace Knowlove.ActionAndPathLogic
                 PopupDialog.PopupButton btn;
                 string dialogText = "You settled for someone who didnt meet your non-negotiable list requirements. (Back to single.)";
 
-                if (!_protectedFromSingleInRelationship && _avoidSingleCards < 1 && _wallet > 0 && IsDaring)
+                if (_avoidSingleCards < 1 && _wallet > 0 && IsNotDaring)
                 {
                     btn = new PopupDialog.PopupButton()
                     {
@@ -478,13 +510,14 @@ namespace Knowlove.ActionAndPathLogic
                     _diceCount = 1;
                     ChoicedOfPlayer?.Invoke(dialogText, new PopupDialog.PopupButton[] { btn, openStoreBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
                 }
-                else if (!_protectedFromSingleInRelationship && _avoidSingleCards < 1 && IsDaring)
+                else if (_avoidSingleCards < 1 && _wallet < 0 && IsNotDaring)
                 {
                     btn = new PopupDialog.PopupButton()
                     {
                         text = "Okay",
                         onClicked = () =>
                         {
+                            _protectedFromSingleInRelationship = false;
                             piece.GoHome(currentPlayer);
                         }
                     };
@@ -492,7 +525,7 @@ namespace Knowlove.ActionAndPathLogic
                     _diceCount = 1;
                     ChoicedOfPlayer?.Invoke(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
                 }
-                else if (_protectedFromSingleInRelationship)
+                else if (_protectedFromSingleInRelationship && IsRelationship)
                 {
                     dialogText = "Your mate matches your non-negotiable list.";
                     btn = new PopupDialog.PopupButton()
@@ -503,7 +536,7 @@ namespace Knowlove.ActionAndPathLogic
 
                     ChoicedOfPlayer?.Invoke(dialogText, new PopupDialog.PopupButton[] { btn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing);
                 }
-                else if (_avoidSingleCards > 0 && IsDaring)
+                else if (_avoidSingleCards > 0)
                 {
 
                     _avoidSingleCards--;
@@ -516,7 +549,7 @@ namespace Knowlove.ActionAndPathLogic
                         onClicked = () =>
                         {
                             UsedAvoidSingleCard?.Invoke(currentPlayer);
-                            _gameStuff.DeleteCardFromInventory(0, TurnIndex);
+                            _gameStuff.DeleteCardFromInventory(TurnIndex);
                         }
                     };
 
@@ -525,6 +558,7 @@ namespace Knowlove.ActionAndPathLogic
                         text = "No, back to single",
                         onClicked = () =>
                         {
+                            _protectedFromSingleInRelationship = false;
                             piece.GoHome(currentPlayer);
                         }
                     };
@@ -534,7 +568,7 @@ namespace Knowlove.ActionAndPathLogic
             }
             else
             {
-                if (_avoidSingleCards > 0 && _wallet > 0 && IsDaring)
+                if ((_avoidSingleCards < 1 && _wallet > 0 && IsNotDaring) || _protectedFromSingleAllGame || (IsMarriage && _protectedFromSingleInMarriage) || _avoidSingleCards > 0 || (_protectedFromSingleInRelationship && IsRelationship))
                 {
                     DOVirtual.DelayedCall(0.25f, () =>
                     {
@@ -542,10 +576,11 @@ namespace Knowlove.ActionAndPathLogic
                     });
 
                 }
-                else if (!_protectedFromSingleInRelationship)
+                else
                 {
                     piece.GoHome(currentPlayer);
                     _diceCount = 1;
+                    _protectedFromSingleInRelationship = false;
                     DOVirtual.DelayedCall(1f, () =>
                     {
                         _turnManager.EndTurn();
@@ -561,18 +596,22 @@ namespace Knowlove.ActionAndPathLogic
             BoardManager.Instance.DrawCard("avoid");
             UsedAvoidSingleCard?.Invoke(currentPlayer);
 
+            APIManager.GetUserDetails((user) => 
+            {
+                APIManager.AddItem("avoidSingle", 1, (inventory) => 
+                {
+                    User.current.inventory = inventory;
+                    StoreController.Instance.UpdateFromPlayerInventory();
+                    _gameStuff.GetSpecialCard();
+                });
+            });
+
             DOVirtual.DelayedCall(2f, () =>
             {
                 if (piece.pathRing == PathRing.Dating)
-                {
-                    _protectedFromSingleInRelationship = false;
                     piece.GoToRelationship(currentPlayer);
-                }
                 else if (piece.pathRing == PathRing.Relationship)
-                {
-                    _protectedFromSingleInRelationship = false;
                     piece.GoToMarriage(currentPlayer);
-                }
 
                 DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
             });

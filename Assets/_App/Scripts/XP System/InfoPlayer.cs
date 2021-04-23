@@ -1,4 +1,4 @@
-﻿using GameBrewStudios;
+﻿using UnityEngine.SceneManagement;
 using GameBrewStudios.Networking;
 using Photon.Pun;
 using DG.Tweening;
@@ -31,9 +31,9 @@ namespace Knowlove.XPSystem
 
             gameObject.AddComponent<PhotonView>();
 
-            if (!PlayerPrefs.HasKey("IsSaveDate") && User.current != null)
+            if (SceneManager.GetActiveScene().buildIndex != 0)
             {
-                DOVirtual.DelayedCall(2f, () =>
+                DOVirtual.DelayedCall(4f, () =>
                 {
                     FromJSONPlayerInfo();
                 });
@@ -45,19 +45,9 @@ namespace Knowlove.XPSystem
             JSONPlayerInfo();
         }
 
-        private void OnApplicationPause(bool pause)
-        {
-            JSONPlayerInfo();
-
-            if(Application.platform == RuntimePlatform.IPhonePlayer)
-                PlayerPrefs.DeleteKey("IsSaveDate");
-                
-        }
-
         private void OnApplicationQuit()
         {
             JSONPlayerInfo();
-            PlayerPrefs.DeleteKey("IsSaveDate");
         }
 
 
@@ -76,9 +66,12 @@ namespace Knowlove.XPSystem
                 { 
                     for(int i = 0; i < _playersState.playerXPs.Count; i++)
                     {
-                        if(_playersState.playerXPs[i].playerName == user.displayName)
+                        Debug.Log(_playersState.playerXPs[i].playerName);
+
+                        if (_playersState.playerXPs[i].playerName.ToLower() == user.displayName.ToLower())
                         {
                             _currentPlayer = i;
+                            Debug.Log(_currentPlayer);
                             return;
                         }
                     }
@@ -86,8 +79,6 @@ namespace Knowlove.XPSystem
                     CreateNewPlayer();
                 });
             }
-
-            PlayerPrefs.SetInt("IsHaveUser", 0);
         }
 
         public void CreateNewPlayer()
@@ -100,8 +91,9 @@ namespace Knowlove.XPSystem
                 _playersState.playerXPs.Add(player);
 
                 _currentPlayer = _playersState.playerXPs.Count - 1;
-            });
-            JSONPlayerInfo();
+
+                JSONPlayerInfo();
+            });           
         }
 
         public void MarkCard(int idCard)
@@ -208,17 +200,19 @@ namespace Knowlove.XPSystem
             string info = JsonUtility.ToJson(_playersState);
 
             PlayerPrefs.SetString(_playersStatePrefsName, info);
+            Debug.Log(info);
         }
 
         public void FromJSONPlayerInfo()
         {
-            PlayerPrefs.SetInt("IsSaveDate", 0);
-
             if (PlayerPrefs.HasKey(_playersStatePrefsName))
             {
                 Debug.Log(PlayerPrefs.GetString(_playersStatePrefsName));
                 string info = PlayerPrefs.GetString(_playersStatePrefsName);
+                Debug.Log(info);
                 JsonUtility.FromJsonOverwrite(info, _playersState);
+
+                СheckAvailabilityPlayer();
             }
         }
     }

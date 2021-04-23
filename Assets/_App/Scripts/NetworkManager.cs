@@ -256,7 +256,6 @@ namespace Knowlove
 
                 playerProperties["avoidSingleCards"] = 0;
                 playerProperties["wallet"] = 0;
-                playerProperties["flipTheTable"] = 0;
                 playerProperties["turnBank"] = 0;
                 playerProperties["protectedFromSingleInRelationship"] = false;
                 playerProperties["diceCount"] = 1;

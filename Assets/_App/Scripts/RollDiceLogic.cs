@@ -80,7 +80,24 @@ namespace Knowlove
 
         private void HandleScenarioRollResult(int diceScore, int rollCheck, ProceedAction onPassed, ProceedAction onFailed)
         {
-            if (diceScore >= rollCheck)
+            if(onPassed == ProceedAction.GoToKNOWLOVE)
+            {
+                if(diceScore == rollCheck)
+                {
+                    _proceedActionLogic.ExecuteProceedAction(onPassed, () =>
+                    {
+                        Debug.Log("PROCEED ACTION FINISHED IN PASSED STATE");
+                    });
+                }
+                else
+                {
+                    _proceedActionLogic.ExecuteProceedAction(onFailed, () =>
+                    {
+                        Debug.Log("PROCEED ACTION FINISHED IN FAILED STATE");
+                    });
+                }
+            }
+            else if (diceScore >= rollCheck)
             {
                 _proceedActionLogic.ExecuteProceedAction(onPassed, () =>
                 {

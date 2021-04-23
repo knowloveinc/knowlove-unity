@@ -12,10 +12,8 @@ namespace Knowlove.MyStuffInGame
         private Player _currentPlayer;
 
         private const string idAvoidSingleCard = "avoidSingle";
-        private const string idFlipTheTableCard = "tableFlip";
 
         private int _avoidSingle;
-        private int _flipTheTable;
         private int _wallet;
         private int _amountDeleteCard = -1;
 
@@ -23,11 +21,6 @@ namespace Knowlove.MyStuffInGame
         public int AvoidSingle
         {
             get => _avoidSingle;
-        }
-
-        public int FlipTheTable
-        {
-            get => _flipTheTable;
         }
 
         public int Wallet
@@ -60,38 +53,30 @@ namespace Knowlove.MyStuffInGame
             {
                 for (int i = 0; i < user.inventory.Length; i++)
                 {
-                    if (user.inventory[i].itemId.ToLower() == "tableFlip".ToLower())
-                        _flipTheTable = user.inventory[i].amount;
-                    else if(user.inventory[i].itemId.ToLower() == "avoidSingle".ToLower())
+                    if(user.inventory[i].itemId.ToLower() == "avoidSingle".ToLower())
                         _avoidSingle = user.inventory[i].amount;
                 }
 
                 _wallet = user.wallet;
 
                 playerProperties["avoidSingleCards"] = _avoidSingle;
-                playerProperties["flipTheTable"] = _flipTheTable;
                 playerProperties["wallet"] = _wallet;
                 _currentPlayer.SetCustomProperties(playerProperties);
             });
         }
 
-        public void DeleteCardFromInventory(int idCard, int turnIndex)
+        public void DeleteCardFromInventory(int turnIndex)
         {
-            photonView.RPC(nameof(RPC_DeleteCardFromInventory), RpcTarget.AllViaServer, idCard, turnIndex);
+            photonView.RPC(nameof(RPC_DeleteCardFromInventory), RpcTarget.AllViaServer, turnIndex);
         }
 
         [PunRPC]
-        private void RPC_DeleteCardFromInventory(int idCard, int turnIndex)
+        private void RPC_DeleteCardFromInventory(int turnIndex)
         {
             Player currentPlayer = NetworkManager.Instance.players[turnIndex];
 
             if(PhotonNetwork.LocalPlayer == currentPlayer)
-            {
-                if (idCard == 0)
-                    DeleteCardFromServer(idAvoidSingleCard);
-                else if (idCard == 1)
-                    DeleteCardFromServer(idFlipTheTableCard);
-            }
+                DeleteCardFromServer(idAvoidSingleCard);
         }
 
         private void DeleteCardFromServer(string cardName)

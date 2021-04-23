@@ -9,10 +9,18 @@ namespace Knowlove
 {
     public class MoveBoardPiece : MonoBehaviourPunCallbacks
     {
+        public int countMovePiece = 1;
+
         [SerializeField] private TurnManager _turnManager;
         [SerializeField] private PathNodeActionLogic _pathNodeActionLogic;
 
         public Action<string, string> ShowedStatePiece;
+
+        [ContextMenu("Move On count path")]
+        public void TestMove()
+        {
+            AdvanceGamePieceFoward(countMovePiece);
+        }
 
         public void AdvanceGamePieceFoward(int spaces)
         {

@@ -24,8 +24,6 @@ namespace Knowlove.UI.Menus
             
             DOVirtual.DelayedCall(0.75f, () =>
             {
-                InfoPlayer.Instance.СheckAvailabilityPlayer();
-
                 _rankImage.ChangeRank();
             });
 
@@ -69,9 +67,10 @@ namespace Knowlove.UI.Menus
                     {
                         CanvasLoading.Instance.Show();
                         User.current = null;
-                        SceneManager.LoadScene(0);
-                        DOVirtual.DelayedCall(2f, () =>
+                        
+                        DOVirtual.DelayedCall(1f, () =>
                         {
+                            SceneManager.LoadScene(0);
                             CanvasLoading.Instance.Hide();
                         });
                     },

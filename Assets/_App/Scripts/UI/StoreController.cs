@@ -179,14 +179,14 @@ namespace Knowlove.UI
                                     {
                                         CanvasLoading.Instance.Hide();
                                         User.current.wallet = balance;
-                                        UpdateFromPlayerWallet();
-                                            
-                                        if(gameStuff != null)
-                                            gameStuff.GetSpecialCard();
+                                        UpdateFromPlayerWallet();                                        
                                             
                                         CanvasLoading.Instance.Show();
                                         APIManager.AddItem(card.id, card.amountToGive, (inventory) =>
                                         {
+                                            if(gameStuff != null)
+                                                gameStuff.GetSpecialCard();
+
                                             CanvasLoading.Instance.Hide();
                                             User.current.inventory = inventory;
                                             UpdateFromPlayerInventory();

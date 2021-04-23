@@ -41,7 +41,7 @@ namespace Knowlove.UI
                     _rectTransform.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
 
                     if (_canvasGroup.alpha == 0)
-                        ReturnStartPos();
+                        ReturnStartPos(1f);
 
                     CheckMaxMinScale();
                 }
@@ -50,7 +50,7 @@ namespace Knowlove.UI
 
         private void OnEnable()
         {
-            ReturnStartPos();
+            ReturnStartPos(1f);
         }
 
         private void OnDestroy()
@@ -60,20 +60,20 @@ namespace Knowlove.UI
 
         private void CheckMaxMinScale()
         {
-            if (transform.localScale.x > 2f || transform.localScale.y > 2f || transform.localScale.z > 2f)
-                ReturnStartPos();
+            if (transform.localScale.x > 1.385f || transform.localScale.y > 1.385f || transform.localScale.z > 1.385f)
+                ReturnStartPos(1.385f);
 
 
             if (transform.localScale.x < 0.5f || transform.localScale.y < 0.5f || transform.localScale.z < 0.5f)
-                ReturnStartPos();
+                ReturnStartPos(1f);
         }
 
-        private void ReturnStartPos()
+        private void ReturnStartPos(float scale)
         {
             if (transform == null)
                 return;
 
-            transform.DOScale(1f, 0.1f).SetId(gameObject);
+            transform.DOScale(scale, 0.1f).SetId(gameObject);
 
             _rectTransform.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
         }
