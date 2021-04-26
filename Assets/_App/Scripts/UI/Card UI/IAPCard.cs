@@ -118,7 +118,7 @@ namespace Knowlove.UI
             {
                 Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
                 Debug.Log("IAP COST IS: " + product.metadata.localizedPriceString);
-                priceLabel.text = isIAP ? product.metadata.localizedPriceString + " " + product.metadata.isoCurrencyCode : currencyCost.ToString() + " <sprite=0>";
+                priceLabel.text = isIAP ? product.metadata.localizedPrice + " " + product.metadata.isoCurrencyCode : currencyCost.ToString() + " <sprite=0>";
             }
         }
 
@@ -141,6 +141,9 @@ namespace Knowlove.UI
                                 ownedCount.gameObject.SetActive(false);
                         }  
                     }
+
+                    if(user.inventory.Length == 0)
+                        ownedCount.gameObject.SetActive(false);
                 });
             }
         }

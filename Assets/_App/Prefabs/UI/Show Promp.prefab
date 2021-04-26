@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pathNodeActionLogic: {fileID: 0}
   _proceedActionLogic: {fileID: 0}
+  _backSingleLogic: {fileID: 0}
+  _backSingleIgnorList: {fileID: 0}
 --- !u!114 &210664194
 MonoBehaviour:
   m_ObjectHideFlags: 0

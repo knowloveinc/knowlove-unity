@@ -11,6 +11,7 @@ namespace Knowlove.XPSystem
         public static InfoPlayer Instance;
 
         private const string _playersStatePrefsName = "PlayersState";
+        private const int _maxDifferentPlayers = 15;
 
         [SerializeField] public StatusPlayer statusPlayer;
 
@@ -28,6 +29,7 @@ namespace Knowlove.XPSystem
         private void Awake()
         {
             Instance = this;
+            _isHaveUser = false;
 
             gameObject.AddComponent<PhotonView>();
 
@@ -40,16 +42,15 @@ namespace Knowlove.XPSystem
             }              
         }
 
-        private void OnDestroy()
-        {
-            JSONPlayerInfo();
-        }
-
         private void OnApplicationQuit()
         {
             JSONPlayerInfo();
         }
 
+        private void OnDestroy()
+        {
+            JSONPlayerInfo();
+        }
 
         public void СheckAvailabilityPlayer()
         {
@@ -59,26 +60,24 @@ namespace Knowlove.XPSystem
                 _isHaveUser = true;
 
             if (_playersState.playerXPs.Count == 0)
-                CreateNewPlayer();
-            else
             {
-                APIManager.GetUserDetails((user) => 
-                { 
-                    for(int i = 0; i < _playersState.playerXPs.Count; i++)
-                    {
-                        Debug.Log(_playersState.playerXPs[i].playerName);
-
-                        if (_playersState.playerXPs[i].playerName.ToLower() == user.displayName.ToLower())
-                        {
-                            _currentPlayer = i;
-                            Debug.Log(_currentPlayer);
-                            return;
-                        }
-                    }
-
-                    CreateNewPlayer();
-                });
+                CreateNewPlayer();
+                return;
             }
+
+            APIManager.GetUserDetails((user) =>
+            {
+                for (int i = 0; i < _playersState.playerXPs.Count; i++)
+                {
+                    if (_playersState.playerXPs[i].playerName.ToLower() == user.displayName.ToLower())
+                    {
+                        _currentPlayer = i;
+                        return;
+                    }
+                }
+
+                CreateNewPlayer();
+            });
         }
 
         public void CreateNewPlayer()
@@ -174,6 +173,9 @@ namespace Knowlove.XPSystem
         [PunRPC]
         private void RPC_CheckPlayWithThisPlayers()
         {
+            if (_playersState.playerXPs[_currentPlayer].countDifferentPlayers >= _maxDifferentPlayers)
+                return;
+
             for (int i = 0; i < NetworkManager.Instance.players.Count; i++)
             {
                 bool isHave = true;
@@ -187,11 +189,11 @@ namespace Knowlove.XPSystem
                 if (isHave && NetworkManager.Instance.players[i].NickName != PhotonNetwork.NickName)
                 {
                     _playersState.playerXPs[_currentPlayer].nameDifferentPlayers[_playersState.playerXPs[_currentPlayer].countDifferentPlayers] = NetworkManager.Instance.players[i].NickName;
-                    _playersState.playerXPs[_currentPlayer].countDifferentPlayers += 1;
-                    statusPlayer.CheckPlayerStatus();
+                    _playersState.playerXPs[_currentPlayer].countDifferentPlayers += 1;                   
                 }
             }
 
+            statusPlayer.CheckPlayerStatus();
             JSONPlayerInfo();
         }
 
@@ -200,19 +202,19 @@ namespace Knowlove.XPSystem
             string info = JsonUtility.ToJson(_playersState);
 
             PlayerPrefs.SetString(_playersStatePrefsName, info);
-            Debug.Log(info);
         }
 
         public void FromJSONPlayerInfo()
         {
             if (PlayerPrefs.HasKey(_playersStatePrefsName))
             {
-                Debug.Log(PlayerPrefs.GetString(_playersStatePrefsName));
                 string info = PlayerPrefs.GetString(_playersStatePrefsName);
-                Debug.Log(info);
                 JsonUtility.FromJsonOverwrite(info, _playersState);
 
-                СheckAvailabilityPlayer();
+                DOVirtual.DelayedCall(1f, () =>
+                {
+                    СheckAvailabilityPlayer();
+                });              
             }
         }
     }

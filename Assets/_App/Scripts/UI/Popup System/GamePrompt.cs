@@ -12,18 +12,24 @@ namespace Knowlove.UI
     {
         [SerializeField] private PathNodeActionLogic _pathNodeActionLogic;
         [SerializeField] private ProceedActionLogic _proceedActionLogic;
+        [SerializeField] private BackSingleLogic _backSingleLogic;
+        [SerializeField] private BackSingleIgnorList _backSingleIgnorList;
 
         private List<Action> _promptButtonActions = new List<Action>();
         private PopupDialog.PopupButton[] _currentButtons;
 
         private void Start()
         {
+            _backSingleIgnorList.ChoicedOfPlayer += ShowPrompt;
+            _backSingleLogic.ChoicedOfPlayer += ShowPrompt;
             _pathNodeActionLogic.ChoicedOfPlayer += ShowPrompt;
             _proceedActionLogic.ChoicedOfPlayer += ShowPrompt;
         }
 
         private void OnDestroy()
         {
+            _backSingleIgnorList.ChoicedOfPlayer -= ShowPrompt;
+            _backSingleLogic.ChoicedOfPlayer -= ShowPrompt;
             _pathNodeActionLogic.ChoicedOfPlayer -= ShowPrompt;
             _proceedActionLogic.ChoicedOfPlayer -= ShowPrompt;
         }

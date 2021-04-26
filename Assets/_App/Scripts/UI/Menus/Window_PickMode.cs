@@ -22,7 +22,7 @@ namespace Knowlove.UI.Menus
         {
             base.Show();
             
-            DOVirtual.DelayedCall(0.75f, () =>
+            DOVirtual.DelayedCall(4f, () =>
             {
                 _rankImage.ChangeRank();
             });

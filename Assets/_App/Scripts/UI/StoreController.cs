@@ -132,38 +132,7 @@ namespace Knowlove.UI
                 if (user.wallet >= card.currencyCost && canPurchase)
                 {
                     if (card.id.ToLower() == "cards".ToLower())
-                    {
-                        PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
-                        {
-                            new PopupDialog.PopupButton()
-                            {
-                                text = "Yes",
-                                buttonColor = PopupDialog.PopupButtonColor.Green,
-                                onClicked = () =>
-                                {
-                                    CanvasLoading.Instance.Show();
-                                    APIManager.AddCurrency(-card.currencyCost, balance =>
-                                    {
-                                        CanvasLoading.Instance.Hide();
-                                        User.current.wallet = balance;
-                                        UpdateFromPlayerWallet();
-
-                                        InfoPlayer.Instance.MarkAllCard();
-
-                                        UpdateFromPlayerInventory();
-                                    });    
-                                }
-                            },
-                            new PopupDialog.PopupButton()
-                            {
-                                text = "Nevermind",
-                                buttonColor = PopupDialog.PopupButtonColor.Plain,
-                                onClicked = () =>{ }
-                            }
-                        };
-
-                        PopupDialog.Instance.Show("", "Really purchase " + card.title + " for " + card.currencyCost.ToString("n0") + " <sprite=0>?", buttons);
-                    }
+                        BuyAllCardItem(card);
                     else
                     {
                         PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
@@ -212,27 +181,6 @@ namespace Knowlove.UI
             });
         }
 
-#if UNITY_EDITOR
-        [ContextMenu("TEST CURRENCY")]
-        public void CurrencyTest()
-        {
-            User.current.AddCurrency(1, null);
-        }
-
-        [ContextMenu("GET ME")]
-        public void TestGetMe()
-        {
-            CanvasLoading.Instance.Show();
-            APIManager.GetUserDetails((user) =>
-            {
-                CanvasLoading.Instance.Hide();
-                User.current = user;
-                UpdateFromPlayerWallet();
-                UpdateFromPlayerInventory();
-            });
-        }
-        
-#endif
         public void UpdateFromPlayerWallet()
         {
             if (walletLabels == null) return;
@@ -261,6 +209,40 @@ namespace Knowlove.UI
             if (reason == PurchaseFailureReason.UserCancelled) return;
 
             PopupDialog.Instance.Show($"An error occured while trying to initiate your purchase of \"{product.metadata.localizedTitle}\". Reason: {reason}");
+        }
+
+        private void BuyAllCardItem(IAPCard card)
+        {
+            PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+            {
+                new PopupDialog.PopupButton()
+                {
+                    text = "Yes",
+                    buttonColor = PopupDialog.PopupButtonColor.Green,
+                    onClicked = () =>
+                    {
+                        CanvasLoading.Instance.Show();
+                        APIManager.AddCurrency(-card.currencyCost, balance =>
+                        {
+                            CanvasLoading.Instance.Hide();
+                            User.current.wallet = balance;
+                            UpdateFromPlayerWallet();
+
+                            InfoPlayer.Instance.MarkAllCard();
+
+                            UpdateFromPlayerInventory();
+                        });
+                    }
+                },
+                new PopupDialog.PopupButton()
+                {
+                    text = "Nevermind",
+                    buttonColor = PopupDialog.PopupButtonColor.Plain,
+                    onClicked = () => { }
+                }
+            };
+
+            PopupDialog.Instance.Show("", "Really purchase " + card.title + " for " + card.currencyCost.ToString("n0") + " <sprite=0>?", buttons);
         }
 
         private void CallHandlePathNodeAction(bool isProceedAction)

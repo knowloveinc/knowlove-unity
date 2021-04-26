@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -17,8 +18,11 @@ namespace Knowlove.XPSystem
             InfoPlayer.Instance.statusPlayer.ChangedPlayerStatus += ChangeRank;
             gameObject.SetActive(false);
 
-            if (SceneManager.GetActiveScene().buildIndex == 1)
-                ChangeRank();
+            DOVirtual.DelayedCall(6f, () =>
+            {
+                if (SceneManager.GetActiveScene().buildIndex == 1)
+                    ChangeRank();
+            });            
         }
 
         private void OnDestroy()

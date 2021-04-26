@@ -114,7 +114,11 @@ namespace Knowlove
                 //turnIndex = 0;
                 NextTurn();
                 _gameStuff.GetSpecialCard();
-                InfoPlayer.Instance.CheckPlayWithThisPlayers();
+
+                DOVirtual.DelayedCall(2f, () =>
+                {
+                    InfoPlayer.Instance.CheckPlayWithThisPlayers();
+                });               
             }
             else
                 Debug.LogError("Current Room == null ????");

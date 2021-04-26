@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using Photon.Realtime;
-using Photon.Pun;
 using UnityEngine;
 using static Knowlove.TurnManager;
 using Knowlove.UI;
@@ -150,59 +149,23 @@ namespace Knowlove.ActionAndPathLogic
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
 
             if (_protectedFromSingleAllGame)
-            {
-                string text = "You have protected all game";
-                PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
-                {
-                    text = "Okay",
-                    onClicked = () =>
-                    {
-                        DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
-                    }
-                };
-
-                ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
-            }
+                ProtectedFromSingle(currentPlayer, "You have protected all game");
             else if (_protectedFromSingleInMarriage && IsMarriage)
-            {
-                string text = "You have protected in marriage ring";
-                PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
-                {
-                    text = "Okay",
-                    onClicked = () =>
-                    {
-                        DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
-                    }
-                };
-
-                ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
-            }
+                ProtectedFromSingle(currentPlayer, "You have protected in marriage ring");
             else if(_protectedFromSingleInRelationship && IsRelationship)
-            {
-                string text = "You have protected in relationship.";
-                PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
-                {
-                    text = "Okay",
-                    onClicked = () =>
-                    {
-                        DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
-                    }
-                };
-
-                ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
-            }
+                ProtectedFromSingle(currentPlayer, "You have protected in relationship.");
             else if (_avoidSingleCards > 0)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
-                    ShowAvoidCardPrompts(_diceCount, playerBoardPiece, currentPlayer);
+                    ShowAvoidCardPrompts(playerBoardPiece, currentPlayer);
                 });
             }
             else if (_wallet > 0 && _avoidSingleCards == 0 && IsDaring)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
-                    ShowOfferToBuyCard(_diceCount, playerBoardPiece, currentPlayer, action);
+                    ShowOfferToBuyCard(playerBoardPiece, currentPlayer, action);
                 });
             }
             else
@@ -217,6 +180,7 @@ namespace Knowlove.ActionAndPathLogic
                 });
             }
 
+            playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
             playerProperties["diceCount"] = _diceCount;
             currentPlayer.SetCustomProperties(playerProperties);
         }
@@ -226,59 +190,23 @@ namespace Knowlove.ActionAndPathLogic
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
 
             if (_protectedFromSingleAllGame)
-            {
-                string text = "You have protected all game";
-                PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
-                {
-                    text = "Okay",
-                    onClicked = () =>
-                    {
-                        DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
-                    }
-                };
-
-                ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
-            }
+                ProtectedFromSingle(currentPlayer, "You have protected all game");
             else if (_protectedFromSingleInMarriage && IsMarriage)
-            {
-                string text = "You have protected in marriage ring";
-                PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
-                {
-                    text = "Okay",
-                    onClicked = () =>
-                    {
-                        DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
-                    }
-                };
-
-                ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
-            }
+                ProtectedFromSingle(currentPlayer, "You have protected in marriage ring");
             else if (_protectedFromSingleInRelationship && IsRelationship)
-            {
-                string text = "You have protected in relationship.";
-                PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
-                {
-                    text = "Okay",
-                    onClicked = () =>
-                    {
-                        DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
-                    }
-                };
-
-                ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
-            }
+                ProtectedFromSingle(currentPlayer, "You have protected in relationship.");
             else if (_avoidSingleCards > 0)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
-                    ShowAvoidCardPrompts(_diceCount, playerBoardPiece, currentPlayer);
+                    ShowAvoidCardPrompts(playerBoardPiece, currentPlayer);
                 });
             }
             else if (_wallet > 0 && _avoidSingleCards == 0 && IsDaring)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
-                    ShowOfferToBuyCard(_diceCount, playerBoardPiece, currentPlayer, action);
+                    ShowOfferToBuyCard(playerBoardPiece, currentPlayer, action);
                 });
             }
             else
@@ -299,10 +227,11 @@ namespace Knowlove.ActionAndPathLogic
             _turnBank -= 1;
 
             playerProperties["turnBank"] = _turnBank;
+            playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
             currentPlayer.SetCustomProperties(playerProperties);
         }
 
-        private void ShowOfferToBuyCard(int diceCount, BoardPiece playerBoardPiece, Player currentPlayer, ProceedAction action)
+        private void ShowOfferToBuyCard(BoardPiece playerBoardPiece, Player currentPlayer, ProceedAction action)
         {
             string textPromps = "Do you want to save the relationship by investing in self-improvement unstead?";
 
@@ -329,10 +258,7 @@ namespace Knowlove.ActionAndPathLogic
                     buttonColor = PopupDialog.PopupButtonColor.Plain,
                     onClicked = () =>
                     {
-                        diceCount = 1;
-                        playerBoardPiece.GoHome(currentPlayer);
-                        _protectedFromSingleInRelationship = false;
-                        _turnManager.EndTurn();
+                        GoHome(playerBoardPiece, currentPlayer);
                     }
                 }
             };
@@ -340,7 +266,7 @@ namespace Knowlove.ActionAndPathLogic
             ChoicedOfPlayer?.Invoke(textPromps, buttons, currentPlayer, 0, false);
         }
 
-        private void ShowAvoidCardPrompts(int diceCount, BoardPiece playerBoardPiece, Player currentPlayer)
+        private void ShowAvoidCardPrompts(BoardPiece playerBoardPiece, Player currentPlayer)
         {
             string textPromps = "Do you want to use the card Avoid To Single?";
 
@@ -362,14 +288,12 @@ namespace Knowlove.ActionAndPathLogic
                     buttonColor = PopupDialog.PopupButtonColor.Plain,
                     onClicked = () =>
                     {
-                        diceCount = 1;
-                        _protectedFromSingleInRelationship = false;
-                        playerBoardPiece.GoHome(currentPlayer);
+                        GoHome(playerBoardPiece, currentPlayer);
                     }
                 }
             };
 
-            ChoicedOfPlayer?.Invoke(textPromps, buttons, currentPlayer);
+            ChoicedOfPlayer?.Invoke(textPromps, buttons, currentPlayer);           
         }
 
         private void LoseTurns(int count)
@@ -378,6 +302,32 @@ namespace Knowlove.ActionAndPathLogic
             _turnBank -= count;
 
             DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });            
+        }
+
+        private void ProtectedFromSingle(Player currentPlayer, string textBtn)
+        {            
+            PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
+            {
+                text = "Okay",
+                onClicked = () =>
+                {
+                    DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
+                }
+            };
+
+            ChoicedOfPlayer?.Invoke(textBtn, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
+        }
+
+        private void GoHome(BoardPiece playerBoardPiece, Player currentPlayer)
+        {
+            ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
+
+            _diceCount = 1;
+            _protectedFromSingleInRelationship = false;
+            playerBoardPiece.GoHome(currentPlayer);
+
+            playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
+            currentPlayer.SetCustomProperties(playerProperties);
         }
     }
 }
