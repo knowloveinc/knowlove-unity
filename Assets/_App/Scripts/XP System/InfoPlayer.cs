@@ -211,7 +211,7 @@ namespace Knowlove.XPSystem
                 string info = PlayerPrefs.GetString(_playersStatePrefsName);
                 JsonUtility.FromJsonOverwrite(info, _playersState);
 
-                DOVirtual.DelayedCall(1f, () =>
+                DOVirtual.DelayedCall(2f, () =>
                 {
                     СheckAvailabilityPlayer();
                 });              

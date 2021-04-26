@@ -43,7 +43,7 @@ namespace Knowlove.UI
         {
             get
             {
-                if(id == "cards" && isHasAllCards)
+                if(id == "cards" && IsHasAllCards)
                     return 1;
 
                 InventoryItem foundItem = User.current.inventory.FirstOrDefault(x => x.itemId == this.id);
@@ -54,12 +54,12 @@ namespace Knowlove.UI
             }
         }
 
-        public bool owned
+        public bool Owned
         {
             get => !canOwnMultiple && amountOwned >= 1;
         }
 
-        public bool isHasAllCards
+        public bool IsHasAllCards
         {
             get => InfoPlayer.Instance.CheckMarkAllCard();
         }
@@ -82,14 +82,15 @@ namespace Knowlove.UI
             else
             {
                 Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
-            }               
+            }
+
+            UpdateCard();
         }
 
         internal void UpdateCard()
         {
             if (isIAP)
             {
-                Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
                 titleLabel?.SetText(title);
                 descLabel?.SetText("Get it now!");
             }
@@ -107,12 +108,12 @@ namespace Knowlove.UI
 
             if (!isIAP)
             {
-                Debug.Log("Setting price text: isOwned? " + owned.ToString());
+                Debug.Log("Setting price text: isOwned? " + Owned.ToString());
 
                 if(id == "cards")
-                    priceLabel.text = isHasAllCards ? "OWNED" : currencyCost.ToString("n0") + " <sprite=0>";
+                    priceLabel.text = IsHasAllCards ? "OWNED" : currencyCost.ToString("n0") + " <sprite=0>";
                 else
-                    priceLabel.text = owned ? "OWNED" : currencyCost.ToString("n0") + " <sprite=0>";
+                    priceLabel.text = Owned ? "OWNED" : currencyCost.ToString("n0") + " <sprite=0>";
             }
             else
             {
