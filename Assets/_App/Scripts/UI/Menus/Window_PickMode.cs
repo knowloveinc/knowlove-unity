@@ -30,9 +30,8 @@ namespace Knowlove.UI.Menus
             if (!PlayerPrefs.HasKey("IsSaveDate") && User.current != null)
             {
                 CanvasLoading.Instance.Show();
-                DOVirtual.DelayedCall(2f, () =>
+                DOVirtual.DelayedCall(1.5f, () =>
                 {
-                    CanvasLoading.Instance.Hide();
                     InfoPlayer.Instance.FromJSONPlayerInfo();
                 });
             }

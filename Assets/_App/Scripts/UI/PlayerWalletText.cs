@@ -17,7 +17,8 @@ namespace Knowlove.UI
         // Update is called once per frame
         void LateUpdate()
         {
-            walletText.text = User.current.wallet.ToString("n0") + " <sprite=0>";
+            if(walletText != null && User.current != null)
+                walletText.text = User.current.wallet.ToString("n0") + " <sprite=0>";
         }
     }
 }

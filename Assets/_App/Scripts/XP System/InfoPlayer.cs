@@ -3,6 +3,7 @@ using GameBrewStudios.Networking;
 using Photon.Pun;
 using DG.Tweening;
 using UnityEngine;
+using Knowlove.UI;
 
 namespace Knowlove.XPSystem 
 {
@@ -72,6 +73,7 @@ namespace Knowlove.XPSystem
                     if (_playersState.playerXPs[i].playerName.ToLower() == user.displayName.ToLower())
                     {
                         _currentPlayer = i;
+                        CanvasLoading.Instance.Hide();
                         return;
                     }
                 }
@@ -92,6 +94,7 @@ namespace Knowlove.XPSystem
                 _currentPlayer = _playersState.playerXPs.Count - 1;
 
                 JSONPlayerInfo();
+                CanvasLoading.Instance.Hide();
             });           
         }
 
@@ -211,10 +214,15 @@ namespace Knowlove.XPSystem
                 string info = PlayerPrefs.GetString(_playersStatePrefsName);
                 JsonUtility.FromJsonOverwrite(info, _playersState);
 
-                DOVirtual.DelayedCall(2f, () =>
+                DOVirtual.DelayedCall(1.5f, () =>
                 {
+                    //CanvasLoading.Instance.Hide();
                     СheckAvailabilityPlayer();
                 });              
+            }
+            else
+            {
+                CreateNewPlayer();
             }
         }
     }
