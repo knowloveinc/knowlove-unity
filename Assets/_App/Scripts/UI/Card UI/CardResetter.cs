@@ -25,6 +25,9 @@ namespace Knowlove.UI
 
         private void Update()
         {
+            if (!_cardUI.IsShowCard && !_maps.gameObject.activeSelf)
+                ReturnStartPos();
+
             if (DOTween.IsTweening(gameObject, true)) return;
             else
             {

@@ -171,6 +171,9 @@ namespace Knowlove.ActionAndPathLogic
                 {
                     _protectedFromSingleInRelationship = false;
                     piece.GoHome(currentPlayer);
+
+                    playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
+                    currentPlayer.SetCustomProperties(playerProperties);
                 }
             };
 
@@ -204,13 +207,13 @@ namespace Knowlove.ActionAndPathLogic
                 {
                     _protectedFromSingleInRelationship = false;
                     piece.GoHome(currentPlayer);
+
+                    playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
+                    currentPlayer.SetCustomProperties(playerProperties);
                 }
             };
 
-            ChoicedOfPlayer?.Invoke(dialogText, new PopupDialog.PopupButton[] { yesBtn, noBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, true);
-
-            playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
-            currentPlayer.SetCustomProperties(playerProperties);
+            ChoicedOfPlayer?.Invoke(dialogText, new PopupDialog.PopupButton[] { yesBtn, noBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, true);           
         }
     }
 }

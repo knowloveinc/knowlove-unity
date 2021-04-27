@@ -115,17 +115,17 @@ namespace Knowlove.ActionAndPathLogic
                     });
                     break;
                 case ProceedAction.LoseATurn:
-                    LoseTurns(1);
+                    LoseTurns(1, currentPlayer);
 
                     OnFinished?.Invoke();
                     break;
                 case ProceedAction.LoseTwoTurns:
-                    LoseTurns(2);
+                    LoseTurns(2, currentPlayer);
 
                     OnFinished?.Invoke();
                     break;
                 case ProceedAction.LoseThreeTurns:
-                    LoseTurns(3);
+                    LoseTurns(3, currentPlayer);
 
                     OnFinished?.Invoke();
                     break;
@@ -158,7 +158,7 @@ namespace Knowlove.ActionAndPathLogic
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
-                    ShowAvoidCardPrompts(playerBoardPiece, currentPlayer);
+                    ShowAvoidCardPrompts(playerBoardPiece, currentPlayer, action);
                 });
             }
             else if (_wallet > 0 && _avoidSingleCards == 0 && IsDaring)
@@ -199,7 +199,7 @@ namespace Knowlove.ActionAndPathLogic
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
-                    ShowAvoidCardPrompts(playerBoardPiece, currentPlayer);
+                    ShowAvoidCardPrompts(playerBoardPiece, currentPlayer, action);
                 });
             }
             else if (_wallet > 0 && _avoidSingleCards == 0 && IsDaring)
@@ -219,21 +219,22 @@ namespace Knowlove.ActionAndPathLogic
                 {
                     _turnManager.EndTurn();
                 });
+
+                if (_turnBank > 0)
+                    _turnBank = 0;
+
+                _turnBank -= 1;
             }
 
-            if (_turnBank > 0) 
-                _turnBank = 0;
-
-            _turnBank -= 1;
-
             playerProperties["turnBank"] = _turnBank;
+            playerProperties["diceCount"] = _diceCount;
             playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
             currentPlayer.SetCustomProperties(playerProperties);
         }
 
         private void ShowOfferToBuyCard(BoardPiece playerBoardPiece, Player currentPlayer, ProceedAction action)
         {
-            string textPromps = "Do you want to save the relationship by investing in self-improvement unstead?";
+            string textPromps = "Do you want to save the relationship by investing in self-improvement instead?";
 
             PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
             {
@@ -258,7 +259,10 @@ namespace Knowlove.ActionAndPathLogic
                     buttonColor = PopupDialog.PopupButtonColor.Plain,
                     onClicked = () =>
                     {
-                        GoHome(playerBoardPiece, currentPlayer);
+                        if(action == ProceedAction.BackToSingleAndLoseATurn)
+                            GoHome(playerBoardPiece, currentPlayer, true);
+                        else
+                            GoHome(playerBoardPiece, currentPlayer, false);
                     }
                 }
             };
@@ -266,7 +270,7 @@ namespace Knowlove.ActionAndPathLogic
             ChoicedOfPlayer?.Invoke(textPromps, buttons, currentPlayer, 0, false);
         }
 
-        private void ShowAvoidCardPrompts(BoardPiece playerBoardPiece, Player currentPlayer)
+        private void ShowAvoidCardPrompts(BoardPiece playerBoardPiece, Player currentPlayer, ProceedAction action)
         {
             string textPromps = "Do you want to use the card Avoid To Single?";
 
@@ -288,7 +292,10 @@ namespace Knowlove.ActionAndPathLogic
                     buttonColor = PopupDialog.PopupButtonColor.Plain,
                     onClicked = () =>
                     {
-                        GoHome(playerBoardPiece, currentPlayer);
+                        if(action == ProceedAction.BackToSingleAndLoseATurn)
+                            GoHome(playerBoardPiece, currentPlayer, true);
+                        else
+                            GoHome(playerBoardPiece, currentPlayer, false);
                     }
                 }
             };
@@ -296,12 +303,17 @@ namespace Knowlove.ActionAndPathLogic
             ChoicedOfPlayer?.Invoke(textPromps, buttons, currentPlayer);           
         }
 
-        private void LoseTurns(int count)
+        private void LoseTurns(int count, Player currentPlayer)
         {
+            ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
+
             if (_turnBank > 0) _turnBank = 0;
             _turnBank -= count;
 
-            DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });            
+            DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
+
+            playerProperties["turnBank"] = _turnBank;
+            currentPlayer.SetCustomProperties(playerProperties);
         }
 
         private void ProtectedFromSingle(Player currentPlayer, string textBtn)
@@ -318,7 +330,7 @@ namespace Knowlove.ActionAndPathLogic
             ChoicedOfPlayer?.Invoke(textBtn, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
         }
 
-        private void GoHome(BoardPiece playerBoardPiece, Player currentPlayer)
+        private void GoHome(BoardPiece playerBoardPiece, Player currentPlayer, bool isLoseTurn)
         {
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
 
@@ -326,6 +338,16 @@ namespace Knowlove.ActionAndPathLogic
             _protectedFromSingleInRelationship = false;
             playerBoardPiece.GoHome(currentPlayer);
 
+            if (isLoseTurn)
+            {
+                if (_turnBank > 0)
+                    _turnBank = 0;
+
+                _turnBank -= 1;
+            }
+
+            playerProperties["turnBank"] = _turnBank;
+            playerProperties["diceCount"] = _diceCount;
             playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
             currentPlayer.SetCustomProperties(playerProperties);
         }

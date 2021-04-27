@@ -138,7 +138,6 @@ namespace Knowlove.UI
             //Only make the card clickable for the user who is taking their turn right now.
             if (PhotonNetwork.LocalPlayer.NickName == targetPlayer.NickName)
             {
-
                 lft.OnFinger.AddListener((finger) =>
                 {
                     Debug.Log("Attempted tap: " + finger.Index + " - " + LeanTouch.Fingers.Count);
@@ -210,18 +209,19 @@ namespace Knowlove.UI
         private void HideCard()
         {
             _isShowCard = false;
+            _leanSelectable.Deselect();     
 
             CanvasGroup cg = cardUIObj.GetComponent<CanvasGroup>();
-
-            if (cg.interactable == false) return; //This means we already started hiding it and dont need to do it again.
-
-            cg.interactable = false;
-            cg.blocksRaycasts = false;
 
             cardUIObj.DOAnchorPosY(-1080f, 0.25f).OnComplete(() =>
             {
                 Debug.Log("Card fully hidden.");
             });
+
+            if (cg.interactable == false) return; //This means we already started hiding it and dont need to do it again.
+
+            cg.interactable = false;
+            cg.blocksRaycasts = false;          
         }
 
         public PopupDialog.PopupButton[] GetPromptButtons(CardPromptButton[] cardButtons)

@@ -1,6 +1,5 @@
 ﻿using GameBrewStudios;
 using GameBrewStudios.Networking;
-using Knowlove.UI;
 using System;
 using UnityEngine;
 
@@ -11,6 +10,7 @@ namespace Knowlove.XPSystem
         private const string idAvoidSingleCard = "avoidSingle";
 
         public Action ChangedPlayerStatus;
+        public Action<int> RewardedPlayer;
 
         public void CheckPlayerStatus()
         {
@@ -90,46 +90,29 @@ namespace Knowlove.XPSystem
 
         private void GetReward(string status)
         {
-            string text = "";
-            string title = "Сongratulate!!!";
-
-            PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
-            {
-                new PopupDialog.PopupButton()
-                {
-                    text = "Okey",
-                    buttonColor = PopupDialog.PopupButtonColor.Plain,
-                    onClicked = () =>{ }
-                }
-            };
-
             switch (status)
             {
                 case "bronze":
                     AddCardFromServer(1);
-                    title += " You get Bronze status";
-                    text += "You have reached Bronze status and received one \"Avoid To Single\" card.";
                     InfoPlayer.Instance.PlayerState.isBronzeStatus = true;
+                    RewardedPlayer?.Invoke(0);
                     break;
                 case "silver":
                     AddCardFromServer(2);
                     InfoPlayer.Instance.PlayerState.ProtectedFromBackToSingleInMarriagePerGame = true;
                     InfoPlayer.Instance.PlayerState.isSilverStatus = true;
-                    title += " You get Silver status";
-                    text += "You have reached Silver status and received two \"Avoid To Single\" card. \n Cheating Landing spaces in Marriage Phase deactivated per game.";
+                    RewardedPlayer?.Invoke(1);
                     break;
                 case "gold":
                     AddCardFromServer(3);
                     InfoPlayer.Instance.PlayerState.ProtectedFromBackToSinglePerGame = true;
                     InfoPlayer.Instance.PlayerState.isGoldStatus = true;
-                    title += " You get Gold status";
-                    text += "You have reached Silver status and received three \"Avoid To Single\" card. \n All Cheating Landing spaces deactivated per game.";
+                    RewardedPlayer?.Invoke(2);
                     break;
                 default:
                     break;
             }
 
-            PopupDialog.Instance.Show(title, text, buttons);
             ChangedPlayerStatus?.Invoke();
         }
 

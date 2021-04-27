@@ -83,7 +83,11 @@ namespace Knowlove.FlipTheTableLogic
         [PunRPC]
         private void RPC_FlipTable()
         {
-            CheckSomeAction();
+            DOVirtual.DelayedCall(0.15f, () =>
+            {
+                CheckSomeAction();
+            });
+            
             StartedFlipTable?.Invoke(false);
             CameraManager.Instance.SetCamera(cameraNumber);
 
@@ -93,7 +97,7 @@ namespace Knowlove.FlipTheTableLogic
                 _flipObjects[i].SetPiecePosition();
             }
 
-            DOVirtual.DelayedCall(0.5f, () => 
+            DOVirtual.DelayedCall(0.6f, () => 
             {
                 for (int i = _flipObjects.Length - 1; i > _flipObjects.Length - 3; i--)
                 {

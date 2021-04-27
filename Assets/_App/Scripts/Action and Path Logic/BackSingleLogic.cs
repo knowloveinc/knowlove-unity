@@ -81,7 +81,7 @@ namespace Knowlove.ActionAndPathLogic
                 ChoicedOfPlayer?.Invoke(_buttonText, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
             else
             {
-                if (_avoidSingleCards == 0 && _wallet == 0 && !IsNotDaring && !_protectedFromSingleAllGame && !(IsMarriage && _protectedFromSingleInMarriage) && !(_protectedFromSingleInRelationship && IsRelationship))
+                if (_avoidSingleCards == 0 && !(_wallet > 0 && IsNotDaring) && !_protectedFromSingleAllGame && !(IsMarriage && _protectedFromSingleInMarriage) && !(_protectedFromSingleInRelationship && IsRelationship))
                     DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
             }
 
@@ -149,6 +149,9 @@ namespace Knowlove.ActionAndPathLogic
                         _protectedFromSingleInRelationship = false;
                         piece.GoHome(currentPlayer);
                         _turnManager.EndTurn();
+
+                        playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
+                        currentPlayer.SetCustomProperties(playerProperties);
                     }
                 };
 
@@ -162,9 +165,6 @@ namespace Knowlove.ActionAndPathLogic
                     _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
                 });
             }
-
-            playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
-            currentPlayer.SetCustomProperties(playerProperties);
 
             return buttons;
         }
@@ -225,12 +225,12 @@ namespace Knowlove.ActionAndPathLogic
                     {
                         _turnManager.EndTurn();
                     });
+
+                    playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
+                    currentPlayer.SetCustomProperties(playerProperties);
                 }
 
             }
-
-            playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
-            currentPlayer.SetCustomProperties(playerProperties);
 
             return buttons;
         }

@@ -70,8 +70,8 @@ namespace Knowlove.UI
 
             bottomButton.onClick.AddListener(() =>
             {
-                mapWindow.SetActive(false);
-                mapButton.SetActive(false);
+                photonView.RPC(nameof(TurnOffMap), RpcTarget.All);
+                
                 _rollDiceLogic.RollDice(diceCount, "board");
 
                 bottomButton.interactable = false;
@@ -93,6 +93,13 @@ namespace Knowlove.UI
             mapWindow.SetActive(false);
             mapButton.SetActive(true);
             bottomPanel.DOAnchorPosY(-bottomPanel.sizeDelta.y, 0.5f);
+        }
+
+        [PunRPC]
+        private void TurnOffMap()
+        {
+            mapWindow.SetActive(false);
+            mapButton.SetActive(false);
         }
     }
 }
