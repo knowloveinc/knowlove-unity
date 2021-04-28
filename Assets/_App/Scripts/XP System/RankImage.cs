@@ -7,13 +7,13 @@ namespace Knowlove.XPSystem
 {
     public class RankImage : MonoBehaviour
     {
-        private Image _rankImage;
+        [SerializeField] private AnimationClip[] _ranks;
 
-        [SerializeField] private Sprite[] _ranksSprite;
+        private Animator _animatorRanks;
 
         private void Start()
         {
-            _rankImage = GetComponent<Image>();            
+            _animatorRanks = GetComponent<Animator>();           
 
             InfoPlayer.Instance.statusPlayer.ChangedPlayerStatus += ChangeRank;
             gameObject.SetActive(false);
@@ -37,17 +37,17 @@ namespace Knowlove.XPSystem
             if (playerXP.isBronzeStatus && !playerXP.isSilverStatus && !playerXP.isGoldStatus)
             {
                 gameObject.SetActive(true);
-                _rankImage.sprite = _ranksSprite[0];
+                _animatorRanks.CrossFade(_ranks[0].name, 0);
             }
             else if (playerXP.isSilverStatus && !playerXP.isGoldStatus)
             {
                 gameObject.SetActive(true);
-                _rankImage.sprite = _ranksSprite[1];
+                _animatorRanks.CrossFade(_ranks[1].name, 0);
             }
             else if (playerXP.isGoldStatus)
             {
                 gameObject.SetActive(true);
-                _rankImage.sprite = _ranksSprite[2];
+                _animatorRanks.CrossFade(_ranks[2].name, 0);
             }
             else
                 gameObject.SetActive(false);

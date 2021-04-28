@@ -318,6 +318,11 @@ PrefabInstance:
 
 '
       objectReference: {fileID: 0}
+    - target: {fileID: 7719697998912196149, guid: b9d4d4993a0c3fb4b860824caeafc922,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 820
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9d4d4993a0c3fb4b860824caeafc922, type: 3}
 --- !u!1 &8872874556155776882 stripped
@@ -473,6 +478,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4574255724725320440, guid: 9e8506f74d10ead488f07ac2538da847,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 820
       objectReference: {fileID: 0}
     - target: {fileID: 4574255724725320441, guid: 9e8506f74d10ead488f07ac2538da847,
         type: 3}
@@ -653,6 +663,11 @@ PrefabInstance:
       value: 'Congratulations
 
 '
+      objectReference: {fileID: 0}
+    - target: {fileID: 3870769683085193413, guid: a1f9c709a2dab8d43b3463c7bbebe47f,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 820
       objectReference: {fileID: 0}
     - target: {fileID: 5594845926885172498, guid: a1f9c709a2dab8d43b3463c7bbebe47f,
         type: 3}

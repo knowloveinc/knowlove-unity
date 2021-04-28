@@ -221,9 +221,7 @@ namespace Knowlove.XPSystem
                 });              
             }
             else
-            {
-                CreateNewPlayer();
-            }
+                СheckAvailabilityPlayer();
         }
     }
 }
