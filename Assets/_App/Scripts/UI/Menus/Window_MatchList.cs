@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DG.Tweening;
+using Newtonsoft.Json;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
@@ -34,6 +35,7 @@ namespace Knowlove.UI.Menus
         {
             NetworkManager.OnPhotonConnected += this.GetRoomList;
             NetworkManager.OnRoomListUpdated += this.NetworkManager_OnRoomListUpdated;
+            PopulateList();
 
             base.Show();
         }
@@ -122,6 +124,10 @@ namespace Knowlove.UI.Menus
         public void PopulateList()
         {
             Debug.Log("Populating room list...");
+
+            if (scrollRect.content == null)
+                return;
+
             CanvasLoading.Instance.Show();
 
             foreach (Transform child in scrollRect.content)
@@ -132,9 +138,17 @@ namespace Knowlove.UI.Menus
 
             if (NetworkManager.Instance.roomList != null && NetworkManager.Instance.roomList.Count > 0)
             {
+                int countRoom = 0;
                 noRoomsMessage.SetActive(false);
                 foreach (RoomInfo ri in NetworkManager.Instance.roomList)
                 {
+                    if (ri.PlayerCount == 0)
+                    {
+                        countRoom++;
+                        continue;
+                    }
+                        
+
                     Debug.Log($"Room found: {ri.Name}");
                     Debug.Log($"Room Data: {JsonConvert.SerializeObject(ri)}");
 
@@ -165,6 +179,9 @@ namespace Knowlove.UI.Menus
                         OnRoomSelected(roomInfo);
                     });
                 }
+
+                if(countRoom == NetworkManager.Instance.roomList.Count)
+                    noRoomsMessage.SetActive(true);
             }
             else
             {
@@ -224,8 +241,11 @@ namespace Knowlove.UI.Menus
 
         private void NetworkManager_OnRoomListUpdated()
         {
-            PopulateList();
-            scrollRect.EndRefreshing();
+            DOVirtual.DelayedCall(0.25f, () =>
+            {
+                PopulateList();
+                scrollRect.EndRefreshing();
+            });            
         }
     }
 }
