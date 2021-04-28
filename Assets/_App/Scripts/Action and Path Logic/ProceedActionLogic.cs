@@ -130,6 +130,7 @@ namespace Knowlove.ActionAndPathLogic
                     break;
                 case ProceedAction.Nothing:
                     _turnManager.EndTurn();
+                    OnFinished?.Invoke();
                     break;
                 default:
                     _turnManager.EndTurn();

@@ -86,6 +86,7 @@ namespace Knowlove.ActionAndPathLogic
                     piece.GoHome(currentPlayer);
                     _diceCount = 1;
                     _protectedFromSingleInRelationship = false;
+
                     DOVirtual.DelayedCall(1f, () =>
                     {
                         _turnManager.EndTurn();

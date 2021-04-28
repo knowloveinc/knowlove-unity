@@ -221,11 +221,6 @@ namespace Knowlove.ActionAndPathLogic
                     _protectedFromSingleInRelationship = false;
                     piece.GoHome(currentPlayer);
 
-                    DOVirtual.DelayedCall(1f, () =>
-                    {
-                        _turnManager.EndTurn();
-                    });
-
                     playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
                     currentPlayer.SetCustomProperties(playerProperties);
                 }
