@@ -4,6 +4,7 @@ using Photon.Pun;
 using DG.Tweening;
 using UnityEngine;
 using Knowlove.UI;
+using System;
 
 namespace Knowlove.XPSystem 
 {
@@ -20,6 +21,8 @@ namespace Knowlove.XPSystem
 
         private int _currentPlayer;
         private bool _isHaveUser;
+
+        public Action SettedPlayer;
 
         public PlayerXP PlayerState
         {
@@ -51,14 +54,20 @@ namespace Knowlove.XPSystem
         private void OnDestroy()
         {
             JSONPlayerInfo();
+            PlayerPrefs.DeleteKey("IsSaveDate");
         }
 
         public void СheckAvailabilityPlayer()
         {
             if (_isHaveUser)
+            {
+                CanvasLoading.Instance.Hide();
                 return;
+            }                
             else
                 _isHaveUser = true;
+
+            PlayerPrefs.SetInt("IsSaveDate", 0);
 
             if (_playersState.playerXPs.Count == 0)
             {
@@ -73,6 +82,7 @@ namespace Knowlove.XPSystem
                     if (_playersState.playerXPs[i].playerName.ToLower() == user.displayName.ToLower())
                     {
                         _currentPlayer = i;
+                        SettedPlayer?.Invoke();
                         CanvasLoading.Instance.Hide();
                         return;
                     }
@@ -94,6 +104,7 @@ namespace Knowlove.XPSystem
                 _currentPlayer = _playersState.playerXPs.Count - 1;
 
                 JSONPlayerInfo();
+                SettedPlayer?.Invoke();
                 CanvasLoading.Instance.Hide();
             });           
         }

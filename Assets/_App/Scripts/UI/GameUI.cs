@@ -90,26 +90,29 @@ namespace Knowlove.UI
         {
             CanvasLoading.Instance.ForceHide();
 
-            APIManager.GetUserDetails((user) =>
+            DOVirtual.DelayedCall(0.25f, () =>
             {
-                if (user.nonNegotiableList.Count > 0)
+                APIManager.GetUserDetails((user) =>
                 {
-                    _listCardUIObjs[0].gameObject.SetActive(false);
-                    _listCardUIObjs[1].gameObject.SetActive(false);
+                    if (user.nonNegotiableList.Count > 0)
+                    {
+                        _listCardUIObjs[0].gameObject.SetActive(false);
+                        _listCardUIObjs[1].gameObject.SetActive(false);
 
-                    selectedCard.text = "He or She... \n";
+                        selectedCard.text = "He or She... \n";
 
-                    for (int i = 0; i < user.nonNegotiableList.Count; i++)
-                        selectedCard.text += ("- " + user.nonNegotiableList[i] + "\n");
+                        for (int i = 0; i < user.nonNegotiableList.Count; i++)
+                            selectedCard.text += ("- " + user.nonNegotiableList[i] + "\n");
 
-                    ShowCardPickerPanel();
-                }
-                else
-                {
-                    selectedCard = listCards[UnityEngine.Random.Range(0, listCards.Length)];
-                    ShowCardPickerPanel();
-                }
-            });     
+                        ShowCardPickerPanel();
+                    }
+                    else
+                    {
+                        selectedCard = listCards[UnityEngine.Random.Range(0, listCards.Length)];
+                        ShowCardPickerPanel();
+                    }
+                });
+            });             
         }
 
         public void ShowCardPickerPanel()

@@ -1,6 +1,5 @@
 ﻿using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 namespace Knowlove.XPSystem
@@ -16,6 +15,7 @@ namespace Knowlove.XPSystem
             _animatorRanks = GetComponent<Animator>();           
 
             InfoPlayer.Instance.statusPlayer.ChangedPlayerStatus += ChangeRank;
+            InfoPlayer.Instance.SettedPlayer += ChangeRank;
             gameObject.SetActive(false);
 
             DOVirtual.DelayedCall(6f, () =>
@@ -28,6 +28,7 @@ namespace Knowlove.XPSystem
         private void OnDestroy()
         {
             InfoPlayer.Instance.statusPlayer.ChangedPlayerStatus -= ChangeRank;
+            InfoPlayer.Instance.SettedPlayer -= ChangeRank;
         }
 
         public void ChangeRank()

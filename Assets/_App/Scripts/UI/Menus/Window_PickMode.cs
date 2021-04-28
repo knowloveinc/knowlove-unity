@@ -24,13 +24,13 @@ namespace Knowlove.UI.Menus
             
             DOVirtual.DelayedCall(4f, () =>
             {
-                _rankImage.ChangeRank();
+                //_rankImage.ChangeRank();
             });
 
             if (!PlayerPrefs.HasKey("IsSaveDate") && User.current != null)
             {
                 CanvasLoading.Instance.Show();
-                DOVirtual.DelayedCall(1.5f, () =>
+                DOVirtual.DelayedCall(2f, () =>
                 {
                     InfoPlayer.Instance.FromJSONPlayerInfo();
                 });

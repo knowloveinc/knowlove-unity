@@ -102,7 +102,7 @@ namespace Knowlove.ActionAndPathLogic
         {
             if (!skipPrompt)
             {
-                text += newText;
+                text = newText;
                 PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
                 {
                     text = "Okay",

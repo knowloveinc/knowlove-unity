@@ -67,7 +67,7 @@ namespace Knowlove.FlipTheTableLogic
             {
                 photonView.RPC(nameof(RPC_FlipTable), RpcTarget.AllBufferedViaServer);
 
-                DOVirtual.DelayedCall(5f, () =>
+                DOVirtual.DelayedCall(5.5f, () =>
                 {
                     CollectTable();
                 });
@@ -83,22 +83,22 @@ namespace Knowlove.FlipTheTableLogic
         [PunRPC]
         private void RPC_FlipTable()
         {
-            DOVirtual.DelayedCall(0.15f, () =>
-            {
-                CheckSomeAction();
-            });
-            
-            StartedFlipTable?.Invoke(false);
             CameraManager.Instance.SetCamera(cameraNumber);
 
-            for (int i = 0; i < _flipObjects.Length - 2; i++)
+            DOVirtual.DelayedCall(0.3f, () =>
             {
-                _flipObjects[i].SetActiveKinematic(false);
-                _flipObjects[i].SetPiecePosition();
-            }
+                CheckSomeAction();
+                StartedFlipTable?.Invoke(false);                              
+            });
 
-            DOVirtual.DelayedCall(0.6f, () => 
+            DOVirtual.DelayedCall(0.7f, () =>
             {
+                for (int i = 0; i < _flipObjects.Length - 2; i++)
+                {
+                    _flipObjects[i].SetPiecePosition();
+                    _flipObjects[i].SetActiveKinematic(false);
+                }
+
                 for (int i = _flipObjects.Length - 1; i > _flipObjects.Length - 3; i--)
                 {
                     _flipObjects[i].SetActiveKinematic(false);
@@ -109,7 +109,7 @@ namespace Knowlove.FlipTheTableLogic
                 {
                     _flipObjects[i].TakeForceOnObject();
                 }
-            }); 
+            });
         }
 
         [PunRPC]

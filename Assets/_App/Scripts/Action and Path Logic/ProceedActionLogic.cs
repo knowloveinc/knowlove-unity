@@ -77,7 +77,6 @@ namespace Knowlove.ActionAndPathLogic
                     });
 
                     break;
-
                 case ProceedAction.BackToSingle:
                     BackToSingle(action, currentPlayer, playerBoardPiece);
 
