@@ -3,6 +3,8 @@ using DG.Tweening;
 using Photon.Pun;
 using System;
 using Knowlove.UI;
+using Photon.Realtime;
+using GameBrewStudios;
 
 namespace Knowlove.FlipTheTableLogic
 {
@@ -25,6 +27,7 @@ namespace Knowlove.FlipTheTableLogic
         private bool[] _isMoveFinish;
         private bool _isMove;
         private bool _isPopup;
+        private bool[] _players;
 
         public Action<bool> StartedFlipTable;
 
@@ -52,6 +55,8 @@ namespace Knowlove.FlipTheTableLogic
             {
                 _isMoveFinish[i] = false;
             }
+
+            _players = new bool[NetworkManager.Instance.players.Count];
         }
 
         private void FixedUpdate()
@@ -60,7 +65,6 @@ namespace Knowlove.FlipTheTableLogic
                 CollectTable();
         }
 
-        [ContextMenu("Flip")]
         public void FlipTable()
         {
             if (!_isMove)
@@ -74,7 +78,6 @@ namespace Knowlove.FlipTheTableLogic
             }      
         }
 
-        [ContextMenu("CollectFlip")]
         public void CollectTable()
         {
             photonView.RPC(nameof(RPC_CollectTable), RpcTarget.AllBufferedViaServer);
@@ -84,6 +87,7 @@ namespace Knowlove.FlipTheTableLogic
         private void RPC_FlipTable()
         {
             CameraManager.Instance.SetCamera(cameraNumber);
+            SetPlayersArray(false);
 
             DOVirtual.DelayedCall(0.3f, () =>
             {
@@ -145,8 +149,8 @@ namespace Knowlove.FlipTheTableLogic
                     continue;
                 }
 
-                _flipObjects[i].transform.position = Vector3.MoveTowards(_flipObjects[i].transform.position, _flipObjects[i].StartPosition, speed * Time.deltaTime);
-                _flipObjects[i].transform.rotation = Quaternion.RotateTowards(_flipObjects[i].transform.rotation, _flipObjects[i].RotationPosition, speed * Time.deltaTime * 300);
+                _flipObjects[i].transform.position = Vector3.MoveTowards(_flipObjects[i].transform.position, _flipObjects[i].StartPosition, speed * Time.deltaTime * 1.5f);
+                _flipObjects[i].transform.rotation = Quaternion.RotateTowards(_flipObjects[i].transform.rotation, _flipObjects[i].RotationPosition, speed * Time.deltaTime * 400);
             }
         }
 
@@ -192,10 +196,52 @@ namespace Knowlove.FlipTheTableLogic
                 _isMoveFinish[i] = false;
             }
 
-            ReturnAction();
-            StartedFlipTable?.Invoke(true);
             _isMove = false;
             Physics.IgnoreLayerCollision(10, 10, false);
+
+            int number = 0;
+
+            foreach(Player player in NetworkManager.Instance.players)
+            {
+                if (player == PhotonNetwork.LocalPlayer)
+                    break;
+                else
+                    number++;
+            }
+
+            photonView.RPC(nameof(WaitAllPlayer), RpcTarget.MasterClient, number);
+        }
+
+        [PunRPC]
+        private void WaitAllPlayer(int number)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+                return;
+
+            _players[number] = true;
+
+            for(int i = 0; i < _players.Length; i++)
+            {
+                if (!_players[i])
+                    return;
+            }
+
+            photonView.RPC(nameof(EndWait), RpcTarget.All);
+        }
+
+        [PunRPC]
+        private void EndWait()
+        {
+            ReturnAction();
+            StartedFlipTable?.Invoke(true);
+        }
+
+        private void SetPlayersArray(bool isWait)
+        {
+            for(int i = 0; i < _players.Length; i++)
+            {
+                _players[i] = isWait;
+            }
         }
     }
 }

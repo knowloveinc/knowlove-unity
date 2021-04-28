@@ -271,6 +271,9 @@ namespace Knowlove
             if (PhotonNetwork.IsMasterClient && turnState != TurnState.GameOver && turnState != TurnState.TurnEnding)
             {
 
+                if (turnIndex >= NetworkManager.Instance.players.Count)
+                    return;
+
                 if (NetworkManager.Instance.players[turnIndex].IsInactive)
                     turnTimer -= Time.deltaTime;
                 else

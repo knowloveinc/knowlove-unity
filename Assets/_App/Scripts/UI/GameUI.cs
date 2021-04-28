@@ -90,7 +90,7 @@ namespace Knowlove.UI
         {
             CanvasLoading.Instance.ForceHide();
 
-            DOVirtual.DelayedCall(0.25f, () =>
+            DOVirtual.DelayedCall(1f, () =>
             {
                 APIManager.GetUserDetails((user) =>
                 {

@@ -16,6 +16,8 @@ namespace Knowlove.UI.Menus
 
         [SerializeField] private Window_WaitingForPlayers waitingWindow;
 
+        [SerializeField] private Window_MatchList _windowMatchList;
+
         public override void Show()
         {
             base.Show();
@@ -32,6 +34,12 @@ namespace Knowlove.UI.Menus
             if (password == passwordField.text)
             {
                 CanvasLoading.Instance.Show();
+
+                Hide();
+                _windowMatchList.Hide();
+                waitingWindow.Show();
+
+                CanvasLoading.Instance.Hide();
 
                 NetworkManager.OnJoinedRoomFinished += this.NetworkManager_OnJoinedRoomFinished;
                 PhotonNetwork.JoinRoom(this.roomToJoin.Name);

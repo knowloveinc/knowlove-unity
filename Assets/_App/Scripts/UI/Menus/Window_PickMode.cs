@@ -29,8 +29,9 @@ namespace Knowlove.UI.Menus
 
             if (!PlayerPrefs.HasKey("IsSaveDate") && User.current != null)
             {
+                PlayerPrefs.SetInt("IsSaveDate", 0);
                 CanvasLoading.Instance.Show();
-                DOVirtual.DelayedCall(2f, () =>
+                DOVirtual.DelayedCall(1.5f, () =>
                 {
                     InfoPlayer.Instance.FromJSONPlayerInfo();
                 });

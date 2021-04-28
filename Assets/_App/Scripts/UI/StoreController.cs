@@ -146,11 +146,9 @@ namespace Knowlove.UI
                                     CanvasLoading.Instance.Show();
                                     APIManager.AddCurrency(-card.currencyCost, balance =>
                                     {
-                                        CanvasLoading.Instance.Hide();
                                         User.current.wallet = balance;
                                         UpdateFromPlayerWallet();                                        
                                             
-                                        CanvasLoading.Instance.Show();
                                         APIManager.AddItem(card.id, card.amountToGive, (inventory) =>
                                         {
                                             if(gameStuff != null)

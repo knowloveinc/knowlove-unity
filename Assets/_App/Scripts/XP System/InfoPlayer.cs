@@ -65,9 +65,7 @@ namespace Knowlove.XPSystem
                 return;
             }                
             else
-                _isHaveUser = true;
-
-            PlayerPrefs.SetInt("IsSaveDate", 0);
+                _isHaveUser = true;            
 
             if (_playersState.playerXPs.Count == 0)
             {
@@ -225,7 +223,7 @@ namespace Knowlove.XPSystem
                 string info = PlayerPrefs.GetString(_playersStatePrefsName);
                 JsonUtility.FromJsonOverwrite(info, _playersState);
 
-                DOVirtual.DelayedCall(1.5f, () =>
+                DOVirtual.DelayedCall(1f, () =>
                 {
                     //CanvasLoading.Instance.Hide();
                     СheckAvailabilityPlayer();

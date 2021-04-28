@@ -39,15 +39,25 @@ namespace Knowlove.XPSystem
                 needShare = 5;
                 needPeople = 10;
             }
-            
-
+                        
             int currentDatingCard = GetCard(player.datingCard);
             int currentRelatishipCard = GetCard(player.relationshipCard);
             int currentMarriageCard = GetCard(player.marriagepCard);
 
-            _playerWithPeople.text = player.countDifferentPlayers + " / " + needPeople;
-            _gameWin.text = player.winGame + " / " + needWin;
-            _shareApp.text = player.shareGame + " / " + needShare;
+
+            if (!player.isGoldStatus)
+            {
+                _playerWithPeople.text = player.countDifferentPlayers + " / " + needPeople;
+                _gameWin.text = player.winGame + " / " + needWin;
+                _shareApp.text = player.shareGame + " / " + needShare;
+            }
+            else
+            {
+                _playerWithPeople.text = player.countDifferentPlayers.ToString();
+                _gameWin.text = player.winGame.ToString();
+                _shareApp.text = player.shareGame.ToString();
+            }
+                
 
             _datingCard.text = currentDatingCard + " / " + player.datingCard.Length;
             _relationshipCard.text = currentRelatishipCard + " / " + player.relationshipCard.Length;

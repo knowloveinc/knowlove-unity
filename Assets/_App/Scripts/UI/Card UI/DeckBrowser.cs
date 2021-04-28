@@ -33,6 +33,8 @@ namespace Knowlove.UI
 
         [SerializeField] private TextMeshProUGUI walletLabels;
 
+        [SerializeField] private GameObject _lockImage;
+
         private int currentDeckIndex = 0;
         private string cardType;
         private bool _isLock;
@@ -50,7 +52,9 @@ namespace Knowlove.UI
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
             this.Hide();
-            LoadCards();            
+            LoadCards();
+
+            _lockImage.SetActive(false);
         }
 
         public override void Show()
@@ -129,29 +133,41 @@ namespace Knowlove.UI
             {
                 case "dating":
                     if (InfoPlayer.Instance.PlayerState.datingCard[currentDeckIndex])
+                    {
+                        _lockImage.SetActive(false);
                         cardTextLabel.text = currentCard.text + " (" + currentCard.parentheses + ")";
+                    }                       
                     else
                     {
                         _isLock = true;
-                        cardTextLabel.text = "Lock";
+                        cardTextLabel.text = "";
+                        _lockImage.SetActive(true);
                     }
                     break;
                 case "relationship":
                     if (InfoPlayer.Instance.PlayerState.relationshipCard[currentDeckIndex])
+                    {
+                        _lockImage.SetActive(false);
                         cardTextLabel.text = currentCard.text + " (" + currentCard.parentheses + ")";
+                    }
                     else
                     {
                         _isLock = true;
-                        cardTextLabel.text = "Lock";
+                        cardTextLabel.text = "";
+                        _lockImage.SetActive(true);
                     }
                     break;
                 case "marriage":
                     if (InfoPlayer.Instance.PlayerState.marriagepCard[currentDeckIndex])
+                    {
+                        _lockImage.SetActive(false);
                         cardTextLabel.text = currentCard.text + " (" + currentCard.parentheses + ")";
+                    }
                     else
                     {
                         _isLock = true;
-                        cardTextLabel.text = "Lock";
+                        cardTextLabel.text = "";
+                        _lockImage.SetActive(true);
                     }                        
                     break;
                 default:

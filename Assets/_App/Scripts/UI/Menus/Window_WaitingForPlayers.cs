@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Photon.Pun;
-using Photon.Realtime;
+﻿using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

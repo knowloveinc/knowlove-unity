@@ -88,6 +88,11 @@ namespace Knowlove.UI.Menus
                         {
                             CanvasLoading.Instance.Show();
 
+                            this.Hide();
+                            waitingWindow.Show();
+
+                            CanvasLoading.Instance.Hide();
+
                             NetworkManager.OnJoinedRoomFinished += this.NetworkManager_OnJoinedRoomFinished;
 
                             PhotonNetwork.JoinRoom(roomInfo.Name);

@@ -50,7 +50,7 @@ namespace Knowlove.UI
 
         private void OnEnable()
         {
-            CheckMaxMinScale();
+            ReturnStartPos(1f);
         }
 
         private void OnDestroy()
@@ -60,8 +60,8 @@ namespace Knowlove.UI
 
         private void CheckMaxMinScale()
         {
-            if (transform.localScale.x > 1.385f || transform.localScale.y > 1.385f || transform.localScale.z > 1.385f)
-                ReturnStartPos(1.385f);
+            if (transform.localScale.x > 2f || transform.localScale.y > 2f || transform.localScale.z > 2f)
+                ReturnStartPos(2f);
 
 
             if (transform.localScale.x < 0.5f || transform.localScale.y < 0.5f || transform.localScale.z < 0.5f)
