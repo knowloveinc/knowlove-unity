@@ -27,6 +27,7 @@ namespace Knowlove.FlipTheTableLogic
         private bool[] _isMoveFinish;
         private bool _isMove;
         private bool _isPopup;
+        private bool _isFlip;
         private bool[] _players;
 
         public Action<bool> StartedFlipTable;
@@ -46,6 +47,7 @@ namespace Knowlove.FlipTheTableLogic
             _instance = this;
 
             _isPopup = false;
+            _isFlip = false;
             _rigidbody = GetComponent<Rigidbody>();
             _startPosition = transform.position;
             _isMove = false;
@@ -67,20 +69,17 @@ namespace Knowlove.FlipTheTableLogic
 
         public void FlipTable()
         {
-            if (!_isMove)
-            {
-                photonView.RPC(nameof(RPC_FlipTable), RpcTarget.AllBufferedViaServer);
-
-                DOVirtual.DelayedCall(5.5f, () =>
-                {
-                    CollectTable();
-                });
-            }      
+            photonView.RPC(nameof(StartFlipTable), RpcTarget.MasterClient);                    
         }
 
-        public void CollectTable()
+        [PunRPC]
+        public void StartFlipTable()
         {
-            photonView.RPC(nameof(RPC_CollectTable), RpcTarget.AllBufferedViaServer);
+            if (!_isFlip)
+            {
+                _isFlip = true;
+                photonView.RPC(nameof(RPC_FlipTable), RpcTarget.AllBufferedViaServer);
+            }            
         }
 
         [PunRPC]
@@ -114,10 +113,14 @@ namespace Knowlove.FlipTheTableLogic
                     _flipObjects[i].TakeForceOnObject();
                 }
             });
+
+            DOVirtual.DelayedCall(5.5f, () =>
+            {
+                CollectTable();
+            });
         }
 
-        [PunRPC]
-        private void RPC_CollectTable()
+        private void CollectTable()
         {
             CameraManager.Instance.SetCamera(0);
 
@@ -226,6 +229,7 @@ namespace Knowlove.FlipTheTableLogic
                     return;
             }
 
+            _isFlip = false;
             photonView.RPC(nameof(EndWait), RpcTarget.All);
         }
 

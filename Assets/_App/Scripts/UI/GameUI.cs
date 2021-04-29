@@ -3,6 +3,7 @@ using GameBrewStudios.Networking;
 using Knowlove.FlipTheTableLogic;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -89,30 +90,45 @@ namespace Knowlove.UI
         private void RPC_ShowPickCard()
         {
             CanvasLoading.Instance.ForceHide();
+            bool isCreateList = false;
 
-            DOVirtual.DelayedCall(1f, () =>
+            DOVirtual.DelayedCall(1.25f, () =>
             {
                 APIManager.GetUserDetails((user) =>
                 {
                     if (user.nonNegotiableList.Count > 0)
                     {
+                        List<string> nonList = user.nonNegotiableList;
                         _listCardUIObjs[0].gameObject.SetActive(false);
                         _listCardUIObjs[1].gameObject.SetActive(false);
 
                         selectedCard.text = "He or She... \n";
 
-                        for (int i = 0; i < user.nonNegotiableList.Count; i++)
-                            selectedCard.text += ("- " + user.nonNegotiableList[i] + "\n");
+                        for (int i = 0; i < nonList.Count; i++)
+                            selectedCard.text += ("- " + nonList[i] + "\n");
 
+                        isCreateList = true;
                         ShowCardPickerPanel();
                     }
                     else
+                    {
+                        isCreateList = true;
+                        selectedCard = listCards[UnityEngine.Random.Range(0, listCards.Length)];
+                        ShowCardPickerPanel();
+                    }
+                });
+
+                DOVirtual.DelayedCall(3f, () => 
+                {
+                    if (!isCreateList)
                     {
                         selectedCard = listCards[UnityEngine.Random.Range(0, listCards.Length)];
                         ShowCardPickerPanel();
                     }
                 });
-            });             
+            }); 
+            
+
         }
 
         public void ShowCardPickerPanel()

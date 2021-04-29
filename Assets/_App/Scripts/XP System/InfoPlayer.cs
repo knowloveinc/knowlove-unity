@@ -81,8 +81,7 @@ namespace Knowlove.XPSystem
                     {
                         _currentPlayer = i;
                         SettedPlayer?.Invoke();
-                        CanvasLoading.Instance.ForceHide();
-                        Debug.LogError("Hide");
+                        CanvasLoading.Instance.Hide();
                         return;
                     }
                 }

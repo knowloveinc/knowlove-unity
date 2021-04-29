@@ -221,7 +221,8 @@ namespace Knowlove.UI.Menus
         public void OnRoomListUpdate(List<RoomInfo> roomList)
         {
             Debug.LogWarning("RoomListUpdated");
-            scrollRect.EndRefreshing();
+            if(scrollRect != null)
+                scrollRect.EndRefreshing();
         }
 
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
@@ -244,7 +245,8 @@ namespace Knowlove.UI.Menus
             DOVirtual.DelayedCall(0.25f, () =>
             {
                 PopulateList();
-                scrollRect.EndRefreshing();
+                if (scrollRect != null)
+                    scrollRect.EndRefreshing();
             });            
         }
     }

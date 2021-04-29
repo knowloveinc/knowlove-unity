@@ -223,9 +223,15 @@ namespace Knowlove
             CanvasLoading.Instance.Show();
             yield return new WaitForSeconds(1f);
             PhotonNetwork.LocalPlayer.SetCustomProperties(null);
-            AsyncOperation op = SceneManager.LoadSceneAsync(0);
-            yield return op;
-            CanvasLoading.Instance.Hide();
+
+            if (SceneManager.GetActiveScene().buildIndex != 0) 
+            {
+                AsyncOperation op = SceneManager.LoadSceneAsync(0);
+                yield return op;
+                CanvasLoading.Instance.Hide();
+            }
+            else
+                CanvasLoading.Instance.Hide();
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)

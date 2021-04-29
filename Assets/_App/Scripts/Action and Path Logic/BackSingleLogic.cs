@@ -44,11 +44,6 @@ namespace Knowlove.ActionAndPathLogic
             get => BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Marriage;
         }
 
-        private bool IsRelationship
-        {
-            get => BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Relationship;
-        }
-
         public void BackToSingle(string text, bool skipPrompt, BoardPiece piece, Player currentPlayer)
         {
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
@@ -68,8 +63,6 @@ namespace Knowlove.ActionAndPathLogic
 
             if (_protectedFromSingleAllGame)
                 buttons = ProtectBackSingle(skipPrompt, " [ You have protected all game ]");
-            else if (_protectedFromSingleInRelationship && IsRelationship)
-                buttons = ProtectBackSingle(skipPrompt, " [ You have protected in relationship. ]");
             else if (_protectedFromSingleInMarriage && IsMarriage)
                 buttons = ProtectBackSingle(skipPrompt, " [ You have protected in marriage game ]");
             else if (_avoidSingleCards > 0)
@@ -81,7 +74,7 @@ namespace Knowlove.ActionAndPathLogic
                 ChoicedOfPlayer?.Invoke(_buttonText, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
             else
             {
-                if (_avoidSingleCards == 0 && !(_wallet > 0 && IsNotDaring) && !_protectedFromSingleAllGame && !(IsMarriage && _protectedFromSingleInMarriage) && !(_protectedFromSingleInRelationship && IsRelationship))
+                if (_avoidSingleCards == 0 && !(_wallet > 0 && IsNotDaring) && !_protectedFromSingleAllGame && !(IsMarriage && _protectedFromSingleInMarriage))
                     DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
             }
 
@@ -209,7 +202,7 @@ namespace Knowlove.ActionAndPathLogic
             }
             else
             {
-                if (_avoidSingleCards > 0 || (_wallet > 0 && IsNotDaring) || _protectedFromSingleAllGame || (IsMarriage && _protectedFromSingleInMarriage) || (_protectedFromSingleInRelationship && IsRelationship))
+                if (_avoidSingleCards > 0 || (_wallet > 0 && IsNotDaring) || _protectedFromSingleAllGame || (IsMarriage && _protectedFromSingleInMarriage))
                 {
                     DOVirtual.DelayedCall(0.25f, () =>
                     {

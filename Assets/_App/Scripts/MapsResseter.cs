@@ -1,20 +1,13 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using DG.Tweening;
 using Lean.Touch;
-using DG.Tweening;
+using System.Collections.Generic;
+using UnityEngine;
 
-namespace Knowlove.UI
+namespace Knowlove
 {
-    public class CardResetter : MonoBehaviour
+    public class MapsResseter : MonoBehaviour
     {
-        [SerializeField] private CardUI _cardUI;
-
-        private RectTransform _rectTransform;
-
-        private void Awake()
-        {
-            _rectTransform = GetComponent<RectTransform>();
-        }
+        private Vector3 maxPosition;
 
         private void Start()
         {
@@ -27,19 +20,19 @@ namespace Knowlove.UI
             else
             {
                 List<LeanFinger> fingers = LeanTouch.Fingers;
-                if (fingers == null || fingers.Count < 1 && (transform.localScale != Vector3.one || transform.localPosition != Vector3.zero) && _cardUI.IsShowCard)
+                if (fingers == null || fingers.Count < 1 && (transform.localScale != Vector3.one || transform.localPosition != Vector3.zero))
                 {
-                    _rectTransform.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
-
                     CheckMaxMinScale();
-                }
 
-                if (!_cardUI.IsShowCard && transform.position.y != -1080f && transform != null)
-                {
-                    transform.DOScale(1f, 0.1f).SetId(gameObject);
-                    _rectTransform.DOAnchorPosY(-1080f, 0.25f).OnComplete(() => { });
-                }
+                    if (!gameObject.activeSelf)
+                        ReturnStartPos();
+                }    
             }
+        }
+
+        private void OnEnable()
+        {
+            ReturnStartPos();
         }
 
         private void OnDestroy()
@@ -53,10 +46,11 @@ namespace Knowlove.UI
                 return;
 
             if (transform.localScale.x > 3f || transform.localScale.y > 3f || transform.localScale.z > 3f)
-            {                
+            {
                 transform.DOScale(3f, 0.1f).SetId(gameObject);
-                _rectTransform.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
+                ReturnStartPos();
             }
+                
 
             if (transform.localScale.x < 0.5f || transform.localScale.y < 0.5f || transform.localScale.z < 0.5f)
                 ReturnStartPos();
@@ -68,8 +62,7 @@ namespace Knowlove.UI
                 return;
 
             transform.DOScale(1f, 0.1f).SetId(gameObject);
-
-            _rectTransform.DOAnchorPos(Vector2.zero, 0.1f).SetId(gameObject);
+            transform.DOLocalMove(Vector3.zero, 0.1f).SetId(gameObject);
         }
 
         private void LeanTouch_OnFingerDown(LeanFinger finger)
@@ -81,4 +74,3 @@ namespace Knowlove.UI
         }
     }
 }
-
