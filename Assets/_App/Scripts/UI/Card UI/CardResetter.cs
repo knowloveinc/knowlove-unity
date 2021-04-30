@@ -10,10 +10,12 @@ namespace Knowlove.UI
         [SerializeField] private CardUI _cardUI;
 
         private RectTransform _rectTransform;
+        private RectTransform _cardRectTransform;
 
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
+            _cardRectTransform = _cardUI.GetComponent<RectTransform>();
         }
 
         private void Start()
@@ -37,7 +39,7 @@ namespace Knowlove.UI
                 if (!_cardUI.IsShowCard && transform.position.y != -1080f && transform != null)
                 {
                     transform.DOScale(1f, 0.1f).SetId(gameObject);
-                    _rectTransform.DOAnchorPosY(-1080f, 0.25f).OnComplete(() => { });
+                    _cardRectTransform.DOAnchorPosY(-1080f, 0.25f).OnComplete(() => { });
                 }
             }
         }

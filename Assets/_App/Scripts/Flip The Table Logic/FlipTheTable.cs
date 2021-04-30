@@ -78,58 +78,68 @@ namespace Knowlove.FlipTheTableLogic
             if (!_isFlip)
             {
                 _isFlip = true;
-                photonView.RPC(nameof(RPC_FlipTable), RpcTarget.AllBufferedViaServer);
+                photonView.RPC(nameof(RPC_FlipTable), RpcTarget.All);
             }            
         }
 
         [PunRPC]
         private void RPC_FlipTable()
         {
-            CameraManager.Instance.SetCamera(cameraNumber);
-            SetPlayersArray(false);
+            StartedFlipTable?.Invoke(false);
+            PopupDialog.Instance.gameObject.SetActive(false);
 
-            DOVirtual.DelayedCall(0.3f, () =>
+            DOVirtual.DelayedCall(0.5f, () =>
             {
-                CheckSomeAction();
-                StartedFlipTable?.Invoke(false);                              
-            });
+                CameraManager.Instance.SetCamera(cameraNumber);
+                SetPlayersArray(false);
 
-            DOVirtual.DelayedCall(0.7f, () =>
-            {
-                for (int i = 0; i < _flipObjects.Length - 2; i++)
+                DOVirtual.DelayedCall(0.5f, () =>
                 {
-                    _flipObjects[i].SetPiecePosition();
-                    _flipObjects[i].SetActiveKinematic(false);
-                }
+                    CheckSomeAction();
+                });
 
-                for (int i = _flipObjects.Length - 1; i > _flipObjects.Length - 3; i--)
+                DOVirtual.DelayedCall(0.7f, () =>
                 {
-                    _flipObjects[i].SetActiveKinematic(false);
-                    _flipObjects[i].Rigidbody.AddForce(new Vector3(x, y, z));
-                }
+                    for (int i = 0; i < _flipObjects.Length - 2; i++)
+                    {
+                        _flipObjects[i].SetPiecePosition();
+                        _flipObjects[i].SetActiveKinematic(false);
+                    }
 
-                for (int i = 0; i < _flipObjects.Length - 2; i++)
+                    for (int i = _flipObjects.Length - 1; i > _flipObjects.Length - 3; i--)
+                    {
+                        _flipObjects[i].SetActiveKinematic(false);
+                        _flipObjects[i].Rigidbody.AddForce(new Vector3(x, y, z));
+                    }
+
+                    for (int i = 0; i < _flipObjects.Length - 2; i++)
+                    {
+                        _flipObjects[i].TakeForceOnObject();
+                    }
+                });
+
+                DOVirtual.DelayedCall(5.5f, () =>
                 {
-                    _flipObjects[i].TakeForceOnObject();
-                }
-            });
+                    CollectTable();
 
-            DOVirtual.DelayedCall(5.5f, () =>
-            {
-                CollectTable();
-            });
+                    for (int i = _flipObjects.Length - 1; i > _flipObjects.Length - 3; i--)
+                    {
+                        _flipObjects[i].transform.position = _flipObjects[i].StartPosition;
+                        _flipObjects[i].transform.rotation = _flipObjects[i].RotationPosition;
+                        CheckFinishMove(i);
+                    }
+
+                    DOVirtual.DelayedCall(7f, () =>
+                    {
+                        CheckBackTable();
+                    });
+                });
+            });           
         }
 
         private void CollectTable()
         {
             CameraManager.Instance.SetCamera(0);
-
-            for (int i = _flipObjects.Length - 1; i > _flipObjects.Length - 3; i--)
-            {
-                _flipObjects[i].transform.position = _flipObjects[i].StartPosition;
-                _flipObjects[i].transform.rotation = _flipObjects[i].RotationPosition;
-                CheckFinishMove(i);
-            }
 
             _isMove = true;
             Physics.IgnoreLayerCollision(10, 10);
@@ -237,6 +247,7 @@ namespace Knowlove.FlipTheTableLogic
         private void EndWait()
         {
             ReturnAction();
+            PopupDialog.Instance.gameObject.SetActive(true);
             StartedFlipTable?.Invoke(true);
         }
 
@@ -245,6 +256,20 @@ namespace Knowlove.FlipTheTableLogic
             for(int i = 0; i < _players.Length; i++)
             {
                 _players[i] = isWait;
+            }
+        }
+
+        private void CheckBackTable()
+        {
+            if (!PopupDialog.Instance.gameObject.activeSelf)
+            {
+                for (int i = 0; i < _flipObjects.Length - 2; i++)
+                {
+                    _flipObjects[i].transform.position = _flipObjects[i].StartPosition;
+                    _flipObjects[i].transform.rotation = _flipObjects[i].RotationPosition;
+
+                    CheckFinishMove(i);
+                }
             }
         }
     }

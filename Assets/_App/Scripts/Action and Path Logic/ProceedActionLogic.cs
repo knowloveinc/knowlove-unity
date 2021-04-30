@@ -152,8 +152,6 @@ namespace Knowlove.ActionAndPathLogic
                 ProtectedFromSingle(currentPlayer, "You have protected all game");
             else if (_protectedFromSingleInMarriage && IsMarriage)
                 ProtectedFromSingle(currentPlayer, "You have protected in marriage ring");
-            else if(_protectedFromSingleInRelationship && IsRelationship)
-                ProtectedFromSingle(currentPlayer, "You have protected in relationship.");
             else if (_avoidSingleCards > 0)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
@@ -193,8 +191,6 @@ namespace Knowlove.ActionAndPathLogic
                 ProtectedFromSingle(currentPlayer, "You have protected all game");
             else if (_protectedFromSingleInMarriage && IsMarriage)
                 ProtectedFromSingle(currentPlayer, "You have protected in marriage ring");
-            else if (_protectedFromSingleInRelationship && IsRelationship)
-                ProtectedFromSingle(currentPlayer, "You have protected in relationship.");
             else if (_avoidSingleCards > 0)
             {
                 DOVirtual.DelayedCall(0.3f, () =>

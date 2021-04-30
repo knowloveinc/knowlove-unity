@@ -62,21 +62,18 @@ namespace Knowlove.ActionAndPathLogic
             List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
 
             if (_protectedFromSingleAllGame)
-                buttons = ProtectBackSingle(skipPrompt, " [ You have protected all game ]");
+                buttons = ProtectBackSingle(skipPrompt, "You have protected all game.");
             else if (_protectedFromSingleInMarriage && IsMarriage)
-                buttons = ProtectBackSingle(skipPrompt, " [ You have protected in marriage game ]");
+                buttons = ProtectBackSingle(skipPrompt, "You have protected in marriage game.");
             else if (_avoidSingleCards > 0)
                 buttons = HasAvoidSingleCard(skipPrompt, currentPlayer, piece);
-            else
+            else if(_avoidSingleCards <= 0)
                 buttons = DontAvoidSingleCard(skipPrompt, currentPlayer, piece);
-
-            if (!skipPrompt)
-                ChoicedOfPlayer?.Invoke(_buttonText, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
             else
-            {
-                if (_avoidSingleCards == 0 && !(_wallet > 0 && IsNotDaring) && !_protectedFromSingleAllGame && !(IsMarriage && _protectedFromSingleInMarriage))
-                    DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
-            }
+                DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
+
+            if(buttons.Count > 0)
+                ChoicedOfPlayer?.Invoke(_buttonText, buttons.ToArray(), currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
 
             playerProperties["turnBank"] = _turnBank;
             playerProperties["diceCount"] = _diceCount;
@@ -202,22 +199,10 @@ namespace Knowlove.ActionAndPathLogic
             }
             else
             {
-                if (_avoidSingleCards > 0 || (_wallet > 0 && IsNotDaring) || _protectedFromSingleAllGame || (IsMarriage && _protectedFromSingleInMarriage))
+                DOVirtual.DelayedCall(0.25f, () =>
                 {
-                    DOVirtual.DelayedCall(0.25f, () =>
-                    {
-                        _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
-                    });
-                }
-                else
-                {
-                    _protectedFromSingleInRelationship = false;
-                    piece.GoHome(currentPlayer);
-
-                    playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
-                    currentPlayer.SetCustomProperties(playerProperties);
-                }
-
+                    _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
+                });
             }
 
             return buttons;

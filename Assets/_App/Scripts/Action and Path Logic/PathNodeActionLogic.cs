@@ -126,6 +126,22 @@ namespace Knowlove.ActionAndPathLogic
                     LoseTurnsOrRollAgain(text, 1, false, skipPrompt, currentPlayer);
 
                     break;
+                case PathNodeAction.CollectAvoidSingleCard:
+                    BoardManager.Instance.DrawCard("avoid");
+                    UsedAvoidSingleCard?.Invoke(currentPlayer);
+
+                    APIManager.GetUserDetails((user) =>
+                    {
+                        APIManager.AddItem("avoidSingle", 1, (inventory) =>
+                        {
+                            User.current.inventory = inventory;
+                            StoreController.Instance.UpdateFromPlayerInventory();
+                            _gameStuff.GetSpecialCard();
+                        });
+                    });
+
+                    DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
+                    break;
                 case PathNodeAction.RollAgainTwice:
                     LoseTurnsOrRollAgain(text, 2, false, skipPrompt, currentPlayer);
 

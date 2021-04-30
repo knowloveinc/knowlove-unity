@@ -71,26 +71,32 @@ namespace Knowlove.ActionAndPathLogic
                     DontHaveCardBackSingle(piece, currentPlayer);
                 else if (_avoidSingleCards > 0)
                     HasCardBackSingle(piece, currentPlayer);
-            }
-            else
-            {
-                if ((_avoidSingleCards < 1 && _wallet > 0 && IsNotDaring) || _protectedFromSingleAllGame || (IsMarriage && _protectedFromSingleInMarriage) || _avoidSingleCards > 0 || (_protectedFromSingleInRelationship && IsRelationship))
-                {
-                    DOVirtual.DelayedCall(0.25f, () =>
-                    {
-                        _proceedActionLogic.ExecuteProceedAction(ProceedAction.BackToSingle, () => { });
-                    });
-                }
                 else
                 {
-                    piece.GoHome(currentPlayer);
-                    _diceCount = 1;
-                    _protectedFromSingleInRelationship = false;
-
-                    DOVirtual.DelayedCall(1f, () =>
+                    PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
                     {
-                        _turnManager.EndTurn();
-                    });
+                        text = "Okay",
+                        onClicked = () =>
+                        {
+                            DOVirtual.DelayedCall(1f, () => 
+                            {
+                                piece.GoHome(currentPlayer);
+                                _diceCount = 1;
+                                _protectedFromSingleInRelationship = false;
+
+                                DOVirtual.DelayedCall(1f, () =>
+                                {
+                                    _turnManager.EndTurn();
+                                });
+                            });
+
+                            playerProperties["diceCount"] = _diceCount;
+                            playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
+                            currentPlayer.SetCustomProperties(playerProperties);
+                        }
+                    };
+
+                    ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
                 }
             }
 
