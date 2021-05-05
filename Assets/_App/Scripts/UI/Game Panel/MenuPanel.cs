@@ -27,6 +27,8 @@ namespace Knowlove.UI
                     text = "Yes, Leave",
                     onClicked = () =>
                     {
+                        NetworkManager.Instance.isLeave = true;
+                        NetworkManager.Instance.isReconnect = false;
                         PhotonNetwork.LeaveRoom();
                     },
                     buttonColor = PopupDialog.PopupButtonColor.Red

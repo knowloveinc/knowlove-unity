@@ -117,7 +117,7 @@ namespace Knowlove.UI.Menus
             options.MaxPlayers = Convert.ToByte(playerCount);
 
             options.IsVisible = true;
-            options.IsOpen = options.MaxPlayers > 1;
+            options.IsOpen = true;
             options.PlayerTtl = 33;
             options.PublishUserId = true;
 

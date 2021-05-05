@@ -29,9 +29,9 @@ namespace Knowlove.XPSystem
             if (playerXP.countDifferentPlayers < 5 && playerXP.winGame < 3 /*|| playerXP.shareGame < 3*/)
                 return;
 
-            for (int i = 0; i < playerXP.datingCard.Length; i++)
+            for (int i = 0; i < playerXP.playerDeckCard.datingCard.Length; i++)
             {
-                if (!playerXP.datingCard[i])
+                if (!playerXP.playerDeckCard.datingCard[i])
                     return;
             }
 
@@ -53,9 +53,9 @@ namespace Knowlove.XPSystem
             if (!playerXP.isBronzeStatus)
                 return;
 
-            for (int i = 0; i < playerXP.relationshipCard.Length; i++)
+            for (int i = 0; i < playerXP.playerDeckCard.relationshipCard.Length; i++)
             {
-                if (!playerXP.relationshipCard[i])
+                if (!playerXP.playerDeckCard.relationshipCard[i])
                     return;
             }
 
@@ -77,9 +77,9 @@ namespace Knowlove.XPSystem
             if (!playerXP.isBronzeStatus && !playerXP.isSilverStatus)
                 return;
 
-            for (int i = 0; i < playerXP.marriagepCard.Length; i++)
+            for (int i = 0; i < playerXP.playerDeckCard.marriagepCard.Length; i++)
             {
-                if (!playerXP.marriagepCard[i])
+                if (!playerXP.playerDeckCard.marriagepCard[i])
                     return;
             }
 

@@ -22,13 +22,13 @@ namespace Knowlove.XPSystem
         {
             PlayerXP player = InfoPlayer.Instance.PlayerState;
 
-            int currentDatingCard = GetCard(player.datingCard);
-            int currentRelatishipCard = GetCard(player.relationshipCard);
-            int currentMarriageCard = GetCard(player.marriagepCard);
+            int currentDatingCard = GetCard(player.playerDeckCard.datingCard);
+            int currentRelatishipCard = GetCard(player.playerDeckCard.relationshipCard);
+            int currentMarriageCard = GetCard(player.playerDeckCard.marriagepCard);
 
-            _datingCard.text = currentDatingCard + " / " + player.datingCard.Length;
-            _relationshipCard.text = currentRelatishipCard + " / " + player.relationshipCard.Length;
-            _marriageCard.text = currentMarriageCard + " / " + player.marriagepCard.Length;
+            _datingCard.text = currentDatingCard + " / " + player.playerDeckCard.datingCard.Length;
+            _relationshipCard.text = currentRelatishipCard + " / " + player.playerDeckCard.relationshipCard.Length;
+            _marriageCard.text = currentMarriageCard + " / " + player.playerDeckCard.marriagepCard.Length;
             _gameWin.text = player.winGame.ToString();
             _gameComplete.text = player.completedGame.ToString();
 

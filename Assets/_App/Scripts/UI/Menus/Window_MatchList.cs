@@ -142,6 +142,9 @@ namespace Knowlove.UI.Menus
                 noRoomsMessage.SetActive(false);
                 foreach (RoomInfo ri in NetworkManager.Instance.roomList)
                 {
+                    if (ri.MaxPlayers == ri.PlayerCount)
+                        continue;
+
                     if (ri.PlayerCount == 0)
                     {
                         countRoom++;

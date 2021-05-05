@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using Knowlove.ActionAndPathLogic;
 using Knowlove.MyStuffInGame;
+using Knowlove.RoomReconnect;
 using Knowlove.XPSystem;
 using Photon.Pun;
 using Photon.Realtime;
@@ -12,6 +13,8 @@ namespace Knowlove
     public class TurnManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         public static TurnManager Instance;
+
+        private const string _playerProperties = "Properties";
 
         public TurnState turnState = TurnState.TurnEnding;
         public ProceedAction currentOnPassed, currentOnFailed;
@@ -69,6 +72,11 @@ namespace Knowlove
             UpdateTurnTimer();
         }
 
+        private void OnDestroy()
+        {
+            PlayerPrefs.DeleteKey(_playerProperties);
+        }
+
         public static event System.Action<Player, ExitGames.Client.Photon.Hashtable> OnReceivedPlayerProps;
 
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
@@ -83,6 +91,7 @@ namespace Knowlove
             }
 
             OnReceivedPlayerProps?.Invoke(targetPlayer, changedProps);
+            UpdatePlayerProperties(changedProps);
         }
 
         internal void ReallyStartGame()
@@ -309,6 +318,26 @@ namespace Knowlove
                     //gameUI.ShowBottomForPlayer(-1);
                     break;
             }
+        }
+
+        private void UpdatePlayerProperties(ExitGames.Client.Photon.Hashtable playerProperties)
+        {
+            PlayerCustomValue playerCustomValue = new PlayerCustomValue();
+
+            playerCustomValue.avoidSingleCard = (int)playerProperties["avoidSingleCards"];
+            playerCustomValue.wallet = (int)playerProperties["wallet"];
+            playerCustomValue.turnBank = (int)playerProperties["turnBank"];
+            playerCustomValue.protectedFromSingleInRelationship = (bool)playerProperties["protectedFromSingleInRelationship"];
+            playerCustomValue.diceCount = (int)playerProperties["diceCount"];
+            playerCustomValue.progress = (float)playerProperties["progress"];
+            playerCustomValue.dateCount = (int)playerProperties["dateCount"];
+            playerCustomValue.relationshipCount = (int)playerProperties["relationshipCount"];
+            playerCustomValue.marriageCount = (int)playerProperties["marriageCount"];
+            playerCustomValue.yearsElapsed = (int)playerProperties["yearsElapsed"];
+
+            string properties = JsonUtility.ToJson(playerCustomValue);
+
+            PlayerPrefs.SetString(_playerProperties, properties);
         }
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

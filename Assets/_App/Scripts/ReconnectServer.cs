@@ -8,6 +8,8 @@ namespace Knowlove
 {
     public class ReconnectServer : MonoBehaviour
     {
+        private static ReconnectServer Instance;
+
         private const string USERNAME_KEY = "SavedUsername", PASSWORD_KEY = "SavedPassw";
 
         private float _pastTime = 0;
@@ -15,18 +17,27 @@ namespace Knowlove
 
         private void Awake()
         {
+            if (Instance != null)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+
+            Instance = this;
+
             DontDestroyOnLoad(this.gameObject);
         }
 
         private void Start()
         {
-            if(User.current != null)
+            DOVirtual.DelayedCall(4f, () =>
             {
-                DOVirtual.DelayedCall(1f, () =>
+                if (User.current != null)
                 {
                     ReconnectUser();
-                });
-            }           
+                    Debug.LogError("Recconect");
+                }                
+            });          
         }
 
         private void Update()

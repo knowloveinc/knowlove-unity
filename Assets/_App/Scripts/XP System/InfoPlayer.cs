@@ -59,6 +59,14 @@ namespace Knowlove.XPSystem
 
         public void СheckAvailabilityPlayer()
         {
+            bool isFinish = false;
+
+            DOVirtual.DelayedCall(7f, () => 
+            {
+                if(!isFinish)
+                    CanvasLoading.Instance.Hide();
+            });
+
             if (_isHaveUser)
             {
                 CanvasLoading.Instance.Hide();
@@ -81,6 +89,7 @@ namespace Knowlove.XPSystem
                     {
                         _currentPlayer = i;
                         SettedPlayer?.Invoke();
+                        isFinish = true;
                         CanvasLoading.Instance.Hide();
                         return;
                     }
@@ -110,11 +119,11 @@ namespace Knowlove.XPSystem
         public void MarkCard(int idCard)
         {
             if(idCard <= 35)
-                _playersState.playerXPs[_currentPlayer].datingCard[idCard] = true;
+                PlayerState.playerDeckCard.datingCard[idCard] = true;
             else if(idCard > 35 && idCard < 112)
-                _playersState.playerXPs[_currentPlayer].relationshipCard[idCard - 36] = true;
+                PlayerState.playerDeckCard.relationshipCard[idCard - 36] = true;
             else if(idCard >= 112)
-                _playersState.playerXPs[_currentPlayer].marriagepCard[idCard - 112] = true;
+                PlayerState.playerDeckCard.marriagepCard[idCard - 112] = true;
 
             statusPlayer.CheckPlayerStatus();
             JSONPlayerInfo();
@@ -122,14 +131,32 @@ namespace Knowlove.XPSystem
 
         public void MarkAllCard()
         {
-            for (int i = 0; i < _playersState.playerXPs[_currentPlayer].datingCard.Length; i++)
-                _playersState.playerXPs[_currentPlayer].datingCard[i] = true;
-
-            for (int i = 0; i < _playersState.playerXPs[_currentPlayer].relationshipCard.Length; i++)
-                _playersState.playerXPs[_currentPlayer].relationshipCard[i] = true;
-
-            for (int i = 0; i < _playersState.playerXPs[_currentPlayer].marriagepCard.Length; i++)
-                _playersState.playerXPs[_currentPlayer].marriagepCard[i] = true;
+            for (int i = 0; i < PlayerState.playerDeckCard.datingCard.Length; i++)
+            {
+                if (!PlayerState.playerDeckCard.datingCard[i])
+                {
+                    PlayerState.playerDeckCard.datingCard[i] = true;
+                    PlayerState.playerDeckCard.isBuyDatingCard[i] = true;
+                }
+            }
+                
+            for (int i = 0; i < PlayerState.playerDeckCard.relationshipCard.Length; i++)
+            {
+                if (!PlayerState.playerDeckCard.relationshipCard[i])
+                {
+                    PlayerState.playerDeckCard.relationshipCard[i] = true;
+                    PlayerState.playerDeckCard.isBuyRelationshipCard[i] = true;
+                }
+            }
+                
+            for (int i = 0; i < PlayerState.playerDeckCard.marriagepCard.Length; i++)
+            {
+                if (!PlayerState.playerDeckCard.marriagepCard[i])
+                {
+                    PlayerState.playerDeckCard.marriagepCard[i] = true;
+                    PlayerState.playerDeckCard.isBuyMarriagepCard[i] = true;
+                }
+            }                
 
             statusPlayer.CheckPlayerStatus();
             JSONPlayerInfo();
@@ -137,23 +164,23 @@ namespace Knowlove.XPSystem
 
         public bool CheckMarkAllCard()
         {
-            for (int i = 0; i < _playersState.playerXPs[_currentPlayer].datingCard.Length; i++)
+            for (int i = 0; i < PlayerState.playerDeckCard.datingCard.Length; i++)
             {
-                if (_playersState.playerXPs[_currentPlayer].datingCard[i] != true)
+                if (PlayerState.playerDeckCard.datingCard[i] != true)
                     return false;
             }
                 
 
-            for (int i = 0; i < _playersState.playerXPs[_currentPlayer].relationshipCard.Length; i++)
+            for (int i = 0; i < PlayerState.playerDeckCard.relationshipCard.Length; i++)
             {
-                if (_playersState.playerXPs[_currentPlayer].relationshipCard[i] != true)
+                if (PlayerState.playerDeckCard.relationshipCard[i] != true)
                     return false;
             }
                 
 
-            for (int i = 0; i < _playersState.playerXPs[_currentPlayer].marriagepCard.Length; i++)
+            for (int i = 0; i < PlayerState.playerDeckCard.marriagepCard.Length; i++)
             {
-                if (_playersState.playerXPs[_currentPlayer].marriagepCard[i] != true)
+                if (PlayerState.playerDeckCard.marriagepCard[i] != true)
                     return false;
             }
 
@@ -162,8 +189,8 @@ namespace Knowlove.XPSystem
 
         public void PlayerWin()
         {
-            _playersState.playerXPs[_currentPlayer].winGame += 1;
-            _playersState.playerXPs[_currentPlayer].completedGame += 1;
+            PlayerState.winGame += 1;
+            PlayerState.completedGame += 1;
 
             statusPlayer.CheckPlayerStatus();
             JSONPlayerInfo();
@@ -171,7 +198,7 @@ namespace Knowlove.XPSystem
 
         public void PlayerEndGame()
         {
-            _playersState.playerXPs[_currentPlayer].completedGame += 1;
+            PlayerState.completedGame += 1;
 
             statusPlayer.CheckPlayerStatus();
             JSONPlayerInfo();
@@ -185,23 +212,23 @@ namespace Knowlove.XPSystem
         [PunRPC]
         private void RPC_CheckPlayWithThisPlayers()
         {
-            if (_playersState.playerXPs[_currentPlayer].countDifferentPlayers >= _maxDifferentPlayers)
+            if (PlayerState.countDifferentPlayers >= _maxDifferentPlayers)
                 return;
 
             for (int i = 0; i < NetworkManager.Instance.players.Count; i++)
             {
                 bool isHave = true;
 
-                for (int j = 0; j <= _playersState.playerXPs[_currentPlayer].countDifferentPlayers; j++)
+                for (int j = 0; j <= PlayerState.countDifferentPlayers; j++)
                 {
-                    if (NetworkManager.Instance.players[i].NickName == _playersState.playerXPs[_currentPlayer].nameDifferentPlayers[j])
+                    if (NetworkManager.Instance.players[i].NickName == PlayerState.nameDifferentPlayers[j])
                         isHave = false;
                 }
 
                 if (isHave && NetworkManager.Instance.players[i].NickName != PhotonNetwork.NickName)
                 {
-                    _playersState.playerXPs[_currentPlayer].nameDifferentPlayers[_playersState.playerXPs[_currentPlayer].countDifferentPlayers] = NetworkManager.Instance.players[i].NickName;
-                    _playersState.playerXPs[_currentPlayer].countDifferentPlayers += 1;                   
+                    PlayerState.nameDifferentPlayers[PlayerState.countDifferentPlayers] = NetworkManager.Instance.players[i].NickName;
+                    PlayerState.countDifferentPlayers += 1;                   
                 }
             }
 

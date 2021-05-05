@@ -16,8 +16,7 @@ namespace Knowlove.XPSystem
         public bool ProtectedFromBackToSinglePerGame;
         public bool ProtectedFromBackToSingleInMarriagePerGame;
         public string[] nameDifferentPlayers = new string[15];
-        public bool[] datingCard = new bool[36];
-        public bool[] relationshipCard = new bool[76];
-        public bool[] marriagepCard = new bool[54];
+
+        public PlayerDeckCard playerDeckCard = new PlayerDeckCard();
     }
 }

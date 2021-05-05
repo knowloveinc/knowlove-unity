@@ -1,4 +1,5 @@
 ﻿using GameBrewStudios;
+using Knowlove.RoomReconnect;
 using Knowlove.UI;
 using Photon.Pun;
 using Photon.Realtime;
@@ -21,6 +22,11 @@ namespace Knowlove
         public List<Player> players = new List<Player>();
 
         public bool readyToStart = false;
+        public bool isLeave = false;
+        public bool isReconnect = false;
+
+        private const string _roomName = "RoomName";
+        private const string _playerProperties = "Properties";
 
         #region Events
 
@@ -37,16 +43,21 @@ namespace Knowlove
 
         private void Awake()
         {
-
             if (Instance != null)
             {
                 Destroy(this.gameObject);
                 return;
             }
 
+            gameObject.AddComponent<PhotonView>();
+
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
+        }
 
+        private void OnApplicationQuit()
+        {
+            PlayerPrefs.DeleteKey(_roomName);
         }
 
         public bool isUserAuthenticated()
@@ -58,6 +69,9 @@ namespace Knowlove
         #region Listeners
         public void Connect()
         {
+            if (isReconnect)
+                CanvasLoading.Instance.Show();
+
             PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.GameVersion = "0.8.2";
 
@@ -88,6 +102,7 @@ namespace Knowlove
         public override void OnDisconnected(DisconnectCause cause)
         {
             Debug.Log($"Disconnected due to: {cause}");
+            CanvasLoading.Instance.Hide();
 
             if (cause != DisconnectCause.DisconnectByClientLogic && cause != DisconnectCause.DisconnectByServerLogic)
             {
@@ -99,7 +114,22 @@ namespace Knowlove
                         text = "Back to Menu",
                         onClicked = () =>
                         {
+                            isLeave = true;
+                            isReconnect = false;
                             PhotonNetwork.Disconnect();
+
+                            PlayerPrefs.DeleteKey(_roomName);
+                            StartCoroutine(GoBackToMainMenu());
+                        },
+                        buttonColor = PopupDialog.PopupButtonColor.Plain
+                    },
+                    new PopupDialog.PopupButton()
+                    {
+                        text = "Back to Game",
+                        onClicked = () =>
+                        {
+                            Connect();
+                            isReconnect = true;
                         },
                         buttonColor = PopupDialog.PopupButtonColor.Plain
                     }
@@ -142,6 +172,31 @@ namespace Knowlove
             base.OnJoinedLobby();
             Debug.Log("JOINED LOBBY");
             OnPhotonConnected?.Invoke();
+
+            if (PlayerPrefs.HasKey(_roomName) && roomList != null)
+            {
+                string roomName = PlayerPrefs.GetString(_roomName);
+
+                foreach (RoomInfo ri in roomList)
+                {
+                    if (ri.Name == roomName)
+                    {
+                        PhotonNetwork.JoinRoom(roomName);
+                        return;
+                    }
+                }
+
+                RoomOptions options = new RoomOptions()
+                {
+                    PublishUserId = true,
+                    MaxPlayers = 1,
+                    IsOpen = false,
+                    IsVisible = false,
+                    EmptyRoomTtl = 0
+                };
+
+                PhotonNetwork.CreateRoom("OfflineMode" + UnityEngine.Random.Range(9, 999999), options);
+            }                
         }
 
         public override void OnJoinedRoom()
@@ -149,9 +204,10 @@ namespace Knowlove
             //Triggered when the local player joins a room.
             base.OnJoinedRoom();
 
+            PlayerPrefs.SetString(_roomName, PhotonNetwork.CurrentRoom.Name);
             UpdatePlayerList();
 
-            if (PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient && !isReconnect)
                 StartCoroutine(WaitingForPlayers());
 
             Debug.Log($"JOINED ROOM: {PhotonNetwork.CurrentRoom.Name}");
@@ -175,6 +231,7 @@ namespace Knowlove
 
             GameObject myPlayer = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
             PlayerController pCtrl = myPlayer.GetComponent<PlayerController>();
+            //isReconnect = false;
         }
 
         private IEnumerator WaitingForPlayers()
@@ -215,7 +272,12 @@ namespace Knowlove
             base.OnLeftRoom();
             Debug.Log("LEFT ROOM");
             isConnecting = false;
-            StartCoroutine(GoBackToMainMenu());
+
+            if (isLeave)
+            {
+                PlayerPrefs.DeleteKey(_roomName);               
+                StartCoroutine(GoBackToMainMenu());
+            }            
         }
 
         private IEnumerator GoBackToMainMenu()
@@ -228,6 +290,8 @@ namespace Knowlove
             {
                 AsyncOperation op = SceneManager.LoadSceneAsync(0);
                 yield return op;
+                isLeave = false;
+                isReconnect = false;
                 CanvasLoading.Instance.Hide();
             }
             else
@@ -245,7 +309,7 @@ namespace Knowlove
             int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
             if (playerCount >= PhotonNetwork.CurrentRoom.MaxPlayers)
             {
-                PhotonNetwork.CurrentRoom.IsOpen = false;
+                //PhotonNetwork.CurrentRoom.IsOpen = false;
                 Debug.Log("Match is ready to begin.");
 
                 //PhotonNetwork.LoadLevel("Testing");
@@ -255,6 +319,30 @@ namespace Knowlove
         private void UpdatePlayerList()
         {
             players = PhotonNetwork.PlayerList.ToList();
+
+            if (isReconnect)
+            {
+                ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.LocalPlayer.CustomProperties;
+
+                PlayerCustomValue playerCustomValue = JsonUtility.FromJson<PlayerCustomValue>(PlayerPrefs.GetString(_playerProperties));
+
+                playerProperties["avoidSingleCards"] = playerCustomValue.avoidSingleCard;
+                playerProperties["wallet"] = playerCustomValue.wallet;
+                playerProperties["turnBank"] = playerCustomValue.turnBank;
+                playerProperties["protectedFromSingleInRelationship"] = playerCustomValue.protectedFromSingleInRelationship;
+                playerProperties["diceCount"] = playerCustomValue.diceCount;
+                playerProperties["progress"] = playerCustomValue.progress;
+                playerProperties["dateCount"] = playerCustomValue.dateCount;
+                playerProperties["relationshipCount"] = playerCustomValue.relationshipCount;
+                playerProperties["marriageCount"] = playerCustomValue.marriageCount;
+                playerProperties["yearsElapsed"] = playerCustomValue.yearsElapsed;
+
+                PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
+                isConnecting = false;
+                CanvasLoading.Instance.Hide();
+                photonView.RPC(nameof(PlayerReconnectGame), RpcTarget.Others);
+                return;
+            }
 
             foreach (Player player in players)
             {
@@ -280,9 +368,12 @@ namespace Knowlove
             base.OnPlayerLeftRoom(otherPlayer);
             OnPlayerLeft?.Invoke(otherPlayer);
             UpdatePlayerList();
+            isReconnect = true;
 
             if (players.Count < PhotonNetwork.CurrentRoom.MaxPlayers && TurnManager.Instance.turnState != TurnManager.TurnState.GameOver)
             {
+                PhotonNetwork.CurrentRoom.IsOpen = true;
+
                 PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
                 {
                     new PopupDialog.PopupButton()
@@ -290,14 +381,30 @@ namespace Knowlove
                         text = "Return to Main Menu",
                         onClicked = () =>
                         {
+                            isLeave = true;
+                            isReconnect = false;
                             PhotonNetwork.LeaveRoom(true);
                             SceneManager.LoadScene(0);
                         },
                         buttonColor = PopupDialog.PopupButtonColor.Plain
+                    },
+                    new PopupDialog.PopupButton()
+                    {
+                        text = "Return to Main Menu",
+                        onClicked = () =>
+                        {
+                            CanvasLoading.Instance.Show();
+                        }
                     }
                 };
+
                 PopupDialog.Instance.Show(otherPlayer + " has left the game.", "The game will now end.", buttons);
             }
+        }
+
+        public void PlayerReconnectGame()
+        {
+            CanvasLoading.Instance.Hide();
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)

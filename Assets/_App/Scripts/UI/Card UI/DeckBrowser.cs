@@ -34,6 +34,7 @@ namespace Knowlove.UI
         [SerializeField] private TextMeshProUGUI walletLabels;
 
         [SerializeField] private GameObject _lockImage;
+        [SerializeField] private GameObject[] _buySeeImage;
 
         private int currentDeckIndex = 0;
         private string cardType;
@@ -127,48 +128,19 @@ namespace Knowlove.UI
         {
             //Show the card based on the current index
             CardData currentCard = currentDeck.cards[currentDeckIndex];
+            PlayerXP currentPlayer = InfoPlayer.Instance.PlayerState;
             _isLock = false;
 
             switch (cardType)
             {
                 case "dating":
-                    if (InfoPlayer.Instance.PlayerState.datingCard[currentDeckIndex])
-                    {
-                        _lockImage.SetActive(false);
-                        cardTextLabel.text = currentCard.text + " (" + currentCard.parentheses + ")";
-                    }                       
-                    else
-                    {
-                        _isLock = true;
-                        cardTextLabel.text = "";
-                        _lockImage.SetActive(true);
-                    }
+                    CardText(currentPlayer.playerDeckCard.datingCard[currentDeckIndex], currentPlayer.playerDeckCard.isBuyDatingCard[currentDeckIndex], currentCard);
                     break;
                 case "relationship":
-                    if (InfoPlayer.Instance.PlayerState.relationshipCard[currentDeckIndex])
-                    {
-                        _lockImage.SetActive(false);
-                        cardTextLabel.text = currentCard.text + " (" + currentCard.parentheses + ")";
-                    }
-                    else
-                    {
-                        _isLock = true;
-                        cardTextLabel.text = "";
-                        _lockImage.SetActive(true);
-                    }
+                    CardText(currentPlayer.playerDeckCard.relationshipCard[currentDeckIndex], currentPlayer.playerDeckCard.isBuyRelationshipCard[currentDeckIndex], currentCard);
                     break;
                 case "marriage":
-                    if (InfoPlayer.Instance.PlayerState.marriagepCard[currentDeckIndex])
-                    {
-                        _lockImage.SetActive(false);
-                        cardTextLabel.text = currentCard.text + " (" + currentCard.parentheses + ")";
-                    }
-                    else
-                    {
-                        _isLock = true;
-                        cardTextLabel.text = "";
-                        _lockImage.SetActive(true);
-                    }                        
+                    CardText(currentPlayer.playerDeckCard.marriagepCard[currentDeckIndex], currentPlayer.playerDeckCard.isBuyMarriagepCard[currentDeckIndex], currentCard);                       
                     break;
                 default:
                     break;
@@ -204,13 +176,16 @@ namespace Knowlove.UI
                                     switch (cardType)
                                     {
                                         case "dating":
-                                            InfoPlayer.Instance.PlayerState.datingCard[currentDeckIndex] = true;
+                                            InfoPlayer.Instance.PlayerState.playerDeckCard.datingCard[currentDeckIndex] = true;
+                                            InfoPlayer.Instance.PlayerState.playerDeckCard.isBuyDatingCard[currentDeckIndex] = true;
                                             break;
                                         case "relationship":
-                                            InfoPlayer.Instance.PlayerState.relationshipCard[currentDeckIndex] = true;
+                                            InfoPlayer.Instance.PlayerState.playerDeckCard.relationshipCard[currentDeckIndex] = true;
+                                            InfoPlayer.Instance.PlayerState.playerDeckCard.isBuyRelationshipCard[currentDeckIndex] = true;
                                             break;
                                         case "marriage":
-                                            InfoPlayer.Instance.PlayerState.marriagepCard[currentDeckIndex] = true;
+                                            InfoPlayer.Instance.PlayerState.playerDeckCard.marriagepCard[currentDeckIndex] = true;
+                                            InfoPlayer.Instance.PlayerState.playerDeckCard.isBuyMarriagepCard[currentDeckIndex] = true;
                                             break;
                                         default:
                                             break;
@@ -243,6 +218,34 @@ namespace Knowlove.UI
         {
             walletLabels.text = User.current.wallet.ToString("n0") + " <sprite=0>";
             walletLabels.gameObject.transform.DOPunchScale(new Vector3(1.5f, 1.5f, 1.5f), 0.5f, 1, 1);
+        }
+
+        private void CardText(bool isOpenCard, bool isBuy, CardData currentCard)
+        {
+            if (isOpenCard)
+            {
+                if (isBuy)
+                {
+                    _buySeeImage[0].SetActive(true);
+                    _buySeeImage[1].SetActive(false);
+                }
+                else
+                {
+                    _buySeeImage[0].SetActive(false);
+                    _buySeeImage[1].SetActive(true);
+                }                   
+
+                _lockImage.SetActive(false);
+                cardTextLabel.text = currentCard.text + " (" + currentCard.parentheses + ")";
+            }
+            else
+            {
+                _isLock = true;
+                cardTextLabel.text = "";
+                _lockImage.SetActive(true);
+                _buySeeImage[0].SetActive(false);
+                _buySeeImage[1].SetActive(false);
+            }
         }
     }
 }
