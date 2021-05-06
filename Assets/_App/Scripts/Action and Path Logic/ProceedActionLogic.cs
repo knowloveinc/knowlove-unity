@@ -280,6 +280,7 @@ namespace Knowlove.ActionAndPathLogic
                     {
                         UsedAvoidSingleCard?.Invoke(currentPlayer);
                         _gameStuff.DeleteCardFromInventory(TurnIndex);
+                        DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
                     }
                 },
                 new PopupDialog.PopupButton()
@@ -296,7 +297,7 @@ namespace Knowlove.ActionAndPathLogic
                 }
             };
 
-            ChoicedOfPlayer?.Invoke(textPromps, buttons, currentPlayer);           
+            ChoicedOfPlayer?.Invoke(textPromps, buttons, currentPlayer, 0, false);           
         }
 
         private void LoseTurns(int count, Player currentPlayer)
@@ -346,6 +347,8 @@ namespace Knowlove.ActionAndPathLogic
             playerProperties["diceCount"] = _diceCount;
             playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
             currentPlayer.SetCustomProperties(playerProperties);
+
+            DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GameBrewStudios;
+using DG.Tweening;
 using Knowlove.RoomReconnect;
 using Knowlove.UI;
 using Photon.Pun;
@@ -26,7 +27,7 @@ namespace Knowlove
         public bool isReconnect = false;
 
         private const string _roomName = "RoomName";
-        private const string _playerProperties = "Properties";
+        private const string _prefPassword = "roomPassword";
 
         #region Events
 
@@ -48,8 +49,6 @@ namespace Knowlove
                 Destroy(this.gameObject);
                 return;
             }
-
-            gameObject.AddComponent<PhotonView>();
 
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
@@ -129,6 +128,7 @@ namespace Knowlove
                         onClicked = () =>
                         {
                             Connect();
+                            isLeave = false;
                             isReconnect = true;
                         },
                         buttonColor = PopupDialog.PopupButtonColor.Plain
@@ -171,32 +171,7 @@ namespace Knowlove
         {
             base.OnJoinedLobby();
             Debug.Log("JOINED LOBBY");
-            OnPhotonConnected?.Invoke();
-
-            if (PlayerPrefs.HasKey(_roomName) && roomList != null)
-            {
-                string roomName = PlayerPrefs.GetString(_roomName);
-
-                foreach (RoomInfo ri in roomList)
-                {
-                    if (ri.Name == roomName)
-                    {
-                        PhotonNetwork.JoinRoom(roomName);
-                        return;
-                    }
-                }
-
-                RoomOptions options = new RoomOptions()
-                {
-                    PublishUserId = true,
-                    MaxPlayers = 1,
-                    IsOpen = false,
-                    IsVisible = false,
-                    EmptyRoomTtl = 0
-                };
-
-                PhotonNetwork.CreateRoom("OfflineMode" + UnityEngine.Random.Range(9, 999999), options);
-            }                
+            OnPhotonConnected?.Invoke();               
         }
 
         public override void OnJoinedRoom()
@@ -265,6 +240,31 @@ namespace Knowlove
                 Debug.Log("ROOM FOUND: " + ri.Name);
             this.roomList = roomList;
             OnRoomListUpdated?.Invoke();
+
+            if (PlayerPrefs.HasKey(_roomName) && roomList != null)
+            {
+                string roomName = PlayerPrefs.GetString(_roomName);
+
+                foreach (RoomInfo ri in roomList)
+                {
+                    if (ri.Name == roomName)
+                    {
+                        PhotonNetwork.JoinRoom(roomName);
+                        return;
+                    }
+                }
+
+                RoomOptions options = new RoomOptions()
+                {
+                    PublishUserId = true,
+                    MaxPlayers = 1,
+                    IsOpen = false,
+                    IsVisible = false,
+                    EmptyRoomTtl = 0
+                };
+
+                PhotonNetwork.CreateRoom("OfflineMode" + UnityEngine.Random.Range(9, 999999), options);
+            }
         }
 
         public override void OnLeftRoom()
@@ -295,7 +295,11 @@ namespace Knowlove
                 CanvasLoading.Instance.Hide();
             }
             else
+            {
+                isLeave = false;
+                isReconnect = false;
                 CanvasLoading.Instance.Hide();
+            }              
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -322,25 +326,7 @@ namespace Knowlove
 
             if (isReconnect)
             {
-                ExitGames.Client.Photon.Hashtable playerProperties = PhotonNetwork.LocalPlayer.CustomProperties;
-
-                PlayerCustomValue playerCustomValue = JsonUtility.FromJson<PlayerCustomValue>(PlayerPrefs.GetString(_playerProperties));
-
-                playerProperties["avoidSingleCards"] = playerCustomValue.avoidSingleCard;
-                playerProperties["wallet"] = playerCustomValue.wallet;
-                playerProperties["turnBank"] = playerCustomValue.turnBank;
-                playerProperties["protectedFromSingleInRelationship"] = playerCustomValue.protectedFromSingleInRelationship;
-                playerProperties["diceCount"] = playerCustomValue.diceCount;
-                playerProperties["progress"] = playerCustomValue.progress;
-                playerProperties["dateCount"] = playerCustomValue.dateCount;
-                playerProperties["relationshipCount"] = playerCustomValue.relationshipCount;
-                playerProperties["marriageCount"] = playerCustomValue.marriageCount;
-                playerProperties["yearsElapsed"] = playerCustomValue.yearsElapsed;
-
-                PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
-                isConnecting = false;
-                CanvasLoading.Instance.Hide();
-                photonView.RPC(nameof(PlayerReconnectGame), RpcTarget.Others);
+                ReconnectRoom.Instance.RPC_PlayerReconnectSetProperties();
                 return;
             }
 
@@ -368,43 +354,56 @@ namespace Knowlove
             base.OnPlayerLeftRoom(otherPlayer);
             OnPlayerLeft?.Invoke(otherPlayer);
             UpdatePlayerList();
-            isReconnect = true;
+            
 
-            if (players.Count < PhotonNetwork.CurrentRoom.MaxPlayers && TurnManager.Instance.turnState != TurnManager.TurnState.GameOver)
+            if (PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers && TurnManager.Instance.turnState != TurnManager.TurnState.GameOver)
             {
                 PhotonNetwork.CurrentRoom.IsOpen = true;
 
-                PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+                List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
+
+                PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
                 {
-                    new PopupDialog.PopupButton()
+                    text = "Return to Main Menu",
+                    onClicked = () =>
                     {
-                        text = "Return to Main Menu",
-                        onClicked = () =>
-                        {
-                            isLeave = true;
-                            isReconnect = false;
-                            PhotonNetwork.LeaveRoom(true);
-                            SceneManager.LoadScene(0);
-                        },
-                        buttonColor = PopupDialog.PopupButtonColor.Plain
+                        isLeave = true;
+                        isReconnect = false;
+                        PhotonNetwork.LeaveRoom(true);
                     },
-                    new PopupDialog.PopupButton()
-                    {
-                        text = "Return to Main Menu",
-                        onClicked = () =>
-                        {
-                            CanvasLoading.Instance.Show();
-                        }
-                    }
+                    buttonColor = PopupDialog.PopupButtonColor.Plain
                 };
 
-                PopupDialog.Instance.Show(otherPlayer + " has left the game.", "The game will now end.", buttons);
-            }
-        }
+                buttons.Add(yesBtn);
 
-        public void PlayerReconnectGame()
-        {
-            CanvasLoading.Instance.Hide();
+                if (!isLeave)
+                {
+                    PopupDialog.PopupButton noBtn = new PopupDialog.PopupButton()
+                    {
+                        text = "Return to Game",
+                        onClicked = () =>
+                        {
+                            if (PhotonNetwork.CurrentRoom.PlayerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
+                            {
+                                CanvasLoading.Instance.Show();
+
+                                DOVirtual.DelayedCall(30f, () =>
+                                {
+                                    if (players.Count < PhotonNetwork.CurrentRoom.MaxPlayers)
+                                    {
+                                        CanvasLoading.Instance.Hide();
+                                        OnPlayerLeftRoom(otherPlayer);
+                                    }
+                                });
+                            }                 
+                        }
+                    };
+
+                    buttons.Add(noBtn);
+                }
+
+                PopupDialog.Instance.Show(otherPlayer + " has left the game.", "The game will now end.", buttons.ToArray());
+            }
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)

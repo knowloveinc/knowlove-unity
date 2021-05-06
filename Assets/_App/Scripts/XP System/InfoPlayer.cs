@@ -64,7 +64,7 @@ namespace Knowlove.XPSystem
             DOVirtual.DelayedCall(7f, () => 
             {
                 if(!isFinish)
-                    CanvasLoading.Instance.Hide();
+                    CanvasLoading.Instance.ForceHide();
             });
 
             if (_isHaveUser)

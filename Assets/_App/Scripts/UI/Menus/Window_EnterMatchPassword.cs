@@ -10,6 +10,8 @@ namespace Knowlove.UI.Menus
     {
         public RoomInfo roomToJoin;
 
+        private const string _prefPassword = "roomPassword";
+
         public string password;
 
         [SerializeField] private TMP_InputField passwordField;
@@ -35,6 +37,7 @@ namespace Knowlove.UI.Menus
             {
                 CanvasLoading.Instance.Show();
 
+                PlayerPrefs.SetString(_prefPassword, password);
                 Hide();
                 _windowMatchList.Hide();
                 waitingWindow.Show();

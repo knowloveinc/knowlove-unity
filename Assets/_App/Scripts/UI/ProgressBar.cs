@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using Knowlove.RoomReconnect;
+using Photon.Pun;
 using TMPro;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace Knowlove.UI
     {
         [SerializeField] private ReadyPlayers _readyPlayers;
         [SerializeField] private AvoidSingleCard _avoidSingleCard;
+        [SerializeField] private ReconnectRoom _reconnectRoom;
 
         [SerializeField] private GameObject playerProgressTemplate;
         [SerializeField] private Transform playerProgressContainer;
@@ -15,11 +17,13 @@ namespace Knowlove.UI
         private void Start()
         {
             playerProgressTemplate.SetActive(false);
+            _reconnectRoom.SettedPlayerProperties += BuildProgressBarList;
             _readyPlayers.PlayerReadied += BuildProgressBarList;
         }
 
         private void OnDestroy()
         {
+            _reconnectRoom.SettedPlayerProperties -= BuildProgressBarList;
             _readyPlayers.PlayerReadied -= BuildProgressBarList;
         }
 

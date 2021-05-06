@@ -1,12 +1,18 @@
 ﻿using DG.Tweening;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace Knowlove.UI
 {
-    public class MenuPanel : MonoBehaviour
+    public class MenuPanel : MonoBehaviourPunCallbacks
     {
         [SerializeField] private RectTransform menuRect;
+
+        private void OnApplicationQuit()
+        {
+            photonView.RPC(nameof(LeaveRoom), RpcTarget.OthersBuffered, PhotonNetwork.LocalPlayer);
+        }
 
         public void CloseMenu()
         {
@@ -27,9 +33,7 @@ namespace Knowlove.UI
                     text = "Yes, Leave",
                     onClicked = () =>
                     {
-                        NetworkManager.Instance.isLeave = true;
-                        NetworkManager.Instance.isReconnect = false;
-                        PhotonNetwork.LeaveRoom();
+                        photonView.RPC(nameof(LeaveRoom), RpcTarget.AllViaServer, PhotonNetwork.LocalPlayer);
                     },
                     buttonColor = PopupDialog.PopupButtonColor.Red
                 },
@@ -41,6 +45,16 @@ namespace Knowlove.UI
             };
 
             PopupDialog.Instance.Show("Really Leave Game?", "If you leave this match, it will end the game for all players. Are you sure you want to leave? (Please be considerate of others.)", buttons);
+        }
+
+        [PunRPC]
+        private void LeaveRoom(Player player)
+        {
+            NetworkManager.Instance.isLeave = true;
+            NetworkManager.Instance.isReconnect = false;
+
+            if(PhotonNetwork.LocalPlayer == player)
+                PhotonNetwork.LeaveRoom();
         }
     }
 }

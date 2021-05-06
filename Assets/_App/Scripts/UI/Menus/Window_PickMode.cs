@@ -21,11 +21,6 @@ namespace Knowlove.UI.Menus
         public override void Show()
         {
             base.Show();
-            
-            DOVirtual.DelayedCall(4f, () =>
-            {
-                //_rankImage.ChangeRank();
-            });
 
             if (!PlayerPrefs.HasKey("IsSaveDate") && User.current != null)
             {

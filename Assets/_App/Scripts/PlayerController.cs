@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Photon.Pun;
-using UnityEngine;
 
 namespace Knowlove
 {
@@ -15,7 +14,6 @@ namespace Knowlove
             if (stream.IsWriting)
             {
                 owner = photonView.Owner.NickName;
-                Debug.Log("owner set to " + owner, this.gameObject);
 
                 stream.SendNext(owner);
 
@@ -25,7 +23,6 @@ namespace Knowlove
             else
             {
                 owner = (string)stream.ReceiveNext();
-                Debug.Log("owner set to " + owner, this.gameObject);
 
                 playerProps = (string)stream.ReceiveNext();
             }

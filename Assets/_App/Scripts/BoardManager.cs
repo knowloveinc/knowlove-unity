@@ -49,7 +49,7 @@ namespace Knowlove
                 _diceRb[i] = dice[i].GetComponent<Rigidbody>();
             }
 
-            if (!PhotonNetwork.IsMasterClient)
+            /*if (!PhotonNetwork.IsMasterClient)
             {
                 foreach (Transform die in dice)
                 {
@@ -61,7 +61,7 @@ namespace Knowlove
                         Destroy(rb);
                     }
                 }
-            }
+            }*/
         }
 
         [ContextMenu("Check Word Length Of Cards")]
