@@ -182,7 +182,7 @@ namespace Knowlove
             PlayerPrefs.SetString(_roomName, PhotonNetwork.CurrentRoom.Name);
             UpdatePlayerList();
 
-            if (PhotonNetwork.IsMasterClient && !isReconnect && SceneManager.GetActiveScene().buildIndex != 0)
+            if (PhotonNetwork.IsMasterClient && !isReconnect)
                 StartCoroutine(WaitingForPlayers());
 
             Debug.Log($"JOINED ROOM: {PhotonNetwork.CurrentRoom.Name}");
@@ -241,7 +241,7 @@ namespace Knowlove
             this.roomList = roomList;
             OnRoomListUpdated?.Invoke();
 
-            if (PlayerPrefs.HasKey(_roomName) && roomList != null)
+            if (PlayerPrefs.HasKey(_roomName) && roomList != null && SceneManager.GetActiveScene().buildIndex != 0)
             {
                 string roomName = PlayerPrefs.GetString(_roomName);
 
