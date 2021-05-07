@@ -23,8 +23,6 @@ namespace Knowlove.UI
 
         [SerializeField] private IAPCard[] iapCards;
 
-        [SerializeField] private Sprite bronzeBucksIcon, silverBucksIcon, goldBucksIcon;
-
         private bool _isAction = false;
         private bool _isOpenStore;
         private ProceedAction _proceedAction = ProceedAction.Nothing;
