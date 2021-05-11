@@ -43,6 +43,7 @@ namespace Knowlove.UI
             string appSecret = CBSettings.getIOSAppSecret();
 #endif
 
+            Chartboost.cacheInterstitial(CBLocation.Default);
             CBDataUseConsent consent = CBGDPRDataUseConsent.NoBehavioral;
             Chartboost.addDataUseConsent(consent);
 
@@ -101,12 +102,13 @@ namespace Knowlove.UI
         {
             // Listen to all impression-related events
             Chartboost.didInitialize += didInitialize;
-            //Chartboost.didFailToLoadInterstitial += didFailToLoadInterstitial;
-            //Chartboost.didDismissInterstitial += didDismissInterstitial;
-            //Chartboost.didCloseInterstitial += didCloseInterstitial;
-            //Chartboost.didClickInterstitial += didClickInterstitial;
-            //Chartboost.didCacheInterstitial += didCacheInterstitial;
-            //Chartboost.shouldDisplayInterstitial += shouldDisplayInterstitial;
+            Chartboost.didFailToLoadInterstitial += didFailToLoadInterstitial;
+            Chartboost.didDismissInterstitial += didDismissInterstitial;
+            Chartboost.didCloseInterstitial += didCloseInterstitial;
+            Chartboost.didClickInterstitial += didClickInterstitial;
+            Chartboost.didCacheInterstitial += didCacheInterstitial;
+            Chartboost.shouldDisplayInterstitial += shouldDisplayInterstitial;
+            Chartboost.didDisplayInterstitial += didDisplayInterstitial;
             Chartboost.didFailToRecordClick += didFailToRecordClick;
             Chartboost.didFailToLoadRewardedVideo += didFailToLoadRewardedVideo;
             Chartboost.didDismissRewardedVideo += didDismissRewardedVideo;
@@ -115,6 +117,7 @@ namespace Knowlove.UI
             Chartboost.didCacheRewardedVideo += didCacheRewardedVideo;
             Chartboost.shouldDisplayRewardedVideo += shouldDisplayRewardedVideo;
             Chartboost.didCompleteRewardedVideo += didCompleteRewardedVideo;
+            Chartboost.didDisplayRewardedVideo += didDisplayRewardedVideo;
             Chartboost.didPauseClickForConfirmation += didPauseClickForConfirmation;
             Chartboost.willDisplayVideo += willDisplayVideo;
 #if UNITY_IPHONE
@@ -122,6 +125,41 @@ namespace Knowlove.UI
             Chartboost.didDisplayRewardedVideo += didDisplayRewardedVideo;
             //Chartboost.didCompleteAppStoreSheetFlow += didCompleteAppStoreSheetFlow;
 #endif
+        }
+
+        private void didFailToLoadInterstitial(CBLocation location, CBImpressionError error)
+        {
+            
+        }
+
+        private void didDismissInterstitial(CBLocation location)
+        {
+            
+        }
+
+        private void didCloseInterstitial(CBLocation location)
+        {
+            
+        }
+
+        private void didClickInterstitial(CBLocation location)
+        {
+            
+        }
+
+        private void didCacheInterstitial(CBLocation location)
+        {
+            
+        }
+
+        private bool shouldDisplayInterstitial(CBLocation location)
+        {
+            return true;
+        }
+
+        private void didDisplayInterstitial(CBLocation location)
+        {
+
         }
 
         private void willDisplayVideo(CBLocation obj)

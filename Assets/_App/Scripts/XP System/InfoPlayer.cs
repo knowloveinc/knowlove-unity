@@ -204,6 +204,14 @@ namespace Knowlove.XPSystem
             JSONPlayerInfo();
         }
 
+        public void PlayerShareApp()
+        {
+            PlayerState.shareGame += 1;
+
+            statusPlayer.CheckPlayerStatus();
+            JSONPlayerInfo();
+        }
+
         public void CheckPlayWithThisPlayers()
         {
             photonView.RPC(nameof(RPC_CheckPlayWithThisPlayers), RpcTarget.AllViaServer);

@@ -112,7 +112,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1335d4ad0ad1c8443b3bf30811def444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rankPopupWindow:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
