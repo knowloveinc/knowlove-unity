@@ -217,7 +217,6 @@ namespace Knowlove.UI
         private void UpdateText()
         {
             walletLabels.text = User.current.wallet.ToString("n0") + " <sprite=0>";
-            walletLabels.gameObject.transform.DOPunchScale(new Vector3(1.5f, 1.5f, 1.5f), 0.5f, 1, 1);
         }
 
         private void CardText(bool isOpenCard, bool isBuy, CardData currentCard)

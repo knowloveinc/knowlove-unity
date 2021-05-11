@@ -1,6 +1,7 @@
-﻿using ChartboostSDK;
-using GameBrewStudios;
+﻿using GameBrewStudios;
+using GameBrewStudios.Networking;
 using UnityEngine;
+using UnityEngine.Advertisements;
 
 namespace Knowlove.UI
 {
@@ -10,27 +11,49 @@ namespace Knowlove.UI
 
         public GameObject buttonChild;
 
+        [SerializeField] private int _reward = 200;
+
         private void Start()
         {
-            Chartboost.didCompleteRewardedVideo += this.Chartboost_didDisplayRewardedVideo;
+            if (Advertisement.isSupported && (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.Android))
+                Advertisement.Initialize("4125675", false);
+            else if(Advertisement.isSupported && (Application.platform == RuntimePlatform.IPhonePlayer))
+                Advertisement.Initialize("4125674", false);
         }
+
         private void Update()
         {
             buttonChild.SetActive(lastPlayTime == 0f || Time.time - lastPlayTime >= (60f * 30f));
         }
 
-        private void Chartboost_didDisplayRewardedVideo(CBLocation obj, int reward)
-        {
-            lastPlayTime = Time.time;
-            User.current.AddCurrency(reward, (wallet) =>
-            {
-                Debug.Log("ADDED " + reward + " TO WALLET FOR TOTAL OF: " + wallet);
-            });
-        }
-
         public void OnClick()
         {
-            StartupCanvas.PlayRewardedVideo();
+            if (Advertisement.IsReady())
+            {
+                ShowOptions showOptions = new ShowOptions();
+
+                showOptions.resultCallback += RewardPlayer;
+
+                if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.Android)
+                    Advertisement.Show("Rewarded_Android", showOptions);
+                else if (Application.platform == RuntimePlatform.IPhonePlayer)
+                    Advertisement.Show("Rewarded_iOS", showOptions);
+            }
+        }
+
+        private void RewardPlayer(ShowResult result)
+        {
+            if(result == ShowResult.Finished)
+            {
+                APIManager.GetUserDetails((user) => 
+                {
+                    APIManager.AddCurrency(_reward, balance => 
+                    {
+                        User.current.wallet = balance;
+                        StoreController.Instance.UpdateFromPlayerWallet();
+                    });
+                });
+            }
         }
     }
 }
