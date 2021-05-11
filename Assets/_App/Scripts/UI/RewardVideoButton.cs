@@ -45,12 +45,14 @@ namespace Knowlove.UI
         {
             if(result == ShowResult.Finished)
             {
+                CanvasLoading.Instance.Show();
                 APIManager.GetUserDetails((user) => 
                 {
                     APIManager.AddCurrency(_reward, balance => 
                     {
                         User.current.wallet = balance;
                         StoreController.Instance.UpdateFromPlayerWallet();
+                        CanvasLoading.Instance.Hide();
                     });
                 });
             }

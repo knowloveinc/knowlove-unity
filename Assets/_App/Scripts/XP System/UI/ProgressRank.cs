@@ -44,12 +44,15 @@ namespace Knowlove.XPSystem
             int currentRelatishipCard = GetCard(player.playerDeckCard.relationshipCard);
             int currentMarriageCard = GetCard(player.playerDeckCard.marriagepCard);
 
+            int currentPlayer = (player.countDifferentPlayers > needPeople) ? needPeople : player.countDifferentPlayers;
+            int currentWin = (player.winGame > needWin) ? needWin : player.winGame;
+            int currentShare = (player.shareGame > needShare) ? needShare : player.shareGame;
 
             if (!player.isGoldStatus)
             {
-                _playerWithPeople.text = player.countDifferentPlayers + " / " + needPeople;
-                _gameWin.text = player.winGame + " / " + needWin;
-                _shareApp.text = player.shareGame + " / " + needShare;
+                _playerWithPeople.text = currentPlayer + " / " + needPeople;
+                _gameWin.text = currentWin + " / " + needWin;
+                _shareApp.text = currentShare + " / " + needShare;
             }
             else
             {

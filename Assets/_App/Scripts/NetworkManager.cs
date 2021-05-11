@@ -105,24 +105,28 @@ namespace Knowlove
 
             if (cause != DisconnectCause.DisconnectByClientLogic && cause != DisconnectCause.DisconnectByServerLogic)
             {
+                List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
 
-                PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
+                PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
                 {
-                    new PopupDialog.PopupButton()
+                    text = "Back to Menu",
+                    onClicked = () =>
                     {
-                        text = "Back to Menu",
-                        onClicked = () =>
-                        {
-                            isLeave = true;
-                            isReconnect = false;
-                            PhotonNetwork.Disconnect();
+                        isLeave = true;
+                        isReconnect = false;
+                        PhotonNetwork.Disconnect();
 
-                            PlayerPrefs.DeleteKey(_roomName);
-                            StartCoroutine(GoBackToMainMenu());
-                        },
-                        buttonColor = PopupDialog.PopupButtonColor.Plain
+                        PlayerPrefs.DeleteKey(_roomName);
+                        StartCoroutine(GoBackToMainMenu());
                     },
-                    new PopupDialog.PopupButton()
+                    buttonColor = PopupDialog.PopupButtonColor.Plain
+                };
+
+                buttons.Add(yesBtn);
+
+                if(SceneManager.GetActiveScene().buildIndex != 0)
+                {
+                    PopupDialog.PopupButton backBtn = new PopupDialog.PopupButton()
                     {
                         text = "Back to Game",
                         onClicked = () =>
@@ -132,10 +136,12 @@ namespace Knowlove
                             isReconnect = true;
                         },
                         buttonColor = PopupDialog.PopupButtonColor.Plain
-                    }
-                };
+                    };
 
-                PopupDialog.Instance.Show("Disconnected", $"Lost connection to game server. Reason: {cause}\n\n Please try again later.", buttons);
+                    buttons.Add(backBtn);
+                }               
+
+                PopupDialog.Instance.Show("Disconnected", $"Lost connection to game server. Reason: {cause}\n\n Please try again later.", buttons.ToArray());
             }
             else
                 Debug.Log("Disconnect appear to be intentional...");
