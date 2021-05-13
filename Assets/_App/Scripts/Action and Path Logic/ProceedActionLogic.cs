@@ -316,11 +316,11 @@ namespace Knowlove.ActionAndPathLogic
         private void ProtectedFromSingle(Player currentPlayer, string textBtn)
         {
             if (IsMarriage)
-                textBtn = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your Marriage is safe.";
+                textBtn = " This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your Marriage is safe.";
             else if (BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Relationship)
-                textBtn = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your relationship is safe.";
+                textBtn = " This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your relationship is safe.";
             else if (BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Dating)
-                textBtn = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your dating is safe.";
+                textBtn = " This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your dating is safe.";
 
             PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
             {

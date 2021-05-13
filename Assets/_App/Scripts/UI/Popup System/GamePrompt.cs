@@ -120,7 +120,6 @@ namespace Knowlove.UI
         [PunRPC]
         private void RPC_ShowPrompt(string text, string[] buttonTexts, Player player, int bgColor = 0)
         {
-            currentPlayer = player;
             List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
 
             if (buttonTexts == null || buttonTexts.Length == 0)
@@ -141,6 +140,7 @@ namespace Knowlove.UI
 
             PopupDialog.Instance.Show("", text, buttons.ToArray(), bgColor, player == PhotonNetwork.LocalPlayer);
 
+            FlipTableBtn.Instance.TurnOn(player);
             Debug.Log("ShowPrompt: " + text);
         }
 

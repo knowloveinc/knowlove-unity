@@ -2,26 +2,34 @@
 using UnityEngine.SceneManagement;
 using Knowlove.FlipTheTableLogic;
 using Photon.Pun;
+using Photon.Realtime;
 
 namespace Knowlove.UI
 {
     public class FlipTableBtn : MonoBehaviour
     {
+        public static FlipTableBtn Instance;
+
         [SerializeField] private GameObject _flipThetableBtn;
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         private void OnEnable()
         {
-            if (SceneManager.GetActiveScene().buildIndex == 0 || StoreController.Instance.IsOpenStore)
-                _flipThetableBtn.gameObject.SetActive(false);
-            else if(TurnManager.Instance != null && GamePrompt.Instance != null)
+             _flipThetableBtn.gameObject.SetActive(false);      
+        }
+
+        public void TurnOn(Player currentPlayer)
+        {
+            if (PhotonNetwork.LocalPlayer == currentPlayer)
             {
-                if (PhotonNetwork.LocalPlayer == GamePrompt.Instance.currentPlayer)
-                {
-                    _flipThetableBtn.gameObject.SetActive(true);
-                }
-                else
-                    _flipThetableBtn.gameObject.SetActive(false);
-            }                  
+                _flipThetableBtn.gameObject.SetActive(true);
+            }
+            else
+                _flipThetableBtn.gameObject.SetActive(false);
         }
 
         public void ActiveButton()

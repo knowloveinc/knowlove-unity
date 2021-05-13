@@ -87,11 +87,11 @@ namespace Knowlove.ActionAndPathLogic
             List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
 
             if (IsMarriage)
-                text = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your Marriage is safe.";
+                text = " This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your Marriage is safe.";
             else if (BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Relationship)
-                text = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your relationship is safe.";
+                text = " This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your relationship is safe.";
             else if (!IsNotDaring)
-                text = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your dating is safe.";
+                text = " This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your dating is safe.";
 
             if (!skipPrompt)
             {
