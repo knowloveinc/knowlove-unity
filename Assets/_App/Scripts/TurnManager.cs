@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using ExitGames.Client.Photon;
 using Knowlove.ActionAndPathLogic;
 using Knowlove.MyStuffInGame;
 using Knowlove.RoomReconnect;
@@ -61,7 +62,7 @@ namespace Knowlove
         private void Start()
         {
             Instance = this;
-            turnIndex = 0;
+            turnIndex = 0;               
 
             Debug.Log("TurnManager.Start()");
         }

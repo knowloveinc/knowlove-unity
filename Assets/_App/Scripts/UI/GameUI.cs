@@ -253,7 +253,7 @@ namespace Knowlove.UI
 
         private void ShowUserPickCard()
         {
-            DOVirtual.DelayedCall(2.5f, () =>
+            DOVirtual.DelayedCall(3f, () =>
             {
                 CameraManager.Instance.SetCamera(2);
 

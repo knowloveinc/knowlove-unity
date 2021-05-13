@@ -23215,7 +23215,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonChild: {fileID: 1983315686}
-  _reward: 200
+  _reward: 50
 --- !u!1 &868224481
 GameObject:
   m_ObjectHideFlags: 0
@@ -53261,18 +53261,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2565008001706170086, guid: d68e130937dc2bd4bb585dedd0106df4,
-        type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 8b47ec87c3d7a73499d2121494c4b767,
-        type: 2}
-    - target: {fileID: 2565008001706170086, guid: d68e130937dc2bd4bb585dedd0106df4,
-        type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: -3720113469972678351, guid: 8b47ec87c3d7a73499d2121494c4b767,
-        type: 2}
     - target: {fileID: 2565008002221284905, guid: d68e130937dc2bd4bb585dedd0106df4,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -53287,11 +53275,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Canvas - PopupDialog
-      objectReference: {fileID: 0}
-    - target: {fileID: 2565008002250738477, guid: d68e130937dc2bd4bb585dedd0106df4,
-        type: 3}
-      propertyPath: m_Alpha
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2565008002250738480, guid: d68e130937dc2bd4bb585dedd0106df4,
         type: 3}
@@ -53418,11 +53401,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2565008002479859730, guid: d68e130937dc2bd4bb585dedd0106df4,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2565008002756481744, guid: d68e130937dc2bd4bb585dedd0106df4,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -53446,11 +53424,6 @@ PrefabInstance:
     - target: {fileID: 2565008002973614048, guid: d68e130937dc2bd4bb585dedd0106df4,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2565008003449628836, guid: d68e130937dc2bd4bb585dedd0106df4,
-        type: 3}
-      propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2565008003449628836, guid: d68e130937dc2bd4bb585dedd0106df4,

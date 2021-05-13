@@ -128,15 +128,7 @@ namespace Knowlove.ActionAndPathLogic
                     BoardManager.Instance.DrawCard("avoid");
                     UsedAvoidSingleCard?.Invoke(currentPlayer);
 
-                    APIManager.GetUserDetails((user) =>
-                    {
-                        APIManager.AddItem("avoidSingle", 1, (inventory) =>
-                        {
-                            User.current.inventory = inventory;
-                            StoreController.Instance.UpdateFromPlayerInventory();
-                            _gameStuff.GetSpecialCard();
-                        });
-                    });
+                    photonView.RPC(nameof(GetAvoidCard), RpcTarget.All, currentPlayer);
 
                     DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
                     break;
@@ -250,15 +242,7 @@ namespace Knowlove.ActionAndPathLogic
             BoardManager.Instance.DrawCard("avoid");
             UsedAvoidSingleCard?.Invoke(currentPlayer);
 
-            APIManager.GetUserDetails((user) => 
-            {
-                APIManager.AddItem("avoidSingle", 1, (inventory) => 
-                {
-                    User.current.inventory = inventory;
-                    StoreController.Instance.UpdateFromPlayerInventory();
-                    _gameStuff.GetSpecialCard();
-                });
-            });
+            photonView.RPC(nameof(GetAvoidCard), RpcTarget.All, currentPlayer);
 
             DOVirtual.DelayedCall(2f, () =>
             {
@@ -269,6 +253,23 @@ namespace Knowlove.ActionAndPathLogic
 
                 DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
             });
+        }
+
+        [PunRPC]
+        private void GetAvoidCard(Player currentPlayer)
+        {
+            if (PhotonNetwork.LocalPlayer == currentPlayer)
+            {
+                APIManager.GetUserDetails((user) =>
+                {
+                    APIManager.AddItem("avoidSingle", 1, (inventory) =>
+                    {
+                        User.current.inventory = inventory;
+                        StoreController.Instance.UpdateFromPlayerInventory();
+                        _gameStuff.GetSpecialCard();
+                    });
+                });
+            }
         }
 
         private void LoseTurnsOrRollAgain(string text, int count, bool isLose, bool skipPrompt, Player currentPlayer)

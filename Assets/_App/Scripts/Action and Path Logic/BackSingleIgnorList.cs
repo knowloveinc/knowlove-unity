@@ -58,11 +58,11 @@ namespace Knowlove.ActionAndPathLogic
             _protectedFromSingleAllGame = InfoPlayer.Instance.PlayerState.ProtectedFromBackToSinglePerGame;
 
             if (_protectedFromSingleAllGame)
-                ProtectBackSingle(skipPrompt, text, currentPlayer, " [ You have protected all game ]");
+                ProtectBackSingle(skipPrompt, text, currentPlayer);
             else if (_protectedFromSingleInMarriage && IsMarriage)
-                ProtectBackSingle(skipPrompt, text, currentPlayer, " [ You have protected in marriage game ]");
+                ProtectBackSingle(skipPrompt, text, currentPlayer);
             else if (_protectedFromSingleInRelationship && IsRelationship)
-                ProtectBackSingle(skipPrompt, text, currentPlayer, "Your mate matches your non-negotiable list.");
+                ProtectBackSingle(skipPrompt, text, currentPlayer);
             else if (!skipPrompt)
             {
                 if (_avoidSingleCards < 1 && _wallet > 0 && IsNotDaring)
@@ -105,11 +105,22 @@ namespace Knowlove.ActionAndPathLogic
             currentPlayer.SetCustomProperties(playerProperties);
         }
 
-        private void ProtectBackSingle(bool skipPrompt, string text, Player currentPlayer, string newText)
+        private void ProtectBackSingle(bool skipPrompt, string text, Player currentPlayer)
         {
             if (!skipPrompt)
             {
-                text = newText;
+                if (IsMarriage)
+                    text = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your Marriage is safe.";
+                else if (_protectedFromSingleAllGame)
+                {
+                    if (!IsNotDaring)
+                        text = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your dating is safe.";
+                    else
+                        text = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your relationship is safe.";
+                }
+                else if (BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Relationship && _protectedFromSingleInRelationship)
+                    text = "Your mate matches your non-negotiable list.";
+
                 PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
                 {
                     text = "Okay",

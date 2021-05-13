@@ -10,6 +10,10 @@ namespace Knowlove.UI
 {
     public class GamePrompt : MonoBehaviourPunCallbacks
     {
+        public static GamePrompt Instance;
+
+        public Player currentPlayer;
+
         [SerializeField] private PathNodeActionLogic _pathNodeActionLogic;
         [SerializeField] private ProceedActionLogic _proceedActionLogic;
         [SerializeField] private BackSingleLogic _backSingleLogic;
@@ -17,6 +21,11 @@ namespace Knowlove.UI
 
         private List<Action> _promptButtonActions = new List<Action>();
         private PopupDialog.PopupButton[] _currentButtons;
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         private void Start()
         {
@@ -111,6 +120,7 @@ namespace Knowlove.UI
         [PunRPC]
         private void RPC_ShowPrompt(string text, string[] buttonTexts, Player player, int bgColor = 0)
         {
+            currentPlayer = player;
             List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
 
             if (buttonTexts == null || buttonTexts.Length == 0)

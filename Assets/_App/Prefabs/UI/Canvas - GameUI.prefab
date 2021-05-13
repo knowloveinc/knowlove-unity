@@ -6819,6 +6819,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _readyPlayers: {fileID: 0}
   _avoidSingleCard: {fileID: 3259302697878684667}
+  _reconnectRoom: {fileID: 0}
   playerProgressTemplate: {fileID: 4592793375815793519}
   playerProgressContainer: {fileID: 4592793375768894108}
 --- !u!114 &6140458998922343477
@@ -10251,6 +10252,7 @@ GameObject:
   - component: {fileID: 4592793376371565627}
   - component: {fileID: 4592793376371565624}
   - component: {fileID: 4592793376371565628}
+  - component: {fileID: 3692212492153838070}
   m_Layer: 5
   m_Name: Canvas - GameUI
   m_TagString: Untagged
@@ -10442,6 +10444,28 @@ MonoBehaviour:
   _listCardButton: {fileID: 4592793374730706750}
   _listPanel: {fileID: 4592793375471678581}
   _listPanelHelper: {fileID: 4592793374977147432}
+--- !u!114 &3692212492153838070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4592793376371565625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &4592793376414391963
 GameObject:
   m_ObjectHideFlags: 0
@@ -11427,6 +11451,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 58b06809430c19c4a80719f14f4ffb87, type: 3}
+--- !u!224 &40170166493680806 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5924744882799659327, guid: 58b06809430c19c4a80719f14f4ffb87,
+    type: 3}
+  m_PrefabInstance: {fileID: 5960050770928393625}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &8868032622561708045 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3001594409065584020, guid: 58b06809430c19c4a80719f14f4ffb87,
@@ -11439,9 +11469,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &40170166493680806 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5924744882799659327, guid: 58b06809430c19c4a80719f14f4ffb87,
-    type: 3}
-  m_PrefabInstance: {fileID: 5960050770928393625}
-  m_PrefabAsset: {fileID: 0}

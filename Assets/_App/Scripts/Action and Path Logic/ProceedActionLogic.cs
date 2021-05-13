@@ -314,17 +314,27 @@ namespace Knowlove.ActionAndPathLogic
         }
 
         private void ProtectedFromSingle(Player currentPlayer, string textBtn)
-        {            
-            PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
+        {
+            if (IsMarriage)
+                textBtn = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your Marriage is safe.";
+            else if (BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Relationship)
+                textBtn = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your relationship is safe.";
+            else if (BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Dating)
+                textBtn = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your dating is safe.";
+
+            PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
             {
-                text = "Okay",
-                onClicked = () =>
+                new PopupDialog.PopupButton()
                 {
-                    DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
+                    text = "Okay",
+                    onClicked = () =>
+                    {
+                        DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
+                    }
                 }
             };
 
-            ChoicedOfPlayer?.Invoke(textBtn, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
+            DOVirtual.DelayedCall(0.3f, () => { ChoicedOfPlayer?.Invoke(textBtn, buttons, currentPlayer, 0, false); });            
         }
 
         private void GoHome(BoardPiece playerBoardPiece, Player currentPlayer, bool isLoseTurn)

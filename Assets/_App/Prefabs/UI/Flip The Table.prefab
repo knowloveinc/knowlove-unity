@@ -91,8 +91,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Knowlove.FlipTheTableLogic.FlipTheTable, Assembly-CSharp
-        m_MethodName: FlipTable
+        m_TargetAssemblyTypeName: Knowlove.UI.FlipTableBtn, Assembly-CSharp
+        m_MethodName: ActiveButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

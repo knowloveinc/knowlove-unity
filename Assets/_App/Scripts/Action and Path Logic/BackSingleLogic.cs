@@ -64,7 +64,7 @@ namespace Knowlove.ActionAndPathLogic
             if (_protectedFromSingleAllGame)
                 buttons = ProtectBackSingle(skipPrompt, "You have protected all game.");
             else if (_protectedFromSingleInMarriage && IsMarriage)
-                buttons = ProtectBackSingle(skipPrompt, "You have protected in marriage game.");
+                buttons = ProtectBackSingle(skipPrompt, "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your Marriage is Safe.”");
             else if (_avoidSingleCards > 0)
                 buttons = HasAvoidSingleCard(skipPrompt, currentPlayer, piece);
             else if(_avoidSingleCards <= 0)
@@ -85,6 +85,13 @@ namespace Knowlove.ActionAndPathLogic
         private List<PopupDialog.PopupButton> ProtectBackSingle(bool skipPrompt, string text)
         {
             List<PopupDialog.PopupButton> buttons = new List<PopupDialog.PopupButton>();
+
+            if (IsMarriage)
+                text = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your Marriage is safe.";
+            else if (BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Relationship)
+                text = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your relationship is safe.";
+            else if (!IsNotDaring)
+                text = "This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your dating is safe.";
 
             if (!skipPrompt)
             {

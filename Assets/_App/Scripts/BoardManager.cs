@@ -48,20 +48,6 @@ namespace Knowlove
                 _diceScripts[i] = dice[i].GetComponent<Dice>();
                 _diceRb[i] = dice[i].GetComponent<Rigidbody>();
             }
-
-            /*if (!PhotonNetwork.IsMasterClient)
-            {
-                foreach (Transform die in dice)
-                {
-                    Rigidbody rb = die.GetComponent<Rigidbody>();
-
-                    if (rb != null)
-                    {
-                        Debug.LogWarning("<color=Red>REMOVING RIGIDBODY FROM DICE BECAUSE WE ARE NOT THE HOST</color>");
-                        Destroy(rb);
-                    }
-                }
-            }*/
         }
 
         [ContextMenu("Check Word Length Of Cards")]
@@ -127,7 +113,12 @@ namespace Knowlove
         {
             for (int i = 0; i < dice.Length; i++)
             {
-                dice[i].gameObject.SetActive(enabled && i < count);
+                if (PhotonNetwork.IsMasterClient)
+                    _diceRb[i].isKinematic = false;
+                else
+                    _diceRb[i].isKinematic = true;
+
+                dice[i].gameObject.SetActive(enabled && i < count);                
             }
         }
 
