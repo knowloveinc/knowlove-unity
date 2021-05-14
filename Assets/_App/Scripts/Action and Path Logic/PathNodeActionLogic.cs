@@ -43,6 +43,16 @@ namespace Knowlove.ActionAndPathLogic
             get => _turnManager.turnIndex;
         }
 
+        private bool IsRelationship
+        {
+            get => BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Relationship;
+        }
+
+        private bool IsMarriage
+        {
+            get => BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Marriage;
+        }
+
         public void HandlePathNodeAction(PathNodeAction action, string text, int rollCheck = 0, ProceedAction onPassed = ProceedAction.Nothing, ProceedAction onFailed = ProceedAction.Nothing, bool skipPrompt = false)
         {
             if (!PhotonNetwork.IsMasterClient)
@@ -139,16 +149,23 @@ namespace Knowlove.ActionAndPathLogic
                 case PathNodeAction.RollToProceed:
                     if (!skipPrompt)
                     {
-                        PopupDialog.PopupButton rbtn = new PopupDialog.PopupButton()
+                        if(piece.pathIndex == 27 && IsMarriage && (_protectedFromSingleAllGame || _protectedFromSingleInMarriage))
+                            ProtectBackSingle("This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your marriage is safe.", currentPlayer);
+                        else if((piece.pathIndex == 28 || piece.pathIndex == 10) && IsRelationship && _protectedFromSingleAllGame)
+                            ProtectBackSingle("This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your marriage is safe.", currentPlayer);
+                        else
                         {
-                            text = "Roll",
-                            onClicked = () =>
+                            PopupDialog.PopupButton rbtn = new PopupDialog.PopupButton()
                             {
-                                Roll(rollCheck, onPassed, onFailed);
-                            }
-                        };
+                                text = "Roll",
+                                onClicked = () =>
+                                {
+                                    Roll(rollCheck, onPassed, onFailed);
+                                }
+                            };
 
-                        ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { rbtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
+                            ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { rbtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
+                        }                        
                     }
                     else
                         Roll(rollCheck, onPassed, onFailed);
@@ -175,6 +192,20 @@ namespace Knowlove.ActionAndPathLogic
             playerProperties["dateCount"] = _dateCount;
             playerProperties["protectedFromSingleInRelationship"] = _protectedFromSingleInRelationship;
             currentPlayer.SetCustomProperties(playerProperties);
+        }
+
+        private void ProtectBackSingle(string text, Player currentPlayer)
+        {
+            PopupDialog.PopupButton yesBtn = new PopupDialog.PopupButton()
+            {
+                text = "Okay",
+                onClicked = () =>
+                {
+                    DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
+                }
+            };
+
+            ChoicedOfPlayer?.Invoke(text, new PopupDialog.PopupButton[] { yesBtn }, currentPlayer, 1 + (int)BoardManager.Instance.pieces[TurnIndex].pathRing, false);
         }
 
         public void RPC_ShowStore(int playerIndex, bool isProceedAction, string actionJSOn)

@@ -93,18 +93,15 @@ namespace Knowlove.XPSystem
             switch (status)
             {
                 case "bronze":
-                    AddCardFromServer(1);
                     InfoPlayer.Instance.PlayerState.isBronzeStatus = true;
                     RewardedPlayer?.Invoke(0);
                     break;
                 case "silver":
-                    AddCardFromServer(2);
                     InfoPlayer.Instance.PlayerState.ProtectedFromBackToSingleInMarriagePerGame = true;
                     InfoPlayer.Instance.PlayerState.isSilverStatus = true;
                     RewardedPlayer?.Invoke(1);
                     break;
                 case "gold":
-                    AddCardFromServer(3);
                     InfoPlayer.Instance.PlayerState.ProtectedFromBackToSinglePerGame = true;
                     InfoPlayer.Instance.PlayerState.isGoldStatus = true;
                     RewardedPlayer?.Invoke(2);
@@ -114,17 +111,6 @@ namespace Knowlove.XPSystem
             }
 
             ChangedPlayerStatus?.Invoke();
-        }
-
-        private void AddCardFromServer(int amound)
-        {
-            APIManager.GetUserDetails((user) =>
-            {
-                APIManager.AddItem(idAvoidSingleCard, amound, (inventory) =>
-                {
-                    User.current.inventory = inventory;
-                });
-            });
         }
 
         [ContextMenu("Do Bronze")]

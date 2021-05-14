@@ -22,8 +22,6 @@ namespace Knowlove.ActionAndPathLogic
         private int _wallet;
         private int _avoidSingleCards;
         private bool _protectedFromSingleInRelationship;
-        private bool _protectedFromSingleInMarriage;
-        private bool _protectedFromSingleAllGame;
 
         public event ShowedPrompts ChoicedOfPlayer;
         public Action<Player> UsedAvoidSingleCard;
@@ -36,16 +34,6 @@ namespace Knowlove.ActionAndPathLogic
         private bool IsDaring
         {
             get => !(BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Dating || BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Home);
-        }
-
-        private bool IsRelationship
-        {
-            get => BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Relationship;
-        }
-
-        private bool IsMarriage
-        {
-            get => BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Marriage;
         }
 
         public void ExecuteProceedAction(ProceedAction action, System.Action OnFinished)
@@ -61,8 +49,6 @@ namespace Knowlove.ActionAndPathLogic
 
             _avoidSingleCards = (int)playerProperties["avoidSingleCards"];
             _protectedFromSingleInRelationship = (bool)playerProperties["protectedFromSingleInRelationship"];
-            _protectedFromSingleInMarriage = InfoPlayer.Instance.PlayerState.ProtectedFromBackToSingleInMarriagePerGame;
-            _protectedFromSingleAllGame = InfoPlayer.Instance.PlayerState.ProtectedFromBackToSinglePerGame;
 
             switch (action)
             {
@@ -148,11 +134,7 @@ namespace Knowlove.ActionAndPathLogic
         {
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
 
-            if (_protectedFromSingleAllGame)
-                ProtectedFromSingle(currentPlayer, "You have protected all game");
-            else if (_protectedFromSingleInMarriage && IsMarriage)
-                ProtectedFromSingle(currentPlayer, "You have protected in marriage ring");
-            else if (_avoidSingleCards > 0)
+            if (_avoidSingleCards > 0)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
@@ -187,11 +169,7 @@ namespace Knowlove.ActionAndPathLogic
         {
             ExitGames.Client.Photon.Hashtable playerProperties = currentPlayer.CustomProperties;
 
-            if (_protectedFromSingleAllGame)
-                ProtectedFromSingle(currentPlayer, "You have protected all game");
-            else if (_protectedFromSingleInMarriage && IsMarriage)
-                ProtectedFromSingle(currentPlayer, "You have protected in marriage ring");
-            else if (_avoidSingleCards > 0)
+            if (_avoidSingleCards > 0)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
@@ -311,30 +289,6 @@ namespace Knowlove.ActionAndPathLogic
 
             playerProperties["turnBank"] = _turnBank;
             currentPlayer.SetCustomProperties(playerProperties);
-        }
-
-        private void ProtectedFromSingle(Player currentPlayer, string textBtn)
-        {
-            if (IsMarriage)
-                textBtn = " This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your Marriage is safe.";
-            else if (BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Relationship)
-                textBtn = " This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your relationship is safe.";
-            else if (BoardManager.Instance.pieces[_turnManager.turnIndex].pathRing == PathRing.Dating)
-                textBtn = " This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your dating is safe.";
-
-            PopupDialog.PopupButton[] buttons = new PopupDialog.PopupButton[]
-            {
-                new PopupDialog.PopupButton()
-                {
-                    text = "Okay",
-                    onClicked = () =>
-                    {
-                        DOVirtual.DelayedCall(1f, () => { _turnManager.EndTurn(); });
-                    }
-                }
-            };
-
-            DOVirtual.DelayedCall(0.3f, () => { ChoicedOfPlayer?.Invoke(textBtn, buttons, currentPlayer, 0, false); });            
         }
 
         private void GoHome(BoardPiece playerBoardPiece, Player currentPlayer, bool isLoseTurn)

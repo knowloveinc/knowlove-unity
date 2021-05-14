@@ -39,7 +39,7 @@ namespace Knowlove.XPSystem
 
             if (SceneManager.GetActiveScene().buildIndex != 0)
             {
-                DOVirtual.DelayedCall(4f, () =>
+                DOVirtual.DelayedCall(3f, () =>
                 {
                     FromJSONPlayerInfo();
                 });

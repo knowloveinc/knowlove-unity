@@ -4,6 +4,7 @@ using UnityEngine;
 using GameBrewStudios.Networking;
 using GameBrewStudios;
 using Knowlove.UI;
+using Knowlove.XPSystem;
 
 namespace Knowlove.MyStuffInGame
 {
@@ -16,7 +17,9 @@ namespace Knowlove.MyStuffInGame
         private int _avoidSingle;
         private int _wallet;
         private int _amountDeleteCard = -1;
+        private int _bonusAvoidSingleCard = 0;
 
+        private bool _isCheckRank = false;
 
         public int AvoidSingle
         {
@@ -46,6 +49,22 @@ namespace Knowlove.MyStuffInGame
             if (StoreController.Instance.gameStuff == null)
                 StoreController.Instance.gameStuff = this;
 
+            PlayerXP playerXP = InfoPlayer.Instance.PlayerState;
+
+            if (!_isCheckRank)
+            {
+                _isCheckRank = true;
+
+                if (playerXP.isBronzeStatus)
+                    _bonusAvoidSingleCard = 1;
+
+                if (playerXP.isSilverStatus)
+                    _bonusAvoidSingleCard = 2;
+
+                if (playerXP.isGoldStatus)
+                    _bonusAvoidSingleCard = 3;
+            }
+
             _currentPlayer = PhotonNetwork.LocalPlayer;
             ExitGames.Client.Photon.Hashtable playerProperties = _currentPlayer.CustomProperties;
 
@@ -59,7 +78,7 @@ namespace Knowlove.MyStuffInGame
 
                 _wallet = user.wallet;
 
-                playerProperties["avoidSingleCards"] = _avoidSingle;
+                playerProperties["avoidSingleCards"] = _avoidSingle + _bonusAvoidSingleCard;
                 playerProperties["wallet"] = _wallet;
                 _currentPlayer.SetCustomProperties(playerProperties);
             });
@@ -81,6 +100,14 @@ namespace Knowlove.MyStuffInGame
 
         private void DeleteCardFromServer(string cardName)
         {
+            if(_bonusAvoidSingleCard > 0)
+            {
+                _bonusAvoidSingleCard--;
+
+                GetSpecialCard();
+                return;
+            }
+
             APIManager.GetUserDetails((user) => 
             {
                 APIManager.AddItem(cardName, _amountDeleteCard, (inventory) =>
