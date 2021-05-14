@@ -16,9 +16,9 @@ namespace Knowlove.UI
         private void Start()
         {
             if (Advertisement.isSupported && (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.Android))
-                Advertisement.Initialize("4125675", false);
+                Advertisement.Initialize("4129353", false);
             else if(Advertisement.isSupported && (Application.platform == RuntimePlatform.IPhonePlayer))
-                Advertisement.Initialize("4125674", false);
+                Advertisement.Initialize("4129352", false);
         }
 
         private void Update()
