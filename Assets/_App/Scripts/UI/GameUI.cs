@@ -222,7 +222,7 @@ namespace Knowlove.UI
 
         public void ExitGame()
         {
-            PhotonNetwork.LeaveRoom();
+            photonView.RPC(nameof(LeaveRoom), RpcTarget.AllViaServer, PhotonNetwork.LocalPlayer);
         }
 
         internal void SetStats()
@@ -259,6 +259,16 @@ namespace Knowlove.UI
 
                 ShowPickCard();
             });
+        }
+
+        [PunRPC]
+        private void LeaveRoom(Player player)
+        {
+            NetworkManager.Instance.isLeave = true;
+            NetworkManager.Instance.isReconnect = false;
+
+            if (PhotonNetwork.LocalPlayer == player)
+                PhotonNetwork.LeaveRoom();
         }
     }
 }

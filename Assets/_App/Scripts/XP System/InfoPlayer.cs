@@ -46,14 +46,8 @@ namespace Knowlove.XPSystem
             }              
         }
 
-        private void OnApplicationQuit()
-        {
-            JSONPlayerInfo();
-        }
-
         private void OnDestroy()
         {
-            JSONPlayerInfo();
             PlayerPrefs.DeleteKey("IsSaveDate");
         }
 
