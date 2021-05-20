@@ -22,16 +22,15 @@ namespace Knowlove.UI.Menus
         {
             base.Show();
 
-            if (!PlayerPrefs.HasKey("IsSaveDate") && User.current != null)
+            if (InfoPlayer.Instance.PlayersState == null)
             {
-                PlayerPrefs.SetInt("IsSaveDate", 0);
                 CanvasLoading.Instance.Show();
 
-                DOVirtual.DelayedCall(1.5f, () =>
+                DOVirtual.DelayedCall(1f, () =>
                 {
                     InfoPlayer.Instance.FromJSONPlayerInfo();
                 });
-            }
+            }            
         }
 
         public override void Hide()

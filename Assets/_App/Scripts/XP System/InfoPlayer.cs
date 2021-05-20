@@ -11,13 +11,12 @@ namespace Knowlove.XPSystem
     public class InfoPlayer : MonoBehaviourPunCallbacks
     {
         public static InfoPlayer Instance;
+        private PlayersState _playersState;
 
         private const string _playersStatePrefsName = "PlayersState";
         private const int _maxDifferentPlayers = 15;
 
-        [SerializeField] public StatusPlayer statusPlayer;
-
-        [SerializeField] private PlayersState _playersState;
+        [SerializeField] public StatusPlayer statusPlayer;       
 
         private int _currentPlayer;
         private bool _isHaveUser;
@@ -30,12 +29,18 @@ namespace Knowlove.XPSystem
             set => _playersState.playerXPs[_currentPlayer] = value;
         }
 
+        public PlayersState PlayersState
+        {
+            get => _playersState;
+        }
+
         private void Awake()
         {
             Instance = this;
             _isHaveUser = false;
 
             gameObject.AddComponent<PhotonView>();
+
 
             if (SceneManager.GetActiveScene().buildIndex != 0)
             {
@@ -44,11 +49,6 @@ namespace Knowlove.XPSystem
                     FromJSONPlayerInfo();
                 });
             }              
-        }
-
-        private void OnDestroy()
-        {
-            PlayerPrefs.DeleteKey("IsSaveDate");
         }
 
         public void СheckAvailabilityPlayer()
@@ -250,16 +250,16 @@ namespace Knowlove.XPSystem
             if (PlayerPrefs.HasKey(_playersStatePrefsName))
             {
                 string info = PlayerPrefs.GetString(_playersStatePrefsName);
-                JsonUtility.FromJsonOverwrite(info, _playersState);
-
-                DOVirtual.DelayedCall(1f, () =>
+                _playersState = JsonUtility.FromJson<PlayersState>(info);
+  
+                DOVirtual.DelayedCall(1.5f, () =>
                 {
                     //CanvasLoading.Instance.Hide();
                     СheckAvailabilityPlayer();
                 });              
             }
             else
-                СheckAvailabilityPlayer();
+                CreateNewPlayer();
         }
     }
 }

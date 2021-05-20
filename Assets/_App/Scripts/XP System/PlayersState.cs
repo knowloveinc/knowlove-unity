@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 namespace Knowlove.XPSystem
 {
-    [CreateAssetMenu(fileName = "PlayersState", menuName = "XP System", order = 1)]
     [System.Serializable]
-    public class PlayersState : ScriptableObject
+    public class PlayersState
     {
-        public List<PlayerXP> playerXPs; 
+        public List<PlayerXP> playerXPs = new List<PlayerXP>(); 
     }
 }

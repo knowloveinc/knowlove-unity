@@ -59,6 +59,9 @@ namespace Knowlove.RoomReconnect
                 }
             }
 
+            if (PhotonNetwork.IsMasterClient)
+                TurnManager.Instance.EndTurn();
+
             CanvasLoading.Instance.Hide();
         }
     }
