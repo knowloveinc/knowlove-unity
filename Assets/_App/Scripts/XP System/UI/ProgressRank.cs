@@ -7,6 +7,7 @@ namespace Knowlove.XPSystem
     public class ProgressRank : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _playerWithPeople;
+        [SerializeField] private TextMeshProUGUI _gamesComplite;
         [SerializeField] private TextMeshProUGUI _gameWin;
         [SerializeField] private TextMeshProUGUI _datingCard;
         [SerializeField] private TextMeshProUGUI _relationshipCard;
@@ -47,6 +48,7 @@ namespace Knowlove.XPSystem
             int currentPlayer = (player.countDifferentPlayers > needPeople) ? needPeople : player.countDifferentPlayers;
             int currentWin = (player.winGame > needWin) ? needWin : player.winGame;
             int currentShare = (player.shareGame > needShare) ? needShare : player.shareGame;
+            int currentGamesComplite = player.completedGame;
 
             if (!player.isGoldStatus)
             {
@@ -64,7 +66,8 @@ namespace Knowlove.XPSystem
 
             _datingCard.text = currentDatingCard + " / " + player.playerDeckCard.datingCard.Length;
             _relationshipCard.text = currentRelatishipCard + " / " + player.playerDeckCard.relationshipCard.Length;
-            _marriageCard.text = currentMarriageCard + " / " + player.playerDeckCard.marriagepCard.Length;            
+            _marriageCard.text = currentMarriageCard + " / " + player.playerDeckCard.marriagepCard.Length;
+            _gamesComplite.text = currentGamesComplite.ToString();
 
             CanvasLoading.Instance.Hide();
         }

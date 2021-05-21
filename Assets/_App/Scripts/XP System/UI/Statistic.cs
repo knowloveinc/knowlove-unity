@@ -1,16 +1,15 @@
 ﻿using Knowlove.UI;
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Knowlove.XPSystem
 {
     public class Statistic : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI _datingCard;
-        [SerializeField] private TextMeshProUGUI _relationshipCard;
-        [SerializeField] private TextMeshProUGUI _marriageCard;
-        [SerializeField] private TextMeshProUGUI _gameWin;
-        [SerializeField] private TextMeshProUGUI _gameComplete;
+        [SerializeField] private Sprite[] _lockSprite;
+        [SerializeField] private Image _imageBronze;
+        [SerializeField] private Image _imagesilver;
+        [SerializeField] private Image _imageGold;
 
         private void OnEnable()
         {
@@ -22,30 +21,22 @@ namespace Knowlove.XPSystem
         {
             PlayerXP player = InfoPlayer.Instance.PlayerState;
 
-            int currentDatingCard = GetCard(player.playerDeckCard.datingCard);
-            int currentRelatishipCard = GetCard(player.playerDeckCard.relationshipCard);
-            int currentMarriageCard = GetCard(player.playerDeckCard.marriagepCard);
+            if (player.isBronzeStatus)
+                _imageBronze.sprite = _lockSprite[1];
+            else
+                _imageBronze.sprite = _lockSprite[0];
 
-            _datingCard.text = currentDatingCard + " / " + player.playerDeckCard.datingCard.Length;
-            _relationshipCard.text = currentRelatishipCard + " / " + player.playerDeckCard.relationshipCard.Length;
-            _marriageCard.text = currentMarriageCard + " / " + player.playerDeckCard.marriagepCard.Length;
-            _gameWin.text = player.winGame.ToString();
-            _gameComplete.text = player.completedGame.ToString();
+            if (player.isSilverStatus)
+                _imagesilver.sprite = _lockSprite[1];
+            else
+                _imagesilver.sprite = _lockSprite[0];
+
+            if (player.isGoldStatus)
+                _imageGold.sprite = _lockSprite[1];
+            else
+                _imageGold.sprite = _lockSprite[0];
 
             CanvasLoading.Instance.Hide();
-        }
-
-        private int GetCard(bool[] deckCard)
-        {
-            int count = 0;
-
-            foreach(bool card in deckCard)
-            {
-                if (card)
-                    count++;
-            }
-
-            return count;
         }
     }
 }

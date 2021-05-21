@@ -95,6 +95,11 @@ namespace Knowlove.XPSystem
 
         public void CreateNewPlayer()
         {
+            if(_playersState == null)
+            {
+                _playersState = new PlayersState();
+            }
+
             APIManager.GetUserDetails((user) =>
             {
                 PlayerXP player = new PlayerXP();
