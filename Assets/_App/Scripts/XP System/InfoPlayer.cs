@@ -40,9 +40,6 @@ namespace Knowlove.XPSystem
             Instance = this;
             _isHaveUser = false;
 
-            gameObject.AddComponent<PhotonView>();
-
-
             if (SceneManager.GetActiveScene().buildIndex != 0)
             {
                 DOVirtual.DelayedCall(3f, () =>
@@ -108,7 +105,6 @@ namespace Knowlove.XPSystem
             {
                 PlayerXP player = new PlayerXP();
                 player.playerName = user.displayName;
-                player.isBronzeStatus = true;
 
                 _playersState.playerXPs.Add(player);
 
@@ -211,7 +207,6 @@ namespace Knowlove.XPSystem
         {
             PlayerState.completedGame += 1;
 
-            statusPlayer.CheckPlayerStatus();
             JSONPlayerInfo();
         }
 
@@ -271,7 +266,6 @@ namespace Knowlove.XPSystem
   
                 DOVirtual.DelayedCall(1.5f, () =>
                 {
-                    //CanvasLoading.Instance.Hide();
                     СheckAvailabilityPlayer();
                 });              
             }
@@ -285,17 +279,17 @@ namespace Knowlove.XPSystem
             {
                 foreach(InventoryItem item in user.inventory)
                 {
-                    if (item.itemId.ToLower() == "AllCard".ToLower() && item.amount == 1)
+                    if (item.itemId.ToLower() == "AllCard".ToLower() && item.amount >= 1)
                         MarkAllCard();
 
-                    if (item.itemId.ToLower() == "bronze".ToLower() && item.amount == 1)
+                    if (item.itemId.ToLower() == "bronze".ToLower() && item.amount >= 1)
                         PlayerState.isBronzeStatus = true;
-                    else if(item.itemId.ToLower() == "silver".ToLower() && item.amount == 1)
+                    else if(item.itemId.ToLower() == "silver".ToLower() && item.amount >= 1)
                     {
                         PlayerState.isSilverStatus = true;
                         PlayerState.ProtectedFromBackToSingleInMarriagePerGame = true;
                     }
-                    else if (item.itemId.ToLower() == "gold".ToLower() && item.amount == 1)
+                    else if (item.itemId.ToLower() == "gold".ToLower() && item.amount >= 1)
                     {
                         PlayerState.isGoldStatus = true;
                         PlayerState.ProtectedFromBackToSingleInMarriagePerGame = true;

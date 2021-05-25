@@ -5394,7 +5394,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "you reached the \n\n\nYou get 1 Avoid Going to single card per game"
+  m_text: "you reached the \n\n\nGets 1 Avoid Going to single card per game"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 67e2a0d04c4f7ad40835fda85f9061be, type: 2}
   m_sharedMaterial: {fileID: -1060597430637933970, guid: 67e2a0d04c4f7ad40835fda85f9061be,

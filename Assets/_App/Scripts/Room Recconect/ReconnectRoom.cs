@@ -54,13 +54,17 @@ namespace Knowlove.RoomReconnect
                 if (TurnManager.Instance.turnIndex == 0)
                     TurnManager.Instance.turnIndex = PhotonNetwork.CurrentRoom.PlayerCount - 1;
                 else
-                {
                     TurnManager.Instance.turnIndex -= 1;
-                }
             }
 
             if (PhotonNetwork.IsMasterClient)
+            {
+                BoardManager.Instance.SetDiceRigidbody();
                 TurnManager.Instance.EndTurn();
+            }
+            else
+                BoardManager.Instance.DestroyDiceRigidBody();
+                
 
             CanvasLoading.Instance.Hide();
         }

@@ -48,9 +48,52 @@ namespace Knowlove
                 _diceScripts[i] = dice[i].GetComponent<Dice>();
                 _diceRb[i] = dice[i].GetComponent<Rigidbody>();
             }
+
+            if (!PhotonNetwork.IsMasterClient)
+            {
+                foreach (Transform die in dice)
+                {
+                    Rigidbody rb = die.GetComponent<Rigidbody>();
+
+                    if (rb != null)
+                        Destroy(rb);
+                }
+            }
         }
 
-        [ContextMenu("Check Word Length Of Cards")]
+        public void SetDiceRigidbody()
+        {
+            if(dice[0].GetComponent<Rigidbody>() == null)
+            {
+                dice[0].gameObject.AddComponent<Rigidbody>();
+                dice[1].gameObject.AddComponent<Rigidbody>();
+
+                for (int i = 0; i < dice.Length; i++)
+                {
+                    _diceRb[i] = dice[i].GetComponent<Rigidbody>();
+
+                    _diceRb[i].isKinematic = false;
+                    _diceRb[i].useGravity = true;
+                    _diceRb[i].mass = 0.04f;
+                    _diceRb[i].drag = 0.3f;
+                    _diceRb[i].angularDrag = 32;
+                    _diceRb[i].collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                    _diceRb[i].interpolation = RigidbodyInterpolation.None;
+                }                   
+            }
+        }
+
+        public void DestroyDiceRigidBody()
+        {
+            foreach (Transform die in dice)
+            {
+                Rigidbody rb = die.GetComponent<Rigidbody>();
+
+                if (rb != null)
+                    Destroy(rb);
+            }
+        }
+
         public void CheckWordLengthOfCards()
         {
             List<int> wordLengths = new List<int>();
@@ -112,14 +155,7 @@ namespace Knowlove
         public void RPC_ToggleDice(bool enabled, int count)
         {
             for (int i = 0; i < dice.Length; i++)
-            {
-                if (PhotonNetwork.IsMasterClient)
-                    _diceRb[i].isKinematic = false;
-                else
-                    _diceRb[i].isKinematic = true;
-
                 dice[i].gameObject.SetActive(enabled && i < count);                
-            }
         }
 
         [PunRPC]
