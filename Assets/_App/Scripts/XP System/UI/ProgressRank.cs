@@ -23,45 +23,17 @@ namespace Knowlove.XPSystem
         private void UpdateFildText()
         {
             PlayerXP player = InfoPlayer.Instance.PlayerState;
-
-            int needWin = 3;
-            int needPeople = 5;
-            int needShare = 3;
-
-            if (player.isBronzeStatus && player.isSilverStatus)
-            {
-                needWin = 10;
-                needShare = 7;
-                needPeople = 15;
-            }
-            else if (player.isBronzeStatus)
-            {
-                needWin = 7;
-                needShare = 5;
-                needPeople = 10;
-            }
-                        
+            
             int currentDatingCard = GetCard(player.playerDeckCard.datingCard);
             int currentRelatishipCard = GetCard(player.playerDeckCard.relationshipCard);
             int currentMarriageCard = GetCard(player.playerDeckCard.marriagepCard);
 
-            int currentPlayer = (player.countDifferentPlayers > needPeople) ? needPeople : player.countDifferentPlayers;
-            int currentWin = (player.winGame > needWin) ? needWin : player.winGame;
-            int currentShare = (player.shareGame > needShare) ? needShare : player.shareGame;
             int currentGamesComplite = player.completedGame;
 
-            if (!player.isGoldStatus)
-            {
-                _playerWithPeople.text = currentPlayer + " / " + needPeople;
-                _gameWin.text = currentWin + " / " + needWin;
-                _shareApp.text = currentShare + " / " + needShare;
-            }
-            else
-            {
-                _playerWithPeople.text = player.countDifferentPlayers.ToString();
-                _gameWin.text = player.winGame.ToString();
-                _shareApp.text = player.shareGame.ToString();
-            }
+
+            _playerWithPeople.text = player.countDifferentPlayers.ToString();
+            _gameWin.text = player.winGame.ToString();
+            _shareApp.text = player.shareGame.ToString();
                 
 
             _datingCard.text = currentDatingCard + " / " + player.playerDeckCard.datingCard.Length;

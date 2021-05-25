@@ -151,7 +151,7 @@ namespace Knowlove.ActionAndPathLogic
                     {
                         if(piece.pathIndex == 27 && IsMarriage && _protectedFromSingleAllGame)
                             ProtectBackSingle("This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your marriage is safe.", currentPlayer);
-                        else if((piece.pathIndex == 28 || piece.pathIndex == 10) && IsRelationship && _protectedFromSingleAllGame || _protectedFromSingleInMarriage)
+                        else if((piece.pathIndex == 28 || piece.pathIndex == 10) && IsRelationship && (_protectedFromSingleAllGame || _protectedFromSingleInMarriage))
                             ProtectBackSingle("This Cheating Landing Space Doesn’t apply to a player with your Know Love Status, your relationship is safe.", currentPlayer);
                         else
                         {

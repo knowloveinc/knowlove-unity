@@ -5,6 +5,7 @@ using DG.Tweening;
 using UnityEngine;
 using Knowlove.UI;
 using System;
+using GameBrewStudios;
 
 namespace Knowlove.XPSystem 
 {
@@ -84,6 +85,9 @@ namespace Knowlove.XPSystem
                         _currentPlayer = i;
                         SettedPlayer?.Invoke();
                         isFinish = true;
+
+                        
+
                         CanvasLoading.Instance.Hide();
                         return;
                     }
@@ -104,10 +108,13 @@ namespace Knowlove.XPSystem
             {
                 PlayerXP player = new PlayerXP();
                 player.playerName = user.displayName;
+                player.isBronzeStatus = true;
 
                 _playersState.playerXPs.Add(player);
 
                 _currentPlayer = _playersState.playerXPs.Count - 1;
+
+                CheckPlayerReward();
 
                 JSONPlayerInfo();
                 SettedPlayer?.Invoke();
@@ -159,6 +166,11 @@ namespace Knowlove.XPSystem
 
             statusPlayer.CheckPlayerStatus();
             JSONPlayerInfo();
+
+            APIManager.AddItem("AllCard", 1,(inventory) =>
+            {
+                User.current.inventory = inventory;
+            });
         }
 
         public bool CheckMarkAllCard()
@@ -265,6 +277,35 @@ namespace Knowlove.XPSystem
             }
             else
                 CreateNewPlayer();
+        }
+
+        private void CheckPlayerReward()
+        {
+            APIManager.GetUserDetails((user) => 
+            {
+                foreach(InventoryItem item in user.inventory)
+                {
+                    if (item.itemId.ToLower() == "AllCard".ToLower() && item.amount == 1)
+                        MarkAllCard();
+
+                    if (item.itemId.ToLower() == "bronze".ToLower() && item.amount == 1)
+                        PlayerState.isBronzeStatus = true;
+                    else if(item.itemId.ToLower() == "silver".ToLower() && item.amount == 1)
+                    {
+                        PlayerState.isSilverStatus = true;
+                        PlayerState.ProtectedFromBackToSingleInMarriagePerGame = true;
+                    }
+                    else if (item.itemId.ToLower() == "gold".ToLower() && item.amount == 1)
+                    {
+                        PlayerState.isGoldStatus = true;
+                        PlayerState.ProtectedFromBackToSingleInMarriagePerGame = true;
+                        PlayerState.ProtectedFromBackToSinglePerGame = true;
+                    }
+                }
+
+                JSONPlayerInfo();
+                SettedPlayer?.Invoke();
+            });
         }
     }
 }

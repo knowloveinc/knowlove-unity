@@ -35,7 +35,7 @@ namespace Knowlove.UI
         {
             waiterCount++;
 
-            if (popupDialogCanvas == null)
+            if (popupDialogCanvas == null && PopupDialog.Instance != null)
                 popupDialogCanvas = PopupDialog.Instance.GetComponent<Canvas>();
 
             if (popupDialogCanvas != null && canvas != null)

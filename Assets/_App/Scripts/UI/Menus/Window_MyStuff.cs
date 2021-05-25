@@ -76,10 +76,8 @@ namespace Knowlove.UI.Menus
                 //Cycle through purchased items in the players inventory
                 for (int i = 0; i < user.inventory.Length; i++)
                 {
-                    if (user.inventory[i].itemId.ToLower() == "tableFlip".ToLower() || user.inventory[i].itemId.ToLower() == "status".ToLower())
-                        continue;
-
-                    _ = CreateEntry(user.inventory[i].itemId, user.inventory[i].amount);
+                    if (user.inventory[i].itemId.ToLower() == "customList".ToLower() || user.inventory[i].itemId.ToLower() == "avoidSingle".ToLower())
+                        _ = CreateEntry(user.inventory[i].itemId, user.inventory[i].amount);
                 }
 
                 loadingIndicator.SetActive(false);

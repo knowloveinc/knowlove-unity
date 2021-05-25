@@ -107,7 +107,7 @@ namespace Knowlove
         public void JumpTo(Vector3 position, System.Action OnFinished)
         {
             isMoving = true;
-            transform.DOJump(position, 0.5f, 1, 0.5f).OnComplete(() =>
+            transform.DOJump(position, 0.2f, 1, 0.5f).OnComplete(() =>
             {
                 if (tapSound != null)
                 {

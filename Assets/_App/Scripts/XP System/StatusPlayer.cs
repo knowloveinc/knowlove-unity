@@ -94,7 +94,7 @@ namespace Knowlove.XPSystem
             {
                 case "bronze":
                     InfoPlayer.Instance.PlayerState.isBronzeStatus = true;
-                    RewardedPlayer?.Invoke(0);
+                    RewardedPlayer?.Invoke(0);                    
                     break;
                 case "silver":
                     InfoPlayer.Instance.PlayerState.ProtectedFromBackToSingleInMarriagePerGame = true;
@@ -111,6 +111,11 @@ namespace Knowlove.XPSystem
             }
 
             ChangedPlayerStatus?.Invoke();
+
+            APIManager.AddItem(status, 1, (inventory) =>
+            {
+                User.current.inventory = inventory;
+            });
         }
 
         [ContextMenu("Do Bronze")]
