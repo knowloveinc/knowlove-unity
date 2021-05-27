@@ -553,7 +553,12 @@ PrefabInstance:
     - target: {fileID: 4574255724702776166, guid: 9e8506f74d10ead488f07ac2538da847,
         type: 3}
       propertyPath: m_text
-      value: "you reached the \n\n\nYou get 1 Avoid Going to single card per game"
+      value: "you reached the\n\n \nYou get 1 Avoid Going to single card per game"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4574255724702776169, guid: 9e8506f74d10ead488f07ac2538da847,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4574255724725320440, guid: 9e8506f74d10ead488f07ac2538da847,
         type: 3}

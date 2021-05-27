@@ -46,7 +46,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statusPlayer: {fileID: 4907306776079502589}
-  _playersState: {fileID: 11400000, guid: 1a6de92c7d2be484cac1aa27afee499e, type: 2}
 --- !u!114 &7438418282458277784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,3 +111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1335d4ad0ad1c8443b3bf30811def444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _window_GameOver: {fileID: 0}
+  _rankButton:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

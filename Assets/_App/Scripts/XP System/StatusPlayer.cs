@@ -1,25 +1,39 @@
 ﻿using GameBrewStudios;
 using GameBrewStudios.Networking;
+using Knowlove.UI.Menus;
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Knowlove.XPSystem
 {
     public class StatusPlayer : MonoBehaviour
     {
-        private const string idAvoidSingleCard = "avoidSingle";
+        [SerializeField] private Window_GameOver _window_GameOver;
+        [SerializeField] private Button[] _rankButton;
+        [SerializeField] private Button _winButton;
 
         public Action ChangedPlayerStatus;
         public Action<int> RewardedPlayer;
 
-        public void CheckPlayerStatus()
+        public void CheckPlayerStatus(bool isWinGame = false)
         {
-            CheckBronze();
-            CheckSilver();
-            CheckGold();
+            if (isWinGame)
+            {
+                _winButton.onClick.RemoveAllListeners();
+
+                _winButton.onClick.AddListener(() =>
+                {
+                    _window_GameOver.ButtonLeaveRoom();
+                });
+            }
+
+            CheckBronze(isWinGame);
+            CheckSilver(isWinGame);
+            CheckGold(isWinGame);            
         }
 
-        private void CheckBronze()
+        private void CheckBronze(bool isWinGame)
         {
             PlayerXP playerXP = InfoPlayer.Instance.PlayerState;
 
@@ -41,12 +55,10 @@ namespace Knowlove.XPSystem
                     return;
             }
 
-            InfoPlayer.Instance.PlayerState.isBronzeStatus = true;
-
-            GetReward("bronze");
+            GetReward("bronze", isWinGame);
         }
 
-        private void CheckSilver()
+        private void CheckSilver(bool isWinGame)
         {
             PlayerXP playerXP = InfoPlayer.Instance.PlayerState;
 
@@ -71,12 +83,10 @@ namespace Knowlove.XPSystem
                     return;
             }
 
-            InfoPlayer.Instance.PlayerState.isSilverStatus = true;
-
-            GetReward("silver");
+            GetReward("silver", isWinGame);
         }
 
-        private void CheckGold()
+        private void CheckGold(bool isWinGame)
         {
             PlayerXP playerXP = InfoPlayer.Instance.PlayerState;
 
@@ -101,13 +111,17 @@ namespace Knowlove.XPSystem
                     return;
             }
 
-            InfoPlayer.Instance.PlayerState.isSilverStatus = true;
-
-            GetReward("gold");
+            GetReward("gold", isWinGame);
         }
 
-        private void GetReward(string status)
+        private void GetReward(string status, bool isWinGame)
         {
+            if (isWinGame)
+            {
+                ShowWinPanel(status);
+                return;
+            }                
+
             switch (status)
             {
                 case "bronze":
@@ -129,11 +143,39 @@ namespace Knowlove.XPSystem
             }
 
             ChangedPlayerStatus?.Invoke();
+            InfoPlayer.Instance.JSONPlayerInfo();
 
             APIManager.AddItem(status, 1, (inventory) =>
             {
                 User.current.inventory = inventory;
             });
+        }
+
+        private void ShowWinPanel(string status = "")
+        {
+            if (_window_GameOver == null)
+                return;
+
+            if (TurnManager.Instance.turnState != TurnManager.TurnState.GameOver)
+                return;
+
+            _winButton.onClick.RemoveAllListeners();
+
+            _winButton.onClick.AddListener(() =>
+            {
+                _window_GameOver.gameObject.SetActive(false);
+                GetReward(status, false);
+            });
+
+            foreach (Button button in _rankButton)
+            {
+                button.onClick.RemoveAllListeners();
+
+                button.onClick.AddListener(() =>
+                {
+                    _window_GameOver.ButtonLeaveRoom();
+                });
+            }
         }
     }
 }

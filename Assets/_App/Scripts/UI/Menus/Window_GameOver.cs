@@ -2,12 +2,15 @@
 using DG.Tweening;
 using TMPro;
 using Knowlove.XPSystem;
+using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
 namespace Knowlove.UI.Menus
 {
     public class Window_GameOver : Window
     {
-        string winnerName = "";
+        [SerializeField] private Button _button;
 
         [SerializeField] private TurnManager TurnManager;
 
@@ -16,6 +19,8 @@ namespace Knowlove.UI.Menus
         [SerializeField] private CanvasGroup[] groups;
 
         [SerializeField] private GameObject hud;
+
+        private string winnerName = "";
 
         private void Awake()
         {
@@ -43,9 +48,18 @@ namespace Knowlove.UI.Menus
         public void ShowGameOver(string winnerName)
         {
             if (winnerName.ToLower() == InfoPlayer.Instance.PlayerState.playerName.ToLower())
-                InfoPlayer.Instance.PlayerWin();
+                InfoPlayer.Instance.PlayerWin();              
             else
+            {
                 InfoPlayer.Instance.PlayerEndGame();
+               
+                _button.onClick.RemoveAllListeners();
+
+                _button.onClick.AddListener(() => 
+                {
+                    ButtonLeaveRoom();
+                });
+            }
 
             Init(winnerName);
             Show();
@@ -65,6 +79,20 @@ namespace Knowlove.UI.Menus
                 groups[i].alpha = 0;
                 groups[i].DOFade(1f, 2f).SetDelay(i * 1f);
             }
+        }
+
+        public void ButtonLeaveRoom()
+        {
+            LeaveRoom(PhotonNetwork.LocalPlayer);
+        }
+
+        private void LeaveRoom(Player player)
+        {
+            NetworkManager.Instance.isLeave = true;
+            NetworkManager.Instance.isReconnect = false;
+
+            if (PhotonNetwork.LocalPlayer == player)
+                PhotonNetwork.LeaveRoom();
         }
     }
 }
