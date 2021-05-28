@@ -27,7 +27,6 @@ namespace Knowlove.ActionAndPathLogic
         private int _diceCount;
         private int _avoidSingleCards;
         private int _dateCount;
-        private int _wallet;
         private bool _protectedFromSingleInRelationship;
         private bool _protectedFromSingleInMarriage;
         private bool _protectedFromSingleAllGame;
@@ -70,7 +69,6 @@ namespace Knowlove.ActionAndPathLogic
             _diceCount = (int)playerProperties["diceCount"];
             _avoidSingleCards = (int)playerProperties["avoidSingleCards"];
             _dateCount = (int)playerProperties["dateCount"];
-            _wallet = (int)playerProperties["wallet"];
             _protectedFromSingleInRelationship = (bool)playerProperties["protectedFromSingleInRelationship"];
 
             _protectedFromSingleInMarriage = InfoPlayer.Instance.PlayerState.ProtectedFromBackToSingleInMarriagePerGame;

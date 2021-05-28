@@ -141,7 +141,7 @@ namespace Knowlove.ActionAndPathLogic
                     ShowAvoidCardPrompts(playerBoardPiece, currentPlayer, action);
                 });
             }
-            else if (_wallet > 0 && _avoidSingleCards == 0 && IsDaring)
+            else if (_wallet >= 0 && _avoidSingleCards == 0 && IsDaring)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {
@@ -176,7 +176,7 @@ namespace Knowlove.ActionAndPathLogic
                     ShowAvoidCardPrompts(playerBoardPiece, currentPlayer, action);
                 });
             }
-            else if (_wallet > 0 && _avoidSingleCards == 0 && IsDaring)
+            else if (_wallet >= 0 && _avoidSingleCards == 0 && IsDaring)
             {
                 DOVirtual.DelayedCall(0.3f, () =>
                 {

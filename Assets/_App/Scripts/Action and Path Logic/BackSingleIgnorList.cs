@@ -52,7 +52,7 @@ namespace Knowlove.ActionAndPathLogic
                 ProtectBackSingle(skipPrompt, "Your mate matches your non-negotiable list.", currentPlayer);
             else if (!skipPrompt)
             {
-                if (_avoidSingleCards < 1 && _wallet > 0 && IsNotDaring)
+                if (_avoidSingleCards < 1 && _wallet >= 0 && IsNotDaring)
                     StorOpen(piece, currentPlayer);   
                 else if (_avoidSingleCards < 1 && IsNotDaring)
                     DontHaveCardBackSingle(piece, currentPlayer);

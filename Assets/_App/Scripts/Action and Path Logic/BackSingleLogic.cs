@@ -136,7 +136,7 @@ namespace Knowlove.ActionAndPathLogic
 
                 buttons.Add(btn);
 
-                if (_wallet > 0 && IsNotDaring)
+                if (_wallet >= 0 && IsNotDaring)
                 {
                     PopupDialog.PopupButton openStoreBtn = new PopupDialog.PopupButton()
                     {
