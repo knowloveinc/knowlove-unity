@@ -17,7 +17,7 @@ namespace Knowlove.UI
         {
             if (Advertisement.isSupported && (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.Android))
                 Advertisement.Initialize("4129353", false);
-            else if (Advertisement.isSupported && (Application.platform == RuntimePlatform.IPhonePlayer))
+            else if (Advertisement.isSupported && (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.OSXEditor))
                 Advertisement.Initialize("4129352", false);
         }
 
@@ -36,7 +36,7 @@ namespace Knowlove.UI
 
                 if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.Android)
                     Advertisement.Show("Rewarded_Android", showOptions);
-                else if (Application.platform == RuntimePlatform.IPhonePlayer)
+                else if (Application.platform == RuntimePlatform.IPhonePlayer || Application.platform == RuntimePlatform.OSXEditor)
                     Advertisement.Show("Rewarded_iOS", showOptions);
             }
         }
