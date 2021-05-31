@@ -83,8 +83,6 @@ namespace Knowlove.XPSystem
                         SettedPlayer?.Invoke();
                         isFinish = true;
 
-                        
-
                         CanvasLoading.Instance.Hide();
                         return;
                     }
@@ -97,17 +95,12 @@ namespace Knowlove.XPSystem
         public void CreateNewPlayer()
         {
             if(_playersState == null)
-            {
                 _playersState = new PlayersState();
-            }
 
             APIManager.GetUserDetails((user) =>
             {
                 PlayerXP player = new PlayerXP();
                 player.playerName = user.displayName;
-                player.winGame = 2;
-                player.countDifferentPlayers = 5;
-                player.shareGame = 3;
 
                 _playersState.playerXPs.Add(player);
 
