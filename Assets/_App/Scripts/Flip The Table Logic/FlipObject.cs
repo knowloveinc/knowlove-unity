@@ -9,14 +9,14 @@ namespace Knowlove.FlipTheTableLogic
         private Rigidbody _rigidbodyComponent;
         private BoxCollider _boxCollider;
 
-        [SerializeField] private bool _isPiece;
+        [SerializeField] private bool _isPiece = false;
 
-        [SerializeField] private bool isRightForce;
-        [SerializeField] private bool isLeftForce;
+        [SerializeField] private bool isRightForce = false;
+        [SerializeField] private bool isLeftForce = false;
 
-        [SerializeField] private float x;
-        [SerializeField] private float y;
-        [SerializeField] private float z;
+        [SerializeField] private float x = 0;
+        [SerializeField] private float y = 0;
+        [SerializeField] private float z = 0;
 
         public Vector3 StartPosition
         {

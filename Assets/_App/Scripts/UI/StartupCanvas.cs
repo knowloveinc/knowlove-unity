@@ -11,6 +11,11 @@ namespace Knowlove.UI
 
         [SerializeField] private AudioMixer mixer;
 
+        private void Awake()
+        {
+            Application.targetFrameRate = 60;
+        }
+
         private void Start()
         {
             matchListWindow.Hide();

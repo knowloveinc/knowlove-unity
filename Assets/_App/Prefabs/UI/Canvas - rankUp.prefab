@@ -167,6 +167,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1153809946273302951}
     m_Modifications:
+    - target: {fileID: 485147674864721487, guid: b9d4d4993a0c3fb4b860824caeafc922,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1383377299597450210, guid: b9d4d4993a0c3fb4b860824caeafc922,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -201,6 +206,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5579926151622600857, guid: b9d4d4993a0c3fb4b860824caeafc922,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7324558300681779764, guid: b9d4d4993a0c3fb4b860824caeafc922,
         type: 3}
@@ -347,6 +357,16 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7719697998494871450, guid: b9d4d4993a0c3fb4b860824caeafc922,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7719697998683082667, guid: b9d4d4993a0c3fb4b860824caeafc922,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7719697998912196148, guid: b9d4d4993a0c3fb4b860824caeafc922,
         type: 3}
       propertyPath: m_text
@@ -354,10 +374,20 @@ PrefabInstance:
 
 '
       objectReference: {fileID: 0}
+    - target: {fileID: 7719697998912196148, guid: b9d4d4993a0c3fb4b860824caeafc922,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7719697998912196149, guid: b9d4d4993a0c3fb4b860824caeafc922,
         type: 3}
       propertyPath: m_SizeDelta.x
       value: 820
+      objectReference: {fileID: 0}
+    - target: {fileID: 7719697999294644955, guid: b9d4d4993a0c3fb4b860824caeafc922,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9d4d4993a0c3fb4b860824caeafc922, type: 3}
@@ -384,6 +414,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RaycastTarget
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1816362904502967380, guid: 9e8506f74d10ead488f07ac2538da847,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3602013024316985081, guid: 9e8506f74d10ead488f07ac2538da847,
         type: 3}
@@ -550,10 +585,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4574255724387670871, guid: 9e8506f74d10ead488f07ac2538da847,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4574255724702776166, guid: 9e8506f74d10ead488f07ac2538da847,
         type: 3}
       propertyPath: m_text
       value: "you reached the\n\n \nYou get 1 Avoid Going to single card per game"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4574255724702776166, guid: 9e8506f74d10ead488f07ac2538da847,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4574255724702776169, guid: 9e8506f74d10ead488f07ac2538da847,
         type: 3}
@@ -571,6 +616,16 @@ PrefabInstance:
       value: 'Congratulations
 
 '
+      objectReference: {fileID: 0}
+    - target: {fileID: 4574255724725320441, guid: 9e8506f74d10ead488f07ac2538da847,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4574255725181171222, guid: 9e8506f74d10ead488f07ac2538da847,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5145463069301829423, guid: 9e8506f74d10ead488f07ac2538da847,
         type: 3}
@@ -607,6 +662,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5972179960118585986, guid: 9e8506f74d10ead488f07ac2538da847,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e8506f74d10ead488f07ac2538da847, type: 3}
 --- !u!1 &3420533741929416426 stripped
@@ -628,6 +688,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1153809946273302951}
     m_Modifications:
+    - target: {fileID: 1439390103254390377, guid: a1f9c709a2dab8d43b3463c7bbebe47f,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3870769682036093275, guid: a1f9c709a2dab8d43b3463c7bbebe47f,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3870769682357473642, guid: a1f9c709a2dab8d43b3463c7bbebe47f,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3870769682544192144, guid: a1f9c709a2dab8d43b3463c7bbebe47f,
         type: 3}
       propertyPath: m_Name
@@ -738,12 +813,22 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3870769682630851627, guid: a1f9c709a2dab8d43b3463c7bbebe47f,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3870769683085193412, guid: a1f9c709a2dab8d43b3463c7bbebe47f,
         type: 3}
       propertyPath: m_text
       value: 'Congratulations
 
 '
+      objectReference: {fileID: 0}
+    - target: {fileID: 3870769683085193412, guid: a1f9c709a2dab8d43b3463c7bbebe47f,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3870769683085193413, guid: a1f9c709a2dab8d43b3463c7bbebe47f,
         type: 3}
@@ -819,6 +904,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6353958761727221951, guid: a1f9c709a2dab8d43b3463c7bbebe47f,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1f9c709a2dab8d43b3463c7bbebe47f, type: 3}
