@@ -136,7 +136,7 @@ namespace Knowlove.ActionAndPathLogic
                     BoardManager.Instance.DrawCard("avoid");
                     UsedAvoidSingleCard?.Invoke(currentPlayer);
 
-                    photonView.RPC(nameof(GetAvoidCard), RpcTarget.All, currentPlayer);
+                    GetAvoidCard();
 
                     DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
                     break;
@@ -271,7 +271,7 @@ namespace Knowlove.ActionAndPathLogic
             BoardManager.Instance.DrawCard("avoid");
             UsedAvoidSingleCard?.Invoke(currentPlayer);
 
-            photonView.RPC(nameof(GetAvoidCard), RpcTarget.All, currentPlayer);
+            GetAvoidCard();
 
             DOVirtual.DelayedCall(2f, () =>
             {
@@ -283,22 +283,17 @@ namespace Knowlove.ActionAndPathLogic
                 DOVirtual.DelayedCall(1f, () => _turnManager.EndTurn());
             });
         }
-
-        [PunRPC]
-        private void GetAvoidCard(Player currentPlayer)
+        private void GetAvoidCard()
         {
-            if (PhotonNetwork.LocalPlayer == currentPlayer)
+            APIManager.GetUserDetails((user) =>
             {
-                APIManager.GetUserDetails((user) =>
+                APIManager.AddItem("avoidSingle", 1, (inventory) =>
                 {
-                    APIManager.AddItem("avoidSingle", 1, (inventory) =>
-                    {
-                        User.current.inventory = inventory;
-                        StoreController.Instance.UpdateFromPlayerInventory();
-                        _gameStuff.GetSpecialCard();
-                    });
+                    User.current.inventory = inventory;
+                    StoreController.Instance.UpdateFromPlayerInventory();
+                    _gameStuff.RPC_GetSpecialCard();
                 });
-            }
+            });
         }
 
         private void LoseTurnsOrRollAgain(string text, int count, bool isLose, bool skipPrompt, Player currentPlayer)
