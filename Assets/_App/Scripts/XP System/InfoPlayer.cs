@@ -298,6 +298,15 @@ namespace Knowlove.XPSystem
                 SettedPlayer?.Invoke();
             });
         }
+
+        [ContextMenu("Test")]
+        public void Test()
+        {
+            APIManager.AddItem("gold", 1, (inventory) =>
+            {
+                User.current.inventory = inventory;
+            });
+        }
     }
 }
 
