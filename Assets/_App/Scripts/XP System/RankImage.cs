@@ -7,8 +7,24 @@ namespace Knowlove.XPSystem
     public class RankImage : MonoBehaviour
     {
         [SerializeField] private AnimationClip[] _ranks;
+        [SerializeField] private GameObject[] posotions;
 
         private Animator _animatorRanks;
+
+        private void Awake()
+        {
+            if (SceneManager.GetActiveScene().buildIndex == 1)
+            {
+                gameObject.SetActive(true);
+
+                if ((Screen.width / Screen.height) <= 1.4)
+                    transform.position = posotions[0].transform.position;
+                else
+                    transform.position = posotions[1].transform.position;
+
+                gameObject.SetActive(false);
+            }
+        }
 
         private void Start()
         {

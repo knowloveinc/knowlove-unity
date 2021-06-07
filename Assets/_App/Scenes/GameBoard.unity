@@ -1594,7 +1594,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 346753130}
-  m_LocalRotation: {x: -0.0015595517, y: 0.9928718, z: -0.11845841, w: -0.0130715445}
+  m_LocalRotation: {x: -0.0016872437, y: 0.9928571, z: -0.118456684, w: -0.014141796}
   m_LocalPosition: {x: -0.013649441, y: 0.020612478, z: 1.8675314}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3344,7 +3344,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 810013319}
-  m_LocalRotation: {x: 0.05783944, y: -0.3362104, z: 0.020692337, w: 0.93978137}
+  m_LocalRotation: {x: 0.057876, y: -0.33454508, z: 0.020589832, w: 0.9403755}
   m_LocalPosition: {x: 1.39, y: 0.059999943, z: -1.31}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -3514,11 +3514,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Canvas - Rank
-      objectReference: {fileID: 0}
-    - target: {fileID: 954396933570513349, guid: 17968df2d7e5b3c45bf12c8ee8ed92bb,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 17968df2d7e5b3c45bf12c8ee8ed92bb, type: 3}
@@ -7299,7 +7294,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1883161131}
-  m_LocalRotation: {x: 0.05783944, y: -0.3362104, z: 0.020692337, w: 0.93978137}
+  m_LocalRotation: {x: 0.057876, y: -0.33454508, z: 0.020589832, w: 0.9403755}
   m_LocalPosition: {x: 1.39, y: 0.06, z: -1.31}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -10538,6 +10533,11 @@ PrefabInstance:
       propertyPath: viewIdField
       value: 29
       objectReference: {fileID: 0}
+    - target: {fileID: 4592793374754643043, guid: a56dda01eebcfa1428b04c110e2e759f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4592793374754643047, guid: a56dda01eebcfa1428b04c110e2e759f,
         type: 3}
       propertyPath: TurnManager
@@ -10582,6 +10582,11 @@ PrefabInstance:
         type: 3}
       propertyPath: viewIdField
       value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 4592793374899439767, guid: a56dda01eebcfa1428b04c110e2e759f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4592793375008395355, guid: a56dda01eebcfa1428b04c110e2e759f,
         type: 3}
@@ -10662,6 +10667,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4592793376287871863, guid: a56dda01eebcfa1428b04c110e2e759f,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 714.285
       objectReference: {fileID: 0}
     - target: {fileID: 4592793376371565625, guid: a56dda01eebcfa1428b04c110e2e759f,
         type: 3}

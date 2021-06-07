@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 289319517684142995}
   - component: {fileID: 8016314887782488043}
   - component: {fileID: 1666041121380648169}
+  - component: {fileID: 560869512}
   m_Layer: 5
   m_Name: Card_Screen
   m_TagString: Untagged
@@ -36,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 408.2, y: 445.5}
-  m_SizeDelta: {x: 225.9, y: 120}
+  m_SizeDelta: {x: 225.90002, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &289319517684142995
 CanvasRenderer:
@@ -60,14 +61,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 08473a65154435244b5ac4bb8f5a7364, type: 3}
-  m_Type: 0
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -95,3 +96,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &560869512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2409263241096374888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e8215a50d562d14abfcd261e5f41404, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ranks:
+  - {fileID: 7400000, guid: 8c9a34cd74dcd1e49aa88903078c99fa, type: 2}
+  - {fileID: 7400000, guid: ed8469f3bf6f3c343b868f3b0e429698, type: 2}
+  - {fileID: 7400000, guid: 45226fe511ef4b744a73877d00e1831c, type: 2}
+  posotions:
+  - {fileID: 0}
+  - {fileID: 0}

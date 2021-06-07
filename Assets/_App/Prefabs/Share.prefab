@@ -145,5 +145,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shareMessage: "Let\u2019s install this app and play together"
-  _shareAndroidURL: https://play.google.com/store/apps/details?id=com.KnowLove.KnowLove&hl=en_US&gl=US
+  _shareAndroidURL: https://play.google.com/store/apps/details?id=com.KnowLoveinc.KnowLove&hl=en&gl=US
   _shareIPhoneURL: https://apps.apple.com/us/app/know-love-app/id1520135813
