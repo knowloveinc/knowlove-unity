@@ -13,17 +13,12 @@ namespace Knowlove.XPSystem
 
         private void Awake()
         {
-            if (SceneManager.GetActiveScene().buildIndex == 1)
-            {
-                gameObject.SetActive(true);
+            gameObject.SetActive(true);
 
-                if ((Screen.width / Screen.height) <= 1.4)
-                    transform.position = posotions[0].transform.position;
-                else
-                    transform.position = posotions[1].transform.position;
-
-                gameObject.SetActive(false);
-            }
+            if ((Screen.width / Screen.height) <= 1.4)
+                transform.position = posotions[0].transform.position;
+            else
+                transform.position = posotions[1].transform.position;
         }
 
         private void Start()

@@ -83,6 +83,7 @@ namespace Knowlove.XPSystem
                         SettedPlayer?.Invoke();
                         isFinish = true;
 
+                        CheckPlayerReward();
                         CanvasLoading.Instance.Hide();
                         return;
                     }
@@ -108,8 +109,6 @@ namespace Knowlove.XPSystem
 
                 CheckPlayerReward();
 
-                JSONPlayerInfo();
-                SettedPlayer?.Invoke();
                 CanvasLoading.Instance.Hide();
             });           
         }
