@@ -81,7 +81,7 @@ namespace Knowlove.UI
             }
             else
             {
-                //Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
+                Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
             }
 
             UpdateCard();
@@ -117,9 +117,9 @@ namespace Knowlove.UI
             }
             else
             {
-                //Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
-                //Debug.Log("IAP COST IS: " + product.metadata.localizedPriceString);
-                //priceLabel.text = isIAP ? product.metadata.localizedPrice + " " + product.metadata.isoCurrencyCode : currencyCost.ToString() + " <sprite=0>";
+                Product product = CodelessIAPStoreListener.Instance.GetProduct(id);
+                Debug.Log("IAP COST IS: " + product.metadata.localizedPriceString);
+                priceLabel.text = isIAP ? product.metadata.localizedPrice + " " + product.metadata.isoCurrencyCode : currencyCost.ToString() + " <sprite=0>";
             }
         }
 

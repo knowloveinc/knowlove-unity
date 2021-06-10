@@ -7,7 +7,7 @@ namespace Knowlove.UI
     {
         private string _shareTitle = "KNOWLOVE";
         [SerializeField] private string _shareMessage = "Let’s install this app and play together";
-        [SerializeField] private string _shareAndroidURL = "https://play.google.com/store/apps/details?id=com.KnowLove.KnowLove&hl=en_US&gl=US";
+        [SerializeField] private string _shareAndroidURL = "https://play.google.com/store/apps/details?id=com.KnowLoveinc.KnowLove&hl=en&gl=US";
         [SerializeField] private string _shareIPhoneURL = "https://apps.apple.com/us/app/know-love-app/id1520135813";
 
         public virtual void OnShare()
